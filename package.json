@@ -66,7 +66,7 @@
     "cordova-common": "^2.0.0",
     "cordova-lib": "^7.0.0",
     "ember-cli-babel": "^6.0.0",
-    "fs-extra": "^3.0.0",
+    "fs-extra": "^4.0.0",
     "htmlparser2": "^3.9.2",
     "leek": "0.0.24",
     "lodash": "^4.13.1",
