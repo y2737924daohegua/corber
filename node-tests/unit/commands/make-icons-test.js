@@ -32,7 +32,7 @@ describe('Make Icons Command', function() {
     var logger;
 
     beforeEach(function() {
-      td.replace('../../../lib/utils/get-added-platforms', function() {
+      td.replace('../../../lib/targets/cordova/utils/get-platforms', function() {
         return addedPlatforms;
       });
 

@@ -32,7 +32,7 @@ describe('Make Splashes Command', function() {
     var logger;
 
     beforeEach(function() {
-      td.replace('../../../lib/utils/get-added-platforms', function() {
+      td.replace('../../../lib/targets/cordova/get-platforms', function() {
         return addedPlatforms;
       });
 

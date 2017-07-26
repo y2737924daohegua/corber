@@ -2,8 +2,8 @@
 
 var commands              = require('./lib/commands');
 var getNetworkIp          = require('./lib/utils/get-network-ip');
-var cordovaPath           = require('./lib/utils/cordova-path');
-var cordovaAssets         = require('./lib/utils/cordova-assets');
+var cordovaPath           = require('./lib/targets/cordova/utils/get-path');
+var cordovaAssets         = require('./lib/targets/cordova/utils/cordova-assets');
 
 var mergeTrees            = require('broccoli-merge-trees');
 var Funnel                = require('broccoli-funnel');

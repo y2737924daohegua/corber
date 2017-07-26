@@ -5,7 +5,7 @@ var expect          = require('../../helpers/expect');
 var Promise         = require('rsvp');
 
 var PrepareCmd      = require('../../../lib/commands/prepare');
-var PrepareTask     = require('../../../lib/tasks/prepare');
+var PrepareTask     = require('../../../lib/targets/cordova/tasks/prepare');
 var HookTask        = require('../../../lib/tasks/run-hook');
 
 var mockProject     = require('../../fixtures/ember-cordova-mock/project');

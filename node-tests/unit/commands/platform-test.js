@@ -3,8 +3,8 @@
 var td              = require('testdouble');
 var expect          = require('../../helpers/expect');
 var PlatformCmd     = require('../../../lib/commands/platform');
-var CdvRawTask      = require('../../../lib/tasks/cordova-raw');
-var SetupViewTask   = require('../../../lib/tasks/setup-webview');
+var CdvRawTask      = require('../../../lib/targets/cordova/tasks/raw');
+var SetupViewTask   = require('../../../lib/targets/cordova/tasks/setup-webview');
 var Promise         = require('rsvp');
 
 var mockProject     = require('../../fixtures/ember-cordova-mock/project');

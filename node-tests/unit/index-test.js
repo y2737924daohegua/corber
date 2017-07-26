@@ -52,8 +52,8 @@ describe('Index', function() {
       });
 
       it('first gets cordova asset paths, then validates them', function() {
-        var cordovaAssets = require('../../lib/utils/cordova-assets');
-        td.replace('../../lib/utils/cordova-path');
+        var cordovaAssets = require('../../lib/targets/cordova/utils/cordova-assets');
+        td.replace('../../lib/targets/cordova/utils/get-path');
 
         var assetCalls = [];
         td.replace(cordovaAssets, 'getPaths', function() {

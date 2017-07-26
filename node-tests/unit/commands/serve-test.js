@@ -6,23 +6,23 @@ var Promise         = require('rsvp');
 var path            = require('path');
 
 var ServeCmd        = require('../../../lib/commands/serve');
-var ServeTask       = require('../../../lib/tasks/serve');
-var CdvBuildTask    = require('../../../lib/tasks/cordova-build');
+var CdvBuildTask    = require('../../../lib/targets/cordova/tasks/build');
 var BashTask        = require('../../../lib/tasks/bash');
 var HookTask        = require('../../../lib/tasks/run-hook');
 var LRloadShellTask = require('../../../lib/tasks/create-livereload-shell');
-var editXml         = require('../../../lib/utils/edit-xml');
+var editXml         = require('../../../lib/targets/cordova/utils/edit-xml');
 var parseXml        = require('../../../lib/utils/parse-xml');
-var cordovaPath     = require('../../../lib/utils/cordova-path');
+var cordovaPath     = require('../../../lib/targets/cordova/utils/get-path');
+var getFramework    = require('../../../lib/utils/get-framework');
+
 
 var mockProject     = require('../../fixtures/ember-cordova-mock/project');
 var mockAnalytics   = require('../../fixtures/ember-cordova-mock/analytics');
 
 /* eslint-disable max-len */
-var ValidatePlatform        = require('../../../lib/tasks/validate/platform');
-var ValidatePlugin          = require('../../../lib/tasks/validate/plugin');
-var ValidateAllowNavigation = require('../../../lib/tasks/validate/allow-navigation');
-var ValidateRootUrl         = require('../../../lib/tasks/validate/root-url');
+var ValidatePlatform        = require('../../../lib/targets/cordova/validators/platform');
+var ValidatePlugin          = require('../../../lib/targets/cordova/validators/plugin');
+var ValidateAllowNavigation = require('../../../lib/targets/cordova/validators/allow-navigation');
 /* eslint-enable max-len */
 
 describe('Serve Command', function() {
@@ -57,6 +57,20 @@ describe('Serve Command', function() {
     function mockTasks() {
       tasks = [];
 
+      td.replace(getFramework, 'get', function() {
+        return {
+          validateServe: function() {
+            tasks.push('framework-validate-serve');
+            return Promise.resolve();
+          },
+
+          serve: function() {
+            tasks.push('framework-serve');
+            return Promise.resolve();
+          }
+        };
+      });
+
       td.replace(HookTask.prototype, 'run', function(hookName) {
         tasks.push('hook ' + hookName);
         return Promise.resolve();
@@ -77,10 +91,6 @@ describe('Serve Command', function() {
         return Promise.resolve();
       });
 
-      td.replace(ValidateRootUrl.prototype, 'run', function() {
-        tasks.push('validate-root-url');
-        return Promise.resolve();
-      });
 
       td.replace(LRloadShellTask.prototype, 'run', function() {
         tasks.push('create-livereload-shell');
@@ -89,11 +99,6 @@ describe('Serve Command', function() {
 
       td.replace(CdvBuildTask.prototype, 'run', function() {
         tasks.push('cordova-build');
-        return Promise.resolve();
-      });
-
-      td.replace(ServeTask.prototype, 'run', function() {
-        tasks.push('ember-build-serve');
         return Promise.resolve();
       });
 
@@ -116,15 +121,15 @@ describe('Serve Command', function() {
     it('runs tasks in the correct order', function() {
       return serveCmd.run({}).then(function() {
         expect(tasks).to.deep.equal([
-          'validate-root-url',
           'validate-allow-navigation',
           'validate-platform',
           'validate-plugin',
+          'framework-validate-serve',
           'hook beforeBuild',
           'create-livereload-shell',
           'cordova-build',
           'hook afterBuild',
-          'ember-build-serve'
+          'framework-serve'
         ]);
       });
     });
@@ -149,10 +154,10 @@ describe('Serve Command', function() {
         skipCordovaBuild: true
       }).then(function() {
         expect(tasks).to.deep.equal([
-          'validate-root-url',
           'validate-allow-navigation',
           'validate-platform',
           'validate-plugin',
+          'framework-validate-serve',
           'hook beforeBuild',
           'create-livereload-shell',
           'hook afterBuild'
