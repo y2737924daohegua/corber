@@ -25,10 +25,6 @@ describe('Cordova Create Project Task', function() {
   };
 
   beforeEach(function() {
-    td.replace(fsUtils, 'mkdir', function() {
-      return Promise.resolve();
-    });
-
     td.replace(fsUtils, 'existsSync', function() {
       return false;
     });
@@ -90,7 +86,8 @@ describe('Cordova Create Project Task', function() {
 
   it('builds with a template when provided', function() {
     setupCreateTask();
-    create.run('templatePath');
+    create.templatePath = 'templatePath';
+    create.run();
 
     var matcher = td.matchers.contains({lib: { www: { url: 'templatePath'}}});
     td.verify(rawDouble(isString, isString, isString, matcher));
