@@ -1,13 +1,13 @@
 'use strict';
 
 var td              = require('testdouble');
-var expect          = require('../../helpers/expect');
+var expect          = require('../../../../helpers/expect');
 var path            = require('path');
-var mockProject     = require('../../fixtures/ember-cordova-mock/project');
+var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
 var Promise         = require('rsvp').Promise;
 
-var WatchmanConfig  = require('../../../lib/tasks/update-watchman-config');
-var fsUtils         = require('../../../lib/utils/fs-utils');
+var WatchmanConfig  = require('../../../../../lib/frameworks/ember/tasks/update-watchman-config');
+var fsUtils         = require('../../../../../lib/utils/fs-utils');
 
 describe('Update Watchman Config Task', function() {
   var watchmanTask;
