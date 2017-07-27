@@ -5,7 +5,6 @@ var expect          = require('../../helpers/expect');
 var Promise         = require('rsvp');
 var path            = require('path');
 
-var ServeCmd        = require('../../../lib/commands/serve');
 var CdvBuildTask    = require('../../../lib/targets/cordova/tasks/build');
 var BashTask        = require('../../../lib/tasks/bash');
 var HookTask        = require('../../../lib/tasks/run-hook');
@@ -13,8 +12,6 @@ var LRloadShellTask = require('../../../lib/tasks/create-livereload-shell');
 var editXml         = require('../../../lib/targets/cordova/utils/edit-xml');
 var parseXml        = require('../../../lib/utils/parse-xml');
 var cordovaPath     = require('../../../lib/targets/cordova/utils/get-path');
-var getFramework    = require('../../../lib/utils/get-framework');
-
 
 var mockProject     = require('../../fixtures/ember-cordova-mock/project');
 var mockAnalytics   = require('../../fixtures/ember-cordova-mock/analytics');
@@ -27,6 +24,7 @@ var ValidateAllowNavigation = require('../../../lib/targets/cordova/validators/a
 
 describe('Serve Command', function() {
   var serveCmd;
+  var tasks = [];
 
   afterEach(function() {
     editXml.removeNavigation(mockProject.project);
@@ -34,6 +32,13 @@ describe('Serve Command', function() {
   });
 
   beforeEach(function() {
+    mockTasks();
+
+    var ServeCmd = require('../../../lib/commands/serve');
+    td.replace(ServeCmd, '_serveHang', function() {
+      return Promise.resolve();
+    });
+
     serveCmd = new ServeCmd({
       project: mockProject.project
     });
@@ -47,122 +52,110 @@ describe('Serve Command', function() {
     };
   });
 
-  context('when locationType is hash', function() {
-    var tasks = [];
+  function mockTasks() {
+    tasks = [];
 
-    beforeEach(function() {
-      mockTasks();
+    td.replace('../../../lib/utils/require-framework', function() {
+      return {
+        validateServe: function() {
+          tasks.push('framework-validate-serve');
+          return Promise.resolve();
+        },
+
+        serve: function() {
+          tasks.push('framework-serve');
+          return Promise.resolve();
+        }
+      };
     });
 
-    function mockTasks() {
-      tasks = [];
-
-      td.replace(getFramework, 'get', function() {
-        return {
-          validateServe: function() {
-            tasks.push('framework-validate-serve');
-            return Promise.resolve();
-          },
-
-          serve: function() {
-            tasks.push('framework-serve');
-            return Promise.resolve();
-          }
-        };
-      });
-
-      td.replace(HookTask.prototype, 'run', function(hookName) {
-        tasks.push('hook ' + hookName);
-        return Promise.resolve();
-      });
-
-      td.replace(ValidatePlatform.prototype, 'run', function() {
-        tasks.push('validate-platform');
-        return Promise.resolve();
-      });
-
-      td.replace(ValidatePlugin.prototype, 'run', function() {
-        tasks.push('validate-plugin');
-        return Promise.resolve();
-      });
-
-      td.replace(ValidateAllowNavigation.prototype, 'run', function() {
-        tasks.push('validate-allow-navigation');
-        return Promise.resolve();
-      });
-
-
-      td.replace(LRloadShellTask.prototype, 'run', function() {
-        tasks.push('create-livereload-shell');
-        return Promise.resolve();
-      });
-
-      td.replace(CdvBuildTask.prototype, 'run', function() {
-        tasks.push('cordova-build');
-        return Promise.resolve();
-      });
-
-      td.replace(BashTask.prototype, 'run', function() {
-        tasks.push('serve-bash');
-        return Promise.resolve();
-      });
-
-      td.replace(ServeCmd, '_serveHang', function() {
-        return Promise.resolve();
-      });
-    }
-
-    it('exits cleanly', function() {
-      return expect(function() {
-        serveCmd.run({});
-      }).not.to.throw(Error);
+    td.replace(HookTask.prototype, 'run', function(hookName) {
+      tasks.push('hook ' + hookName);
+      return Promise.resolve();
     });
 
-    it('runs tasks in the correct order', function() {
-      return serveCmd.run({}).then(function() {
-        expect(tasks).to.deep.equal([
-          'validate-allow-navigation',
-          'validate-platform',
-          'validate-plugin',
-          'framework-validate-serve',
-          'hook beforeBuild',
-          'create-livereload-shell',
-          'cordova-build',
-          'hook afterBuild',
-          'framework-serve'
-        ]);
-      });
+    td.replace(ValidatePlatform.prototype, 'run', function() {
+      tasks.push('validate-platform');
+      return Promise.resolve();
     });
 
-    it('add reloadUrl to the xml file', function() {
-      return serveCmd.run({
-        reloadUrl: 'test-url'
-      }).then(function() {
-        var cdvPath = cordovaPath(mockProject.project);
-        var configPath = path.join(cdvPath, 'config.xml');
-        var xml = parseXml(configPath);
-        var node = xml._result.widget['allow-navigation'].pop().$.href;
+    td.replace(ValidatePlugin.prototype, 'run', function() {
+      tasks.push('validate-plugin');
+      return Promise.resolve();
+    });
 
-        expect(node).to.equal('test-url');
-      });
+    td.replace(ValidateAllowNavigation.prototype, 'run', function() {
+      tasks.push('validate-allow-navigation');
+      return Promise.resolve();
     });
 
 
-    it('skips emer & cordova builds with --skip flags', function() {
-      return serveCmd.run({
-        skipEmberBuild: true,
-        skipCordovaBuild: true
-      }).then(function() {
-        expect(tasks).to.deep.equal([
-          'validate-allow-navigation',
-          'validate-platform',
-          'validate-plugin',
-          'framework-validate-serve',
-          'hook beforeBuild',
-          'create-livereload-shell',
-          'hook afterBuild'
-        ]);
-      });
+    td.replace(LRloadShellTask.prototype, 'run', function() {
+      tasks.push('create-livereload-shell');
+      return Promise.resolve();
+    });
+
+    td.replace(CdvBuildTask.prototype, 'run', function() {
+      tasks.push('cordova-build');
+      return Promise.resolve();
+    });
+
+    td.replace(BashTask.prototype, 'run', function() {
+      tasks.push('serve-bash');
+      return Promise.resolve();
+    });
+  }
+
+  it('exits cleanly', function() {
+    return expect(function() {
+      serveCmd.run({});
+    }).not.to.throw(Error);
+  });
+
+  it('runs tasks in the correct order', function() {
+    return serveCmd.run({}).then(function() {
+      expect(tasks).to.deep.equal([
+        'validate-allow-navigation',
+        'validate-platform',
+        'validate-plugin',
+        'framework-validate-serve',
+        'hook beforeBuild',
+        'create-livereload-shell',
+        'cordova-build',
+        'hook afterBuild',
+        'framework-serve'
+      ]);
+    });
+  });
+
+  it('add reloadUrl to the xml file', function() {
+    return serveCmd.run({
+      reloadUrl: 'test-url'
+    }).then(function() {
+      var cdvPath = cordovaPath(mockProject.project);
+      var configPath = path.join(cdvPath, 'config.xml');
+      var xml = parseXml(configPath);
+      var node = xml._result.widget['allow-navigation'].pop().$.href;
+
+      expect(node).to.equal('test-url');
+    });
+  });
+
+
+  it('skips emer & cordova builds with --skip flags', function() {
+    return serveCmd.run({
+      skipEmberBuild: true,
+      skipCordovaBuild: true
+    }).then(function() {
+      expect(tasks).to.deep.equal([
+        'validate-allow-navigation',
+        'validate-platform',
+        'validate-plugin',
+        'framework-validate-serve',
+        'hook beforeBuild',
+        'create-livereload-shell',
+        'hook afterBuild'
+      ]);
     });
   });
 });

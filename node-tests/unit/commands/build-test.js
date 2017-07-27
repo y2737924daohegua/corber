@@ -10,7 +10,6 @@ var HookTask        = require('../../../lib/tasks/run-hook');
 
 var mockProject     = require('../../fixtures/ember-cordova-mock/project');
 var mockAnalytics   = require('../../fixtures/ember-cordova-mock/analytics');
-var getFramework    = require('../../../lib/utils/get-framework');
 
 var isAnything      = td.matchers.anything;
 
@@ -46,7 +45,7 @@ describe('Build Command', function() {
   function mockTasks() {
     tasks = [];
 
-    td.replace(getFramework, 'get', function() {
+    td.replace('../../../lib/utils/require-framework', function() {
       return {
         validateBuild: function() {
           tasks.push('framework-validate-build');

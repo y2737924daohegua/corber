@@ -7,7 +7,7 @@ const WatchmanCfg    = require('../../../lib/tasks/update-watchman-config');
 const isAnything     = td.matchers.anything;
 const fsUtils        = require('../../../lib/utils/fs-utils');
 const path           = require('path');
-const getFramework   = require('../../../lib/utils/get-framework');
+const frameworkType  = require('../../../lib/utils/framework-type');
 const contains       = td.matchers.contains;
 
 
@@ -96,10 +96,8 @@ describe('Create Project', function() {
     );
 
     beforeEach(function() {
-      td.replace(getFramework, 'get', function() {
-        return {
-          name: 'ember'
-        };
+      td.replace(frameworkType, 'get', function() {
+        return 'ember';
       });
     });
 
@@ -123,7 +121,7 @@ describe('Create Project', function() {
       createTask.run();
 
       td.verify(copyDouble(
-        contains('node_modules/ember-cordova/lib/templates/framework-config/ember.js'),
+        contains('lib/templates/framework-config/ember.js'),
         emberCdvPath + '/config/config.js'
       ));
     });
