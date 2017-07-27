@@ -141,7 +141,6 @@ describe('Serve Command', function() {
     });
   });
 
-
   it('skips emer & cordova builds with --skip flags', function() {
     return serveCmd.run({
       skipEmberBuild: true,
@@ -157,5 +156,11 @@ describe('Serve Command', function() {
         'hook afterBuild'
       ]);
     });
+  });
+
+  xit('calls requireTarget to setup target', function() {
+  });
+
+  xit('calls requireFramework to setup framework', function() {
   });
 });

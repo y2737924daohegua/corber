@@ -11,8 +11,6 @@ var HookTask        = require('../../../lib/tasks/run-hook');
 var mockProject     = require('../../fixtures/ember-cordova-mock/project');
 var mockAnalytics   = require('../../fixtures/ember-cordova-mock/analytics');
 
-var isAnything      = td.matchers.anything;
-
 var setupBuild = function() {
   var BuildCmd = require('../../../lib/commands/build');
 
@@ -132,23 +130,9 @@ describe('Build Command', function() {
     });
   });
 
-  context('cordova target', function() {
-    it('sets cordovaBuildOpts', function() {
-      var optDouble = td.replace('../../../lib/targets/cordova/utils/parse-build-flags');
-      var build = setupBuild();
-
-      return build.run({}).then(function() {
-        td.verify(optDouble(isAnything(), isAnything()));
-      });
-    });
+  xit('calls requireTarget to setup target', function() {
   });
 
-  xit('sets platform & cordovaOpts on CordovaTarget', function() {
-    var passedPlatform = 'android';
-    var build = setupBuild();
-
-    return build.run({platform: passedPlatform}).then(function() {
-      expect(cordovaPlatform).to.equal(passedPlatform);
-    });
+  xit('calls requireFramework to setup framework', function() {
   });
 });
