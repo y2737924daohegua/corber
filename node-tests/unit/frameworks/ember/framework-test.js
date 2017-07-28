@@ -2,22 +2,137 @@ const td             = require('testdouble');
 const expect         = require('../../../helpers/expect');
 const mockProject    = require('../../../fixtures/ember-cordova-mock/project');
 const WatchmanCfg    = require('../../../../lib/frameworks/ember/tasks/update-watchman-config');
+const Promise        = require('rsvp').Promise;
+const isAnything     = td.matchers.anything;
 
 describe('Ember Framework', function() {
-  xit('validateBuild runs validators in the correct order', function() {
+  let Build, Serve;
+
+  beforeEach(function() {
+    Build = td.replace('../../../../lib/frameworks/ember/tasks/build');
+    Serve = td.replace('../../../../lib/frameworks/ember/tasks/serve');
   });
 
-  xit('build runs an EmberBuildTask', function() {
+  afterEach(function() {
+    td.reset();
   });
 
-  xit('validateServe runs validators in the correct order', function() {
+  it('has required props', function() {
+    let Ember = require('../../../../lib/frameworks/ember/framework');
+    let framework = new Ember();
+
+    expect(framework.name).to.equal('ember');
+    expect(framework.buildCommand).to.equal(undefined);
+    expect(framework.buildPath).to.equal('/dist');
+    expect(framework.port).to.equal(4200);
   });
 
-  xit('serve runs an EmberServeTask', function() {
+  it('build initializes and runs a BuildTask', function() {
+    let buildDouble = td.replace(Build.prototype, 'run');
+    let Ember = require('../../../../lib/frameworks/ember/framework');
+    let framework = new Ember({project: mockProject.project})
+
+    framework.build({cordovaOutputPath: 'fakePath'});
+    td.verify(new Build({
+      project: mockProject.project,
+      environment: isAnything(),
+      outputPath: 'fakePath'
+    }));
+
+    td.verify(buildDouble());
   });
 
-  xit('createProject supers with ember', function() {
+  it('serve initializes and runs a ServeTask', function() {
+    let serveDouble = td.replace(Serve.prototype, 'run');
+    let Ember = require('../../../../lib/frameworks/ember/framework');
+    let framework = new Ember({project: mockProject.project})
+
+    return framework.serve({port: 80}).then(function() {
+      td.verify(new Serve({
+        project: mockProject.project,
+        ui: isAnything()
+      }));
+
+      td.verify(serveDouble({
+        port: 80,
+        liveReloadPort: isAnything(),
+        baseURL: '/',
+        rootURL: '/',
+        project: mockProject.project
+      }));
+    });
   });
+
+
+  it('validateBuild calls _buildValidators then runs validators', function() {
+    let runValidatorDouble = td.replace('../../../../lib/utils/run-validators');
+    let Ember = require('../../../../lib/frameworks/ember/framework');
+
+    let framework = new Ember({project: mockProject.project});
+    td.replace(framework, '_buildValidators', function() {
+      return ['validations'];
+    });
+
+    framework.validateBuild({});
+    td.verify(runValidatorDouble(['validations']));
+  });
+
+  it('validateServe calls _buildValidators then runs validators', function() {
+    let runValidatorDouble = td.replace('../../../../lib/utils/run-validators');
+    let Ember = require('../../../../lib/frameworks/ember/framework');
+
+    let framework = new Ember({project: mockProject.project});
+    td.replace(framework, '_buildValidators', function() {
+      return ['validations'];
+    });
+
+    framework.validateServe({});
+    td.verify(runValidatorDouble(['validations']));
+  });
+
+  context('buildValidators', function() {
+    it('inits validations', function() {
+      let ValidateLocation = td.replace('../../../../lib/frameworks/ember/validators/location-type');
+      let ValidateRoot = td.replace('../../../../lib/frameworks/ember/validators/root-url');
+      let Ember = require('../../../../lib/frameworks/ember/framework');
+
+      let framework = new Ember({project: mockProject.project, isGlimmer: false});
+      let validators = framework._buildValidators({});
+
+      td.verify(new ValidateLocation({
+        config: mockProject.project.config()
+      }));
+
+      td.verify(new ValidateRoot({
+        config: mockProject.project.config(),
+        force: undefined
+      }));
+
+      expect(validators.length).to.equal(2);
+    });
+
+    it('passes the force flag to ValidateRootURL', function() {
+      let ValidateRoot = td.replace('../../../../lib/frameworks/ember/validators/root-url');
+      let Ember = require('../../../../lib/frameworks/ember/framework');
+
+      let framework = new Ember({project: mockProject.project, isGlimmer: false});
+      let validators = framework._buildValidators({force: true});
+
+      td.verify(new ValidateRoot({
+        config: mockProject.project.config(),
+        force: true
+      }));
+    });
+
+    it('skips non-glimmer validations if isGlimmer === true', function() {
+      let ValidateRoot = td.replace('../../../../lib/frameworks/ember/validators/root-url');
+      let Ember = require('../../../../lib/frameworks/ember/framework');
+      let framework = new Ember({project: mockProject.project, isGlimmer: true});
+      let validators = framework._buildValidators({});
+      expect(validators.length).to.equal(0);
+    });
+  });
+
 
   it('afterInstall runs UpdateWatchman task', function() {
     let tasks = [];
@@ -27,10 +142,8 @@ describe('Ember Framework', function() {
       return Promise.resolve();
     });
 
-    let EmberFramework = require('../../../../lib/frameworks/ember/framework');
-    let framework = new EmberFramework({
-      project: mockProject.project
-    });
+    let Ember = require('../../../../lib/frameworks/ember/framework');
+    let framework = new Ember({project: mockProject.project});
 
     return framework.afterInstall().then(function() {
       expect(tasks).to.deep.equal([
