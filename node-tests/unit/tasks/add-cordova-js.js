@@ -1,17 +1,17 @@
 'use strict';
 
 var td              = require('testdouble');
-var expect          = require('../../helpers/expect');
+var expect          = require('../../../../helpers/expect');
 var Promise         = require('rsvp').Promise;
 var path            = require('path');
-var cordovaPath     = require('../../../lib/utils/cordova-path');
-var fsUtils         = require('../../../lib/utils/fs-utils');
-var logger          = require('../../../lib/utils/logger');
-var mockProject     = require('../../fixtures/ember-cordova-mock/project');
+var cordovaPath     = require('../../../../../lib/targets/cordova/utils/get-path');
+var fsUtils         = require('../../../../../lib/utils/fs-utils');
+var logger          = require('../../../../../lib/utils/logger');
+var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
 
-var SetupIndexTask  = require('../../../lib/tasks/setup-index');
+var AddCordovaJS    = require('../../../../../lib/targets/cordova/tasks/add-cordova-js');
 
-describe('Setup Index Task', function() {
+describe('Add Cordova JS Task', function() {
   var projectPath = cordovaPath(mockProject.project);
   var source = 'www/index.html';
   var task, subject, infoArg, readFileArgs, writeFileArgs;
@@ -23,7 +23,7 @@ describe('Setup Index Task', function() {
     readFileArgs = null;
     writeFileArgs = null;
 
-    task = new SetupIndexTask({
+    task = new AddCordovaJS({
       source: source,
       project: mockProject.project
     });
