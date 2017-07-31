@@ -1,5 +1,4 @@
-'use strict';
-
+ /* eslint-disable max-len */
 var td              = require('testdouble');
 var expect          = require('../../../../helpers/expect');
 var getCordovaPath  = require('../../../../../lib/targets/cordova/utils/get-path');
@@ -7,6 +6,7 @@ var getCordovaPath  = require('../../../../../lib/targets/cordova/utils/get-path
 var path            = require('path');
 
 var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
+ /* eslint-enable max-len */
 
 describe('Get Added Platforms Util', function() {
   context('when project has platforms.json', function() {

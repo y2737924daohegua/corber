@@ -1,5 +1,4 @@
-'use strict';
-
+ /* eslint-disable max-len */
 var td              = require('testdouble');
 var expect          = require('../../../../helpers/expect');
 var Promise         = require('rsvp').Promise;
@@ -10,6 +9,7 @@ var logger          = require('../../../../../lib/utils/logger');
 var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
 
 var AddCordovaJS    = require('../../../../../lib/targets/cordova/tasks/add-cordova-js');
+ /* eslint-enable max-len */
 
 describe('Add Cordova JS Task', function() {
   var projectPath = cordovaPath(mockProject.project);
@@ -107,7 +107,9 @@ describe('Add Cordova JS Task', function() {
     it('calls fsUtils.write with added script reference', function() {
       return subject.then(function() {
         expect(writeFileArgs.path).to.eql(path.join(projectPath, source));
-        expect(writeFileArgs.contents).to.contain('<script src="cordova.js"></script>');
+        expect(writeFileArgs.contents).to.contain(
+          '<script src="cordova.js"></script>'
+        );
       });
     });
 

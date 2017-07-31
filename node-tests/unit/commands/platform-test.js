@@ -1,5 +1,4 @@
-'use strict';
-
+ /* eslint-disable max-len */
 var td              = require('testdouble');
 var expect          = require('../../helpers/expect');
 var PlatformCmd     = require('../../../lib/commands/platform');
@@ -9,6 +8,7 @@ var Promise         = require('rsvp');
 
 var mockProject     = require('../../fixtures/ember-cordova-mock/project');
 var mockAnalytics   = require('../../fixtures/ember-cordova-mock/analytics');
+ /* eslint-enable max-len */
 
 describe('Platform Command', function() {
   var platform;

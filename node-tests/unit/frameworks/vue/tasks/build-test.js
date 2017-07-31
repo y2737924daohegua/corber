@@ -1,7 +1,6 @@
 const td             = require('testdouble');
 const expect         = require('../../../../helpers/expect');
 const Promise        = require('rsvp').Promise;
-const isAnything     = td.matchers.anything;
 
 describe('Vue Build Task', function() {
   let buildTask, tasks, Bash, AddCordovaJS;
@@ -59,6 +58,8 @@ describe('Vue Build Task', function() {
     }));
 
     expect(captor.values[0].command).to.equal('fakeBuildCommand');
-    expect(captor.values[1].command).to.equal('cp -R fakePath/* fakeCordovaPath');
+    expect(captor.values[1].command).to.equal(
+      'cp -R fakePath/* fakeCordovaPath'
+    );
   });
 });

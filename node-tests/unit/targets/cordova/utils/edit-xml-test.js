@@ -1,9 +1,11 @@
+ /* eslint-disable max-len */
 var cordovaPath     = require('../../../../../lib/targets/cordova/utils/get-path');
 var editXml         = require('../../../../../lib/targets/cordova/utils/edit-xml');
 var expect          = require('../../../../helpers/expect');
 var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
 var parseXml        = require('../../../../../lib/utils/parse-xml');
 var path            = require('path');
+ /* eslint-enable max-len */
 
 describe('Edit XML Util', function() {
   var host = 'http://localhost:8080';

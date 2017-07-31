@@ -1,5 +1,3 @@
-'use strict';
-
 var td              = require('testdouble');
 var childProcess    = require('child_process');
 

@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint-disable max-len */
 var td              = require('testdouble');
 var expect          = require('../../../../helpers/expect');

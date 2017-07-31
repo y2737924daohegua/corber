@@ -1,9 +1,11 @@
+ /* eslint-disable max-len */
 const td             = require('testdouble');
 const expect         = require('../../../helpers/expect');
 const mockProject    = require('../../../fixtures/ember-cordova-mock/project');
 const WatchmanCfg    = require('../../../../lib/frameworks/ember/tasks/update-watchman-config');
 const Promise        = require('rsvp').Promise;
 const isAnything     = td.matchers.anything;
+ /* eslint-enable max-len */
 
 describe('Ember Framework', function() {
   let Build, Serve;
@@ -92,12 +94,15 @@ describe('Ember Framework', function() {
 
   context('buildValidators', function() {
     it('inits validations', function() {
+      /* eslint-disable max-len */
       let ValidateLocation = td.replace('../../../../lib/frameworks/ember/validators/location-type');
       let ValidateRoot = td.replace('../../../../lib/frameworks/ember/validators/root-url');
       let Ember = require('../../../../lib/frameworks/ember/framework');
 
       let framework = new Ember({project: mockProject.project, isGlimmer: false});
       let validators = framework._buildValidators({});
+      /* eslint-enable max-len */
+
 
       td.verify(new ValidateLocation({
         config: mockProject.project.config()
@@ -112,12 +117,13 @@ describe('Ember Framework', function() {
     });
 
     it('passes the force flag to ValidateRootURL', function() {
+      /* eslint-disable max-len */
       let ValidateRoot = td.replace('../../../../lib/frameworks/ember/validators/root-url');
       let Ember = require('../../../../lib/frameworks/ember/framework');
-
       let framework = new Ember({project: mockProject.project, isGlimmer: false});
-      let validators = framework._buildValidators({force: true});
+      /* eslint-enable max-len */
 
+      framework._buildValidators({force: true});
       td.verify(new ValidateRoot({
         config: mockProject.project.config(),
         force: true
@@ -125,9 +131,13 @@ describe('Ember Framework', function() {
     });
 
     it('skips non-glimmer validations if isGlimmer === true', function() {
-      let ValidateRoot = td.replace('../../../../lib/frameworks/ember/validators/root-url');
       let Ember = require('../../../../lib/frameworks/ember/framework');
-      let framework = new Ember({project: mockProject.project, isGlimmer: true});
+
+      let framework = new Ember({
+        project: mockProject.project,
+        isGlimmer: true
+      });
+
       let validators = framework._buildValidators({});
       expect(validators.length).to.equal(0);
     });

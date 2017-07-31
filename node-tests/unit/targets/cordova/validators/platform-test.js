@@ -1,5 +1,4 @@
-'use strict';
-
+/* eslint-disable max-len */
 var td              = require('testdouble');
 var expect          = require('../../../../helpers/expect');
 var Promise         = require('rsvp');
@@ -7,6 +6,7 @@ var Promise         = require('rsvp');
 var PlatformTask    = require('../../../../../lib/targets/cordova/validators/platform');
 var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
 var CordovaValidator = require('../../../../../lib/targets/cordova/utils/cordova-validator');
+ /* eslint-enable max-len */
 
 describe('Validate Platform Tasks', function() {
   var tasks, validatePlatform;

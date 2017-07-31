@@ -1,7 +1,6 @@
 const td             = require('testdouble');
 const expect         = require('../../../../helpers/expect');
 const Promise        = require('rsvp').Promise;
-const isAnything     = td.matchers.anything;
 
 describe('Vue Serve Task', function() {
   afterEach(function() {
@@ -18,7 +17,7 @@ describe('Vue Serve Task', function() {
       return Promise.resolve();
     });
 
-    serveTask = new Serve();
+    let serveTask = new Serve();
     return serveTask.run().then(function() {
       td.verify(new Bash({
         command: 'npm run dev'

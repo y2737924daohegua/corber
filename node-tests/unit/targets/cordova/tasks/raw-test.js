@@ -1,5 +1,4 @@
-'use strict';
-
+ /* eslint-disable max-len */
 var RawTask         = require('../../../../../lib/targets/cordova/tasks/raw');
 var td              = require('testdouble');
 var expect          = require('../../../../helpers/expect');
@@ -10,6 +9,7 @@ var cordovaLib      = require('cordova-lib');
 var cordovaProj     = cordovaLib.cordova;
 var events          = cordovaLib.events;
 var cordovaLogger   = require('cordova-common').CordovaLogger.get();
+ /* eslint-enable max-len */
 
 describe('Cordova Raw Task', function() {
   var setupTask = function() {

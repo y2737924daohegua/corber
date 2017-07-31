@@ -1,21 +1,21 @@
+ /* eslint-disable max-len */
 const td             = require('testdouble');
 const expect         = require('../../helpers/expect');
 const mockProject    = require('../../fixtures/ember-cordova-mock/project');
 const Promise        = require('rsvp');
 const GitIgnore      = require('../../../lib/tasks/update-gitignore');
-let CreateCordova    = require('../../../lib/targets/cordova/tasks/create-project');
 
 const isAnything     = td.matchers.anything;
 const fsUtils        = require('../../../lib/utils/fs-utils');
 const path           = require('path');
 const frameworkType  = require('../../../lib/utils/framework-type');
 const contains       = td.matchers.contains;
-const requireFramework = require('../../../lib/utils/require-framework');
+
+let CreateCordova    = require('../../../lib/targets/cordova/tasks/create-project');
+ /* eslint-enable max-len */
 
 describe('Create Project', function() {
   let createTask;
-  let project = mockProject.project;
-  let ui = mockProject.ui;
   let tasks;
 
   function initTask(mockInitDirs = true) {
@@ -49,13 +49,13 @@ describe('Create Project', function() {
       return Promise.resolve();
     });
 
-    if(mockInitDirs) {
+    if (mockInitDirs) {
       td.replace(createTask, 'initDirs', function() {
         tasks.push('create-dirs');
         return Promise.resolve();
       });
     }
-  };
+  }
 
   afterEach(function() {
     td.reset();
@@ -75,8 +75,8 @@ describe('Create Project', function() {
   });
 
   it('inits CreateCordova with id, name & templatePath', function() {
-    CreateCordova = td.replace('../../../lib/targets/cordova/tasks/create-project')
-    let createCdvMock = td.constructor(CreateCordova);
+    let taskPath = '../../../lib/targets/cordova/tasks/create-project';
+    CreateCordova = td.replace(taskPath);
     initTask();
     createTask.templatePath = 'passedTemplatePath';
 

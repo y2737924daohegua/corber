@@ -1,5 +1,4 @@
-'use strict';
-
+ /* eslint-disable max-len */
 var td              = require('testdouble');
 var expect          = require('../../../../helpers/expect');
 var isAnything      = td.matchers.anything();
@@ -9,7 +8,7 @@ var CdvRawTask      = require('../../../../../lib/targets/cordova/tasks/raw');
 var SetupViewTask   = require('../../../../../lib/targets/cordova/tasks/setup-webview');
 var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
 var contains        = td.matchers.contains;
-
+ /* eslint-enable max-len */
 
 describe('Cordova Setup Webview Task', function() {
   var rawDouble, setupTask;

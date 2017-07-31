@@ -1,8 +1,8 @@
-'use strict';
-
+ /* eslint-disable max-len */
 var td              = require('testdouble');
 var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
 var CdvRawTask      = require('../../../../../lib/targets/cordova/tasks/raw');
+ /* eslint-enable max-len */
 
 var setupBuildTask = function() {
   var CdvBuildTask = require('../../../../../lib/targets/cordova/tasks/build');
