@@ -1,5 +1,3 @@
-'use strict';
-
 var td              = require('testdouble');
 
 var expect          = require('../../helpers/expect');
@@ -88,9 +86,9 @@ describe('Build Command', function() {
     .then(function() {
       //h-t ember-electron for the pattern
       expect(tasks).to.deep.equal([
+        'hook beforeBuild',
         'framework-validate-build',
         'cordova-target-validate-build',
-        'hook beforeBuild',
         'framework-build',
         'cordova-target-build',
         'hook afterBuild'
@@ -105,9 +103,9 @@ describe('Build Command', function() {
     .then(function() {
       //h-t ember-electron for the pattern
       expect(tasks).to.deep.equal([
+        'hook beforeBuild',
         'framework-validate-build',
         'cordova-target-validate-build',
-        'hook beforeBuild',
         'cordova-target-build',
         'hook afterBuild'
       ]);
@@ -121,9 +119,9 @@ describe('Build Command', function() {
     .then(function() {
       //h-t ember-electron for the pattern
       expect(tasks).to.deep.equal([
+        'hook beforeBuild',
         'framework-validate-build',
         'cordova-target-validate-build',
-        'hook beforeBuild',
         'framework-build',
         'hook afterBuild'
       ]);

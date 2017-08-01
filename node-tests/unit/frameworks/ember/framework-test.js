@@ -105,7 +105,8 @@ describe('Ember Framework', function() {
 
 
       td.verify(new ValidateLocation({
-        config: mockProject.project.config()
+        config: mockProject.project.config(),
+        force: undefined
       }));
 
       td.verify(new ValidateRoot({
