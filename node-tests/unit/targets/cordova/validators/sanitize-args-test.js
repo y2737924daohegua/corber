@@ -92,9 +92,14 @@ describe('Cordova Args Test', function() {
       validator.rawArgs = args;
       validator.varOpts = ['APP_ID=FOO', 'APP_NAME=FOO'];
 
-      return expect(validator.run()).to.eventually
-        .have.deep.property('varOpts.APP_ID')
-        .and.equal('FOO');
+      return validator.run().then(function(sanitized) {
+        expect(sanitized).to.deep.include({
+          varOpts: {
+            APP_NAME: 'FOO',
+            APP_ID: 'FOO'
+          }
+        });
+      })
     });
   });
 });
