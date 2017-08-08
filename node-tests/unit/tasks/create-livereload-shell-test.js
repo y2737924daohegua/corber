@@ -83,7 +83,7 @@ describe('Create Cordova Shell Task', function() {
     });
 
     var shellTask = setupTask(true);
-    return expect(shellTask.run()).to.be.rejectedWith(
+    return expect(shellTask.run()).to.eventually.be.rejectedWith(
       /Error moving index\.html/
     );
   });

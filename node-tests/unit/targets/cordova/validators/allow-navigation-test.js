@@ -39,7 +39,7 @@ describe('Validate Allow Navigation Test', function() {
 
     var validateNav = setupTask();
     validateNav.rejectIfUndefined = true;
-    return expect(validateNav.run()).to.be.rejectedWith(
+    return expect(validateNav.run()).to.eventually.be.rejectedWith(
       /allow-navigation href/
     );
   });
@@ -53,7 +53,7 @@ describe('Validate Allow Navigation Test', function() {
     var validateNav = setupTask();
     validateNav.platform = 'browser';
 
-    return expect(validateNav.run()).to.be.fulfilled;
+    return expect(validateNav.run()).to.eventually.be.fulfilled;
   });
 
   context('validateNavigationProp', function() {

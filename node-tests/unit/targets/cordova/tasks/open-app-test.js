@@ -47,7 +47,7 @@ describe('Cordova Open App Task', function() {
   it('outputs an error if no platform is specified', function() {
     openApp.platform = 'invalidPlatform';
 
-    return expect(openApp.run()).to.be.rejectedWith(
+    return expect(openApp.run()).to.eventually.be.rejectedWith(
       /platform is not supported/
     );
   });

@@ -93,7 +93,7 @@ describe('Cordova Raw Task', function() {
     it('rejects run() with the failure', function() {
       var raw = setupTask();
 
-      return expect(raw.run()).to.be.rejectedWith(
+      return expect(raw.run()).to.eventually.be.rejectedWith(
         /fail/
       );
     });

@@ -109,7 +109,7 @@ describe('Update gitignore Task', function() {
     });
     var task = createTask();
 
-    return expect(task.run()).to.be.rejectedWith(
+    return expect(task.run()).to.eventually.be.rejectedWith(
       /failed to update \.gitignore/
     );
   });
