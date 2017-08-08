@@ -102,15 +102,4 @@ describe('Update gitignore Task', function() {
       expect(writeContent).to.equal(expected);
     });
   });
-
-  it('outputs an error message and resolves if write fails', function() {
-    td.replace(fsUtils, 'write', function() {
-      return Promise.reject();
-    });
-    var task = createTask();
-
-    return expect(task.run()).to.eventually.be.rejectedWith(
-      /failed to update \.gitignore/
-    );
-  });
 });

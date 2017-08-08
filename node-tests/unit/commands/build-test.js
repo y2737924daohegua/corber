@@ -127,10 +127,4 @@ describe('Build Command', function() {
       ]);
     });
   });
-
-  xit('calls requireTarget to setup target', function() {
-  });
-
-  xit('calls requireFramework to setup framework', function() {
-  });
 });
