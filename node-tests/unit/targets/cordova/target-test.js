@@ -2,8 +2,8 @@
 const td             = require('testdouble');
 const expect         = require('../../../helpers/expect');
 const Promise        = require('rsvp').Promise;
+const mockProject    = require('../../../fixtures/ember-cordova-mock/project');
 
-const CordovaTarget           = require('../../../../lib/targets/cordova/target');
 const ValidatePlatform        = require('../../../../lib/targets/cordova/validators/platform');
 const ValidatePlugin          = require('../../../../lib/targets/cordova/validators/plugin');
 const ValidateAllowNavigation = require('../../../../lib/targets/cordova/validators/allow-navigation');
@@ -12,7 +12,11 @@ const ValidateAllowNavigation = require('../../../../lib/targets/cordova/validat
 describe('Cordova Target', function() {
   context('validatons', function() {
     let tasks = [];
+    let CordovaTarget;
+
     beforeEach(function() {
+      CordovaTarget = require('../../../../lib/targets/cordova/target');
+
       tasks = [];
       td.replace(ValidatePlatform.prototype, 'run', function() {
         tasks.push('validate-platform');
@@ -31,6 +35,7 @@ describe('Cordova Target', function() {
     });
 
     afterEach(function() {
+      CordovaTarget = undefined;
       td.reset();
     });
 
@@ -60,10 +65,20 @@ describe('Cordova Target', function() {
 
 
   context('build', function() {
-    xit('runs cordova build task', function() {
-    });
+    it('runs cordova build task', function() {
+      let Build = td.replace('../../../../lib/targets/cordova/tasks/build');
+      let CordovaTarget = require('../../../../lib/targets/cordova/target');
+      let opts = {
+        project: mockProject.project,
+        platform: 'ios',
+        cordovaOpts: {cordovaOpts: true},
+        verbose: true
+      }
 
-    xit('passes the verbose flag', function() {
+      target = new CordovaTarget(opts);
+
+      target.build(true);
+      td.verify(new Build(opts));
     });
   });
 });
