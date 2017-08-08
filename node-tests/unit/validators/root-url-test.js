@@ -5,17 +5,19 @@ var td              = require('testdouble');
 var expect          = require('../../helpers/expect');
 var mockProject     = require('../../fixtures/ember-cordova-mock/project');
 var logger          = require('../../../lib/utils/logger');
+var chalk           = require('chalk');
 var contains        = td.matchers.contains;
 
 var ValidateRoot    = require('../../../lib/validators/root-url');
 /* eslint-enable max-len */
 
 var rejectMsg =
-  'Build Aborted. \n' +
-  '{{rootURL}} or {{baseURL}} in config/environment has a leading slash. \n' +
-  'This will not work in cordova, and needs to be removed. \n' +
-  'You can pass the --force flag to ignore this if youve otherwise handled \n' +
-  'See http://embercordova.com/pages/setup_guide for more info.';
+  chalk.red('* undefined: testProp has a leading slash. \n') +
+  chalk.grey(
+    'This will not work in cordova, and needs to be removed. \n' +
+    'You can pass the --force flag to ignore if otherwise handled. \n' +
+    'See http://embercordova.com/pages/setup_guide for more info.'
+  );
 
 describe('Validate Root Url', function() {
   var validateRoot;
@@ -23,6 +25,7 @@ describe('Validate Root Url', function() {
   beforeEach(function() {
     validateRoot = new ValidateRoot({
       project: mockProject.project,
+      rootProps: ['testProp'],
       config: mockProject.config()
     });
   });
@@ -36,7 +39,7 @@ describe('Validate Root Url', function() {
       return true;
     });
 
-    return expect(validateRoot.run()).to.be.fulfilled;
+    return expect(validateRoot.run()).to.eventually.be.fulfilled;
   });
 
   it('rejects if validRootValues is false', function() {
@@ -44,16 +47,12 @@ describe('Validate Root Url', function() {
       return false;
     });
 
-    expect(
-      validateRoot.run()
-    ).to.be.rejectedWith(rejectMsg);
+    return expect(validateRoot.run()).to.eventually.be.rejected;
   });
 
   it('does not error when the value is undefined', function() {
     validateRoot.config = { rootURL: undefined };
-    expect(
-      validateRoot.run()
-    ).to.be.fulfilled;
+    return expect(validateRoot.run()).to.eventually.be.fulfilled;
   });
 
   it('when force is true, throws a warning vs rejection', function() {
@@ -67,6 +66,10 @@ describe('Validate Root Url', function() {
     return validateRoot.run().then(function() {
       td.verify(warnDouble(contains('You have passed the --force flag')));
     })
+  });
+
+  it('errorMsg returns an errorMsg with path & rootProps', function() {
+    return expect(validateRoot.errorMsg()).to.equal(rejectMsg);
   });
 
   describe('validRootValues', function() {

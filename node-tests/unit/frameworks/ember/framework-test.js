@@ -111,7 +111,8 @@ describe('Ember Framework', function() {
 
       td.verify(new ValidateRoot({
         config: mockProject.project.config(),
-        rootProps: ["baseURL", "rootURL", "baseUrl", "rootUrl"],
+        rootProps: ['baseURL', 'rootURL', 'baseUrl', 'rootUrl'],
+        path: 'config/environment.js',
         force: undefined
       }));
 
@@ -128,7 +129,8 @@ describe('Ember Framework', function() {
       framework._buildValidators({force: true});
       td.verify(new ValidateRoot({
         config: mockProject.project.config(),
-        rootProps: ["baseURL", "rootURL", "baseUrl", "rootUrl"],
+        rootProps: ['baseURL', 'rootURL', 'baseUrl', 'rootUrl'],
+        path: 'config/environment.js',
         force: true
       }));
     });
