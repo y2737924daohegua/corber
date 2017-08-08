@@ -96,7 +96,7 @@ describe('Ember Framework', function() {
     it('inits validations', function() {
       /* eslint-disable max-len */
       let ValidateLocation = td.replace('../../../../lib/frameworks/ember/validators/location-type');
-      let ValidateRoot = td.replace('../../../../lib/frameworks/ember/validators/root-url');
+      let ValidateRoot = td.replace('../../../../lib/validators/root-url');
       let Ember = require('../../../../lib/frameworks/ember/framework');
 
       let framework = new Ember({project: mockProject.project, isGlimmer: false});
@@ -111,6 +111,7 @@ describe('Ember Framework', function() {
 
       td.verify(new ValidateRoot({
         config: mockProject.project.config(),
+        rootProps: ["baseURL", "rootURL", "baseUrl", "rootUrl"],
         force: undefined
       }));
 
@@ -119,7 +120,7 @@ describe('Ember Framework', function() {
 
     it('passes the force flag to ValidateRootURL', function() {
       /* eslint-disable max-len */
-      let ValidateRoot = td.replace('../../../../lib/frameworks/ember/validators/root-url');
+      let ValidateRoot = td.replace('../../../../lib/validators/root-url');
       let Ember = require('../../../../lib/frameworks/ember/framework');
       let framework = new Ember({project: mockProject.project, isGlimmer: false});
       /* eslint-enable max-len */
@@ -127,6 +128,7 @@ describe('Ember Framework', function() {
       framework._buildValidators({force: true});
       td.verify(new ValidateRoot({
         config: mockProject.project.config(),
+        rootProps: ["baseURL", "rootURL", "baseUrl", "rootUrl"],
         force: true
       }));
     });

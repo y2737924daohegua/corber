@@ -2,12 +2,12 @@
 
 /* eslint-disable max-len */
 var td              = require('testdouble');
-var expect          = require('../../../../helpers/expect');
-var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
-var logger          = require('../../../../../lib/utils/logger');
+var expect          = require('../../helpers/expect');
+var mockProject     = require('../../fixtures/ember-cordova-mock/project');
+var logger          = require('../../../lib/utils/logger');
 var contains        = td.matchers.contains;
 
-var ValidateRoot    = require('../../../../../lib/frameworks/ember/validators/root-url');
+var ValidateRoot    = require('../../../lib/validators/root-url');
 /* eslint-enable max-len */
 
 var rejectMsg =
