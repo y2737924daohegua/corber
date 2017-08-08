@@ -1,7 +1,8 @@
 const td             = require('testdouble');
 const expect         = require('../../../helpers/expect');
+const mockProject    = require('../../../fixtures/ember-cordova-mock/project');
 
-describe('Ember Framework', function() {
+describe('Vue Framework', function() {
   afterEach(function() {
     td.reset();
   });
@@ -11,7 +12,7 @@ describe('Ember Framework', function() {
     let framework = new Vue();
 
     expect(framework.name).to.equal('vue');
-    expect(framework.buildCommand).to.equal('npm run build dev');
+    expect(framework.buildCommand).to.equal('npm run build');
     expect(framework.buildPath).to.equal('./dist');
     expect(framework.port).to.equal(8080);
   });
@@ -26,7 +27,7 @@ describe('Ember Framework', function() {
     framework.build({cordovaOutputPath: 'fakePath'});
     td.verify(new BuildTask({
       cordovaOutputPath: 'fakePath',
-      buildCommand: 'npm run build dev',
+      buildCommand: 'npm run build',
       buildPath: './dist'
     }));
 
@@ -44,5 +45,56 @@ describe('Ember Framework', function() {
     td.verify(new ServeTask());
 
     td.verify(serveDouble());
+  });
+
+  describe('buildValidators', function() {
+    it('inits a root-url validator', function() {
+      let ValidateRoot = td.replace('../../../../lib/validators/root-url');
+      let Vue = require('../../../../lib/frameworks/vue/framework');
+      let framework = new Vue({root: mockProject.project.root});
+      framework._buildValidators('build', {});
+
+      td.verify(new ValidateRoot({
+        config: {},
+        rootProps: ['assetsPublicPath'],
+        path: 'config/index.js',
+        force: undefined,
+        env: 'build'
+      }));
+    });
+  });
+
+  it('validateBuild calls _buildValidators then runs validators', function() {
+    let runValidatorDouble = td.replace('../../../../lib/utils/run-validators');
+    let Vue = require('../../../../lib/frameworks/vue/framework');
+    let framework = new Vue({root: mockProject.project.root});
+
+    let passedEnv = undefined;
+    td.replace(framework, '_buildValidators', function(env) {
+      passedEnv = env;
+      return ['validations'];
+    });
+
+    framework.validateBuild({});
+
+    expect(passedEnv).to.equal('build');
+    td.verify(runValidatorDouble(['validations']));
+  });
+
+  it('validateServe calls _buildValidators then runs validators', function() {
+    let runValidatorDouble = td.replace('../../../../lib/utils/run-validators');
+    let Vue = require('../../../../lib/frameworks/vue/framework');
+    let framework = new Vue({root: mockProject.project.root});
+
+    let passedEnv = undefined;
+    td.replace(framework, '_buildValidators', function(env) {
+      passedEnv = env;
+      return ['validations'];
+    });
+
+    framework.validateServe({});
+
+    expect(passedEnv).to.equal('dev');
+    td.verify(runValidatorDouble(['validations']));
   });
 });
