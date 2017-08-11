@@ -5,6 +5,7 @@ var Promise         = require('rsvp');
 
 var CdvTarget       = require('../../../lib/targets/cordova/target');
 var HookTask        = require('../../../lib/tasks/run-hook');
+var LintTask        = require('../../../lib/tasks/lint-index');
 
 var mockProject     = require('../../fixtures/ember-cordova-mock/project');
 var mockAnalytics   = require('../../fixtures/ember-cordova-mock/analytics');
@@ -60,6 +61,11 @@ describe('Build Command', function() {
       return Promise.resolve();
     });
 
+    td.replace(LintTask.prototype, 'run', function(hookName, options) {
+      tasks.push('lint-index');
+      return Promise.resolve();
+    });
+
     td.replace(CdvTarget.prototype, 'validateBuild', function() {
       tasks.push('cordova-target-validate-build');
       return Promise.resolve();
@@ -91,7 +97,8 @@ describe('Build Command', function() {
         'cordova-target-validate-build',
         'framework-build',
         'cordova-target-build',
-        'hook afterBuild'
+        'hook afterBuild',
+        'lint-index'
       ]);
     });
   });
@@ -107,7 +114,8 @@ describe('Build Command', function() {
         'framework-validate-build',
         'cordova-target-validate-build',
         'cordova-target-build',
-        'hook afterBuild'
+        'hook afterBuild',
+        'lint-index'
       ]);
     });
   });
@@ -123,7 +131,8 @@ describe('Build Command', function() {
         'framework-validate-build',
         'cordova-target-validate-build',
         'framework-build',
-        'hook afterBuild'
+        'hook afterBuild',
+        'lint-index'
       ]);
     });
   });
