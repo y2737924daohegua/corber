@@ -3,3 +3,13 @@
 ---
 
 @import 'docs-theme';
+
+table {
+  @extend .table;
+  @extend .table-bordered;
+  @extend .table-striped;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
