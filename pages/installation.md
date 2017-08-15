@@ -1,28 +1,32 @@
 ---
 layout: page
-title:  "Installation"
+title:  "Installation / Quickstart"
 ---
 
-If you are migrating from ember-cli-cordova, read the [migration
-guide](legacy/migration-from-ember-cli-cordova).
-
-ember-cordova can be used in standalone Glimmer applications by following the same steps.
-
-
 #### Requirements
-- Ember 1.13+ or Glimmer;
-- node 6/7 per [Ember Node LTS Support](http://emberjs.com/blog/2016/09/07/ember-node-lts-support.html);
+- node 6/78 per [Ember Node LTS Support](http://emberjs.com/blog/2016/09/07/ember-node-lts-support.html);
+- A Macintosh machine is required for iOS builds;
+- An existing JS application with one of the supported frameworks;
 
 #### Installation
 
 ```cli
-  ember install ember-cordova
+  yarn install -g corber
+  npm install -g corber
 ```
 
-Installing will initialize a cordova project within your Ember project, at ember-cordova/cordova.
-Existing Cordova projects at this path it will not be overwritten.
+#### Project Setup
 
-You can optionally pass the following params:
+From a supported JS projected, run `et init`. For a list of supported projects, see [framework integrations](/pages/frameworks/index).
+
+This will:
+
+- Identify your project type;
+- Create a new folder at ember-cordova, including corber configuration;
+- Initialize a Cordova project at ember-cordova/cordova;
+
+###### Supported Flags
+
 
 |             | type / desc                       |
 |------------ | ----------------------------------|
@@ -31,17 +35,15 @@ You can optionally pass the following params:
 | templatePath| String path to cordova template |
 
 ```cli
-ember install ember-cordova --name=AppName --cordovaid=com.isleofcode.app --templatePath=../template
+ec new-android-project --name=AppName --cordovaid=com.isleofcode.app --templatePath=../template
 ```
+**cordovaid flag**
 
-#### A note on cordovaid
+com.embercordova.yourAppName is the default cordovaid, which ultimately represents your iOS and Android project ids. Android projects _require_ reverse domain app ids.
 
-By default ember-cordova takes your Ember App name and generates a bundle id of com.embercordova.emberAppName.
-Android _requires_ reverse domain app ids.
+By release, you should update id to com.yourdomain.foo. This is achieved by setting the `id` property on the `widget` node in the `ember-cordova/cordova/config.xml`.
 
-By release, you should update id to com.yourdomain.foo (with real values). This is achieved by setting the `id` property on the `widget` node in the `ember-cordova/cordova/config.xml`.
-
-```
+```xml
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.myappdevcompany.phoneapp" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>phoneApp</name>
@@ -51,7 +53,6 @@ By release, you should update id to com.yourdomain.foo (with real values). This 
  ...
 ```
 
-#### Post Install Steps
+**Next**:
 
-Next, you will need to add platforms and make some small changes to
-your Ember app. See [Project Setup](/pages/workflow/project_setup).
+- [Framework Setup](/pages/frameworks/index)

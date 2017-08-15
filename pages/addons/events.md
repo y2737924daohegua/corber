@@ -3,7 +3,7 @@ layout: page
 title:  "ember-cordova-events"
 ---
 
-### Summary
+#### Summary
 
 `ember-cordova-events` provides access to Cordova events, allowing your ember app to react to device level events such as offline, low battery, menu button, and more.
 
@@ -14,13 +14,13 @@ There are two mechanisms to handle these events:
 
 These are not interchangeable; `subscribe` relies on the `this` scope available on the object, while `Evented` relies on the `this` scope inside a function. Whenever possible, we endorse the use of `Subscribe` vs. `Evented`.
 
-### Installation
+#### Installation
 
 ```
 ember install ember-cordova-events
 ```
 
-### Example Usage
+#### Example Usage
 
 Show an alert when the battery is low, using both forms (demonstration only!!!):
 
@@ -54,7 +54,7 @@ export default Route.extend({
 });
 ```
 
-### Supported Events
+#### Supported Events
 
 from <https://cordova.apache.org/docs/en/latest/cordova/events/events.html>
 
@@ -78,9 +78,9 @@ const CORDOVA_EVENTS = new A([
 ]);
 ```
 
-### Usage
+#### Usage
 
-#### Subscribe
+##### Subscribe
 
 This method will tear down your object's listeners automatically, but can only be used at the top-level of an Ember object (just like `Ember.computed` and `Ember.on`).
 
@@ -117,14 +117,14 @@ The following will fail, because the subscribe util is not top-level on the obje
   }
 ```
 
-#### Evented
+##### Evented
 
 Use the standard `Ember.Evented` syntax when you want to create listeners inside of a function (e.g. beforeModel).
 You will need to manually unsubscribe listeners to avoid leaky behaviour.
 
 **Example usage:**
 
-```javascript
+```.language-javascript
 export default Route.extend({
   cordovaEvents: service('ember-cordova/events'),
 

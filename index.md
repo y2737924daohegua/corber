@@ -1,19 +1,37 @@
 ---
 layout: page
-title: "ember-cordova"
+title: "corber"
 ---
 
-ember-cordova provides a pipeline & tooling for extending Ember.js & standalone Glimmer applications with Cordova.
+corber CLI improves the hybrid app build experience with JS Frameworks - currently Ember, Vue & Glimmer and Cordova.
 
-Once [installed](pages/installation), building is as simple as:
+It merges your build pipelines for build & livereload, and adds utility functions for icons, plugins, etc. Where needed it can [proxy](/pages/cli#proxy) to the Cordova CLI.
 
+Ember users also have access to a series of plugin bindings exposed as Services.
+
+##### Quickstart
+
+```bash
+#Create a mobile project - run from your existing Ember/Glimmer/Vue app
+ec init
+ec platform add ios
+
+#runs your JS builder and creates a mobile application
+ec build
 ```
-ember cdv:build --platform=ios
-ember cdv:build --platform=android
+
+##### You may also want to
+
+```bash
+#Set up on-device hot reload for development
+ec s
+
+#Build Icon & Splash Screens
+ec make:splashes
+ec make:icons
 ```
 
-The project includes [on-device livereload](pages/workflow/livereload), a [CLI](pages/cli) for building & deploying to devices, automated [icon/splash generation](pages/workflow/icon_splash_management), a [device info service](pages/service_platform) and a growing ecosystem of plugins.
+**Next**:
 
-ember-cordova maintained by [Isle of Code](https://isleofcode.com) in Toronto, with a community of contributors.
-
-See the [Installation](pages/installation) guides to get started, or watch [Hybrid/Ember best practices from EmberConf 2016](https://www.youtube.com/embed/Ry639hvWKbM).
+- [Installation / Quickstart](pages/installation)
+- [Hybrid/Ember best practices from EmberConf 2016](https://www.youtube.com/embed/Ry639hvWKbM)

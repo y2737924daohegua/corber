@@ -3,17 +3,23 @@ layout: page
 title:  "Platform Service"
 ---
 
-### Summary
+#### Summary
 
-Included in core ember-cordova repo, and provides information about the current platform. Heavily inspired and partially forked from [Ionic Platform](http://ionicframework.com/docs/api/utility/ionic.Platform/).
+Provides information about the current platform. Heavily inspired and partially forked from [Ionic Platform](http://ionicframework.com/docs/api/utility/ionic.Platform/).
 
-### Service Lookup
+#### Installation
 
-```js
-  lookup('service:ember-cordova/platform');
+```
+ember install ember-cordova-platform
 ```
 
-### API
+#### Service Name
+
+```js
+  Ember.inject.service('service:ember-cordova/platform');
+```
+
+#### API
 
 |    | Description |
 |----|-------------|

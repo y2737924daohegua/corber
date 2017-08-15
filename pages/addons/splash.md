@@ -3,23 +3,24 @@ layout: page
 title:  "ember-cordova-splash"
 ---
 
-### Summary
+#### Summary
 
 An ember-service to manage splash screen displays.
 
 For splash generation & best practices, see [splash & icon generation](/pages/workflow/icon_splash_management).
 
-### Installation
+#### Installation
 
 ```
 ember install ember-cordova-splash
 ```
 
-### Usage
+#### Usage
 
-Service Path:
+Service Name:
+
 ```js
-lookup('service:ember-cordova/splash');
+Ember.inject.service('service:ember-cordova/splash');
 ```
 
 ```js
@@ -41,7 +42,7 @@ export default Route.extend({
 });
 ```
 
-### Service API
+#### Service API
 
 |   | Description |
 |---|-------------|

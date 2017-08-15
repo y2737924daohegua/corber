@@ -3,7 +3,7 @@ layout: page
 title:  "Hooks"
 ---
 
-Use ember-cordova hooks for build-time customization, cleanup or warnings.
+Use hooks for build-time customization, cleanup or warnings.
 
 The implementation details follow [Cordova's hooks](https://cordova.apache.org/docs/en/latest/guide/appdev/hooks/index.html#introduction), but fire under different circumstances. It is possible to use Cordova hooks in addition to ember-cordova hooks.
 
@@ -24,7 +24,7 @@ module.exports = function() {
 };
 ```
 
-Hooks run as tasks within the ember-cli build pipeline. To ensure consistent behaviour they should return synchronous functions or promises:
+To ensure consistent behaviour they should return synchronous functions or promises (for Ember users, hooks closely resemble Tasks):
 
 ```js
 /* jshint node: true */
@@ -53,7 +53,7 @@ module.exports = function(options) {
 #### Example customization and cleanup
 If a project needed to build for web (`ember build`) and Cordova (`ember cdv:build`), we might decide to keep the template variable `rootURL` inside "app/index.html" for the web builds. 
 
-Using the Ember Cordova "beforeBuild" hook we could backup the "app/index.html" file, then remove the string `"rootURL"` from it for the current build by creating the file `ember-cordova/hooks/beforeBuild.js` and writing something similar to:
+Using the corber "beforeBuild" hook we could backup the "app/index.html" file, then remove the string `"rootURL"` from it for the current build by creating the file `ember-cordova/hooks/beforeBuild.js` and writing something similar to:
 
 ```javascript
 /* jshint node: true */
@@ -78,9 +78,9 @@ module.exports = function() {
 };
 ```
 
-Above we returned a promise so Ember Cordova and EmberCLI will wait for our promise to settle before beginning the build. If the promise is rejected the build is prevented from continuing (*plan accordingly for any cleanup required in your hooks when rejecting returned promises or throwing Errors*).
+Above we returned a promise so corber and EmberCLI will wait for our promise to settle before beginning the build. If the promise is rejected the build is prevented from continuing (*plan accordingly for any cleanup required in your hooks when rejecting returned promises or throwing Errors*).
 
-The Ember Cordova "afterBuild" hook will run afterwards. This could be used to restore the backed up original version for "app/index.html" by creating a file at `ember-cordova/hooks/afterBuild.js`:
+The corber "afterBuild" hook will run afterwards. This could be used to restore the backed up original version for "app/index.html" by creating a file at `ember-cordova/hooks/afterBuild.js`:
 
 ```javascript
 /* jshint node: true */

@@ -1,52 +1,50 @@
 ---
 layout: page
-title:  "CLI & Configuration"
+title:  "CLI Reference"
 ---
 
-All commands follow the pattern `ember cordova:{command}`. `ember cdv:{command}` can be used as shorthand.
+All commands follow the pattern `corber {command}`.
 
-## Available Commands
-* [ember cdv:open](#open)
-* [ember cdv:build](#build)
-* [ember cdv:lint-index](#lint-index)
-* [ember cdv:plaform](#platform)
-* [ember cdv:plugin](#plugin)
-* [ember cdv:prepare](#prepare)
-* [ember cdv:proxy](#proxy)
-* [ember cdv:serve](#serve)
+**Available Commands**
 
-Any arguments documented in the Cordova CLI can also be used in the `build` and `serve` commands, unless otherwise replicated in ember-cordova.
+* [corber open](#open)
+* [corber build](#build)
+* [corber lint-index](#lint-index)
+* [corber plaform](#platform)
+* [corber plugin](#plugin)
+* [corber prepare](#prepare)
+* [corber proxy](#proxy)
+* [corber serve](#serve)
 
-#### Configuration / Defaults
-
-Set preferences in .ember-cli to override defaults. For example, to change ember-cordovas default platform from ios to android:
-
-in .ember-cli:
+Override default CLI flags in `.ember-cli` - which lives in your project root. For example, to change the default platform from ios to android:
 
 ```
+#.ember-cli
 platform: 'android',
 reloadUrl: 'http://mycomputer:4200'
 ```
 
-## Command Reference
+### Command Reference
 
 {: .description}
 ### Open
 
-Open the native platform project with the default or specified application
+Opens the last built project from `corber build` in the native IDE.
 
-| Options  | default | desc |
+| Options  | default |
 |-----|-----| ----- |
-| platform | ios | |
-| application | system default application ||
+| platform | ios |
+| application | Xcode for iOS, Android Studio for Android |
 
 #### Examples
-+ `ember cordova:open`
-+ `ember cordova:open --platform=android --application=eclipse`
++ `corber open`
++ `corber open --platform=android --application=eclipse`
+
+****
 
 ### Build
 
-Build the ember and cordova project together running in the simulator or on a device
+Start the build process - including building your JS application, copying assets and building Cordova. To learn more, [read here](/pages/workflow/building).
 
 | Options     | default   | desc |
 |------------ |---------- | ---- |
@@ -60,93 +58,87 @@ Build the ember and cordova project together running in the simulator or on a de
 The build command also takes all of the non gradle-specific cordova build opts (e.g. provisioningProfile, codeSignIdentity).
 
 #### Examples
-+ `ember cordova:build`
-+ `ember cordova:build --environment=production --platform=ios`
-+ `ember cordova:build --environment=production --platform=ios --release`
++ `corber build`
++ `corber build --environment=production --platform=ios`
++ `corber build --environment=production --platform=ios --release`
+
+***
 
 ### lint-index
 
-Validates there are no leading `/` paths in ember-cordova/cordova/www/index.html.
+Validates there are no leading `/` paths in your generated app. While corber will validate your framework config pre build, sometimes items such as hardcoded CND urls will slip through.
 
-While ember:cdv will validate your Ember config pre build, sometimes items such as hardcoded CND urls will slip through.
-
-lint-index is automatically run on builds, however will warn vs error.
+lint-index is automatically run on builds at WARN level.
 
 #### Examples
-+ `ember cordova:lint-index`
++ `corber lint-index`
+
+***
 
 ### Platform
 
-#### Description
-Add or remove cordova platforms. Use the save flag to persist new
-platforms to config.xml (default is true).
+Add or remove cordova platforms.
 
 | Options | default | desc |
 |---------|---------| ---- |
-| save    | true | store plugin info in `config.xml`. enables cdv:prepare |
-| uiwebview | false | initialize with UIWebView vs WKWebView |
-| crosswalk | false | initialize with Crosswalk vs Android WebView |
+| save    | true | store plugin info in `config.xml`. See [committing & cloning](/pages/workflow/committing) |
+| uiwebview | false | initialize ios with UIWebView vs WKWebView |
+| crosswalk | false | initialize android with Crosswalk vs Android WebView |
 
 #### Examples
-+ `ember cdv:platform add ios`
-+ `ember cdv:platform remove ios`
-+ `ember cdv:platform add android --crosswalk`
++ `corber platform add ios`
++ `corber platform remove ios`
++ `corber platform add android --crosswalk`
 
 #### Aliases
 + add/a
 + remove/rm/r
+
+***
 
 ### Plugin
 
-Add or remove cordova plugins. Use the save flag to persist new
-platforms to config.xml (default is true).
+Add or remove cordova plugins.
 
 | Options  | default | desc |
 |---------|---------| ---- |
-| save    | true | store plugin info in `config.xml`. enables cdv:prepare |
+| save    | true | store plugin info in `config.xml`. See [comitting & cloning](/pages/workflow/comitting) |
 
 #### Examples
-+ `ember cdv:plugin add cordova-plugin-name`
-+ `ember cdv:plugin rm cordova-plugin-name`
++ `corber plugin add cordova-plugin-name`
++ `corber plugin rm cordova-plugin-name`
 
 #### Aliases
 + add/a
 + remove/rm/r
+
+***
 
 ### Prepare
 
 Think of cdv:prepare like npm install in a Cordova context. Installs all plugins and platforms in config.xml
 
-Also fires beforePrepare/afterPrepare hooks.
-
 #### Examples
-+ `ember cordova:prepare`
++ `corber prepare`
 
-## Proxy
+***
+
+### Proxy
 
 Passes commands straight to cordova, without interference.
 
-Because this proxies to cordova-cli, you will need cordova-cli installed (this is not required for usage anywhere else). If you do not already have it installed, you can install it with:
-Our hope is you won't need this command very much. If you are, open an issue and tell us.
+Because this proxies to cordova-cli, you will need cordova-cli installed (this is not required for usage anywhere else). Our hope is you won't need this command very much. If you are, open an issue and tell us.
 
+When running a proxy command, file paths are relative to your **ember-cordova/cordova** directory.
 
-```
-  npm install -g cordova
-```
+For example, running `corber cdv plugin add ../local-plugin-path` (hint: just use `corber plugin add ../local-plugin-path`), from your project root will probably fail.
+You most likely need `corber cordova plugin add ../../../local-plugin-path`.
 
 #### Examples
-+ `ember cdv:proxy info`
-+ `ember cdv:proxy run ios --nobuild`
++ `corber proxy info`
++ `corber proxy run ios --nobuild`
 
-#### Troubleshooting
-
-When running a proxy command, file paths are relative to
-your cordova directory.
-
-For example, running `ember cdv plugin add ../local-plugin-path`
-(hint: just use `ember cdv:plugin add ../local-plugin-path`), from your
-ember projects root will probably fail. You most likely need `ember
-cordova plugin add ../../../local-plugin-path`.
+***
 
 ### Serve
 
@@ -161,10 +153,11 @@ Live reload. To learn more, [read here](/pages/workflow/live_reload).
 | skip-cordova-build (alias: scb) | false | only performs ember build |
 
 #### Examples
-+ `ember cdv:serve`
-+ `ember cordova:serve --platform=android --reloadUrl=192.168.1.1`
-+ `ember cdv:serve --platform=browser --env "development"`
++ `corber serve`
++ `corber serve --platform=android --reloadUrl=192.168.1.1`
++ `corber serve --platform=browser --env "development"`
 
+***
 
 ### make-icons
 
@@ -176,8 +169,9 @@ Automatically generate platform icons from a single svg. For more information, s
 | platform | all | platform to build assets for |
 
 #### Examples
-+ `ember cdv:make-icons`
++ `corber make-icons`
 
+***
 
 ### make-splashes
 
@@ -190,6 +184,4 @@ Automatically generate platform splashscreens from a single svg. For more inform
 
 
 #### Examples
-+ `ember cdv:make-splashes`
-
-
++ `corber make-splashes`

@@ -3,7 +3,7 @@ layout: page
 title:  "Live Reload"
 ---
 
-Live reload takes the standard ember serve live reload behaviour to ember-cordova apps.
+Live reload takes your frameworks standard serve/livereload behaviour to corber apps.
 
 Live reload apps can still access Cordova plugins and work on emulators and physical devices.
 
@@ -16,13 +16,13 @@ Live reload apps can still access Cordova plugins and work on emulators and phys
 #### Usage
 
 ```
-  ember cdv:serve
-  ember cdv:s --environment=staging --platform=android
+  corber serve
+  corber --environment=staging --platform=android
 ```
 
-Some whitelisting may be required in config.xml, which ember-cordova will guide you through. For options, see the [cli reference](/pages/cli).
+Some whitelisting may be required in config.xml, which corber will guide you create and tear down.
 
-At a high level, this command builds a cordova container app, and then starts a slightly modified ember serve.
+At a high level, this command builds a cordova container app, and then starts a slightly modified serve process.
 Once serve is running, deploy the newly generated app to a device/emulator as explained in [build workflow](/pages/workflow/building).
 
 Code changes should immediately resolve on your device. If you are having further troubles, you likely need to customize the device live-reload url.
@@ -30,7 +30,7 @@ Code changes should immediately resolve on your device. If you are having furthe
 #### Additional Android Steps
 
 The whitelist plugin is also required for Android >4.0:
-`ember cdv:plugin add cordova-plugin-whitelist`
+`corber plugin add cordova-plugin-whitelist`
 
 #### Customize the device live-reload url
 
@@ -46,7 +46,7 @@ host, and port, e.g. http://localhost:4200
 *via commandline arg*
 
 ```cli
-ember cdv:serve --reload-url="<url>"
+corber serve --reload-url="<url>"
 ```
 
 *via .ember-cli*

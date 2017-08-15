@@ -29,7 +29,7 @@
               <span class="icon-bar"></span>
             </button>
 
-            <a class="navbar-brand" href="{{ site.baseurl }}/">ember-cordova</a>
+            <a class="navbar-brand" href="{{ site.baseurl }}/">corber</a>
           </div>
 
           <div id="navbar" class="navbar-collapse collapse" aria-expanded="true" role="banner">
@@ -51,9 +51,20 @@
             <li> <a href="{{ site.baseurl }}/pages/installation">Installation/Quickstart</a> </li>
 
             <li>
+              <a href="#">Frameworks</a>
+              <ul>
+                <li> <a href="{{ site.baseurl }}/pages/frameworks/index">Overview</a> </li>
+                <li> <a href="{{ site.baseurl }}/pages/frameworks/ember">Ember</a> </li>
+                <li> <a href="{{ site.baseurl }}/pages/frameworks/glimmer">Glimmer</a> </li>
+                <li> <a href="{{ site.baseurl }}/pages/frameworks/vue">Vue</a> </li>
+                <li> <a href="{{ site.baseurl }}/pages/frameworks/extending">Extending</a> </li>
+              </ul>
+            </li>
+
+            <li>
              <a href="#">Workflow</a>
               <ul>
-                <li> <a href="{{ site.baseurl }}/pages/workflow/project_setup">Project Setup</a> </li>
+                <li> <a href="{{ site.baseurl }}/pages/workflow/committing">Committing & Cloning</a> </li>
                 <li> <a href="{{ site.baseurl }}/pages/workflow/building">Building</a> </li>
                 <li> <a href="{{ site.baseurl }}/pages/workflow/livereload">Livereload</a> </li>
                 <li> <a href="{{ site.baseurl }}/pages/workflow/icon_splash_management">Icon & Splash</a> </li>
@@ -63,16 +74,13 @@
             </li>
 
             <li>
-              <a href="#">API</a>
-              <ul>
-                <li> <a href="{{ site.baseurl }}/pages/cli">CLI Reference</a> </li>
-                <li> <a href="{{ site.baseurl }}/pages/service_platform">Platform Service</a> </li>
-              </ul>
+              <a href="{{ site.baseurl }}/pages/cli">CLI Reference</a>
             </li>
 
             <li>
               <a href="#">Ember Plugins</a>
               <ul>
+                <li> <a href="{{ site.baseurl }}/pages/addons/platform">ember-cordova-platform</a> </li>
                 <li> <a href="{{ site.baseurl }}/pages/addons/events">ember-cordova-events</a> </li>
                 <li> <a href="{{ site.baseurl }}/pages/addons/splash">ember-cordova-splash</a> </li>
                 <li> <a href="{{ site.baseurl }}/pages/addons/keyboard">ember-cordova-keyboard</a> </li>
@@ -101,5 +109,6 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="/js/theDocs.min.js"></script>
     <script src="/js/custom.js"></script>
+    <script src="/js/prism.min.js"></script>
   </body>
 </html>

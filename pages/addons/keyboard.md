@@ -3,21 +3,22 @@ layout: page
 title:  "ember-cordova-keyboard"
 ---
 
-### Summary
+#### Summary
 
 Fire events related to the native device's keyboard display. Currently
 very beta.
 
-### Installation
+#### Installation
 ```
 ember install ember-cordova-keyboard
 ```
 
-### Usage
+#### Usage
 
-Service Path:
+Service Name:
+
 ```js
-lookup('service:ember-cordova/keyboard');
+Ember.inject.service('service:ember-cordova/keyboard');
 ```
 
 You may also wish to subscribe to events or toggle the keyboard:
@@ -32,7 +33,7 @@ const {
 } = Ember;
 
 export default Component.extend({
-  keyboard: service.inject('ember-cordova/keyboard'),
+  keyboard: inject.service('ember-cordova/keyboard'),
   keyboardIsShowing: false,
 
   didInsertElement() {
