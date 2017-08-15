@@ -9,4 +9,14 @@ language: en_US
 paginate: 10
 paginate_path: "/page/:num/"
 permalink: none
+
+highlighter: rouge
+
 markdown: kramdown
+
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    disable: true
