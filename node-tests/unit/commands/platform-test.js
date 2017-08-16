@@ -1,7 +1,6 @@
  /* eslint-disable max-len */
 var td              = require('testdouble');
 var expect          = require('../../helpers/expect');
-var PlatformCmd     = require('../../../lib/commands/platform');
 var CdvRawTask      = require('../../../lib/targets/cordova/tasks/raw');
 var SetupViewTask   = require('../../../lib/targets/cordova/tasks/setup-webview');
 var Promise         = require('rsvp');
@@ -11,14 +10,15 @@ var mockAnalytics   = require('../../fixtures/ember-cordova-mock/analytics');
  /* eslint-enable max-len */
 
 describe('Platform Command', function() {
-  var platform;
+  function setupCommand() {
+    let PlatformCmd     = require('../../../lib/commands/platform');
 
-  beforeEach(function() {
-    platform = new PlatformCmd({
+    let platform = new PlatformCmd({
       project: mockProject.project
     });
     platform.analytics = mockAnalytics;
-  });
+    return platform;
+  }
 
   afterEach(function() {
     td.reset();
@@ -32,6 +32,7 @@ describe('Platform Command', function() {
     });
 
     it('passes command to Cordova Raw Task', function() {
+      let platform = setupCommand();
       var rawCommand, rawPlugins;
 
       td.replace(CdvRawTask.prototype, 'run', function(cmd, plugins) {
@@ -48,6 +49,7 @@ describe('Platform Command', function() {
     });
 
     it('passes the save flag', function() {
+      let platform = setupCommand();
       var rawOpts;
       var opts = { save: false };
 
@@ -69,7 +71,25 @@ describe('Platform Command', function() {
       });
     });
 
-    it('calls SetupWebView to handle init', function() {
+    /* eslint-disable max-len */
+    it('constructs SetupWebView appropriately', function() {
+      let SetupView = td.replace('../../../lib/targets/cordova/tasks/setup-webview');
+      let platform = setupCommand();
+
+      return platform.run({}, ['add', 'ios']).then(function() {
+        td.verify(new SetupView({
+          project: mockProject.project,
+          platform: 'ios',
+          crosswalk: undefined,
+          uiwebview: undefined
+        }));
+      });
+    });
+    /* eslint-enable max-len */
+
+
+    it('runs SetupWebView to handle init', function() {
+      let platform = setupCommand();
       var setupViewDouble = td.replace(SetupViewTask.prototype, 'run');
 
       return platform.run({}, ['add', 'ios']).then(function() {
