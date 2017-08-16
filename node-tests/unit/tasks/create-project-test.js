@@ -126,8 +126,8 @@ describe('Create Project', function() {
       createTask.run();
 
       td.verify(copyDouble(
-        contains('lib/templates/framework-config/ember.js'),
-        emberCdvPath + '/config/config.js'
+        contains('lib/templates/frameworks/ember.js'),
+        emberCdvPath + '/config/framework.js'
       ));
     });
   });

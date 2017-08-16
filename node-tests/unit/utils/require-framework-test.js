@@ -7,7 +7,7 @@ const path             = require('path');
 describe('requireFramework util', function() {
   let configPath = path.join(
     mockProject.project.root,
-    'ember-cordova/config/config.js'
+    'ember-cordova/config/framework.js'
   );
 
   afterEach(function() {
