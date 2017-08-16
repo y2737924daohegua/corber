@@ -10,9 +10,15 @@ const ValidateAllowNavigation = require('../../../../lib/targets/cordova/validat
  /* eslint-enable max-len */
 
 describe('Cordova Target', function() {
+  let CordovaTarget;
+
+  afterEach(function() {
+    CordovaTarget = undefined;
+    td.reset();
+  });
+
   context('validatons', function() {
     let tasks = [];
-    let CordovaTarget;
 
     beforeEach(function() {
       CordovaTarget = require('../../../../lib/targets/cordova/target');
@@ -32,11 +38,6 @@ describe('Cordova Target', function() {
         tasks.push('validate-allow-navigation');
         return Promise.resolve();
       });
-    });
-
-    afterEach(function() {
-      CordovaTarget = undefined;
-      td.reset();
     });
 
     it('validate build runs the correct validators', function() {
@@ -75,11 +76,9 @@ describe('Cordova Target', function() {
         verbose: true
       }
 
-      target = new CordovaTarget(opts);
-
+      let target = new CordovaTarget(opts);
       target.build(true);
       td.verify(new Build(opts));
     });
   });
 });
-
