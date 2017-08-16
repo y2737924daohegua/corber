@@ -54,4 +54,15 @@ describe('Framework', function() {
 
     expect(frameworkType.get(root)).to.equal('vue');
   });
+
+  it('returns custom if no type is detected', function() {
+    td.replace(frameworkType, 'getPackage', function() {
+      return {
+        name: 'my-app',
+        dependencies: {}
+      };
+    });
+
+    expect(frameworkType.get(root)).to.equal('custom');
+  });
 });

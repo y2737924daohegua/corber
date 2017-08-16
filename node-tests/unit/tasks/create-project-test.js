@@ -89,7 +89,19 @@ describe('Create Project', function() {
         ui: isAnything()
       }));
     });
+  });
 
+  it('warns if framework type is custom', function() {
+    td.replace(frameworkType, 'get', function() {
+      return 'custom';
+    });
+
+    initTask(false);
+    let warnDouble = td.replace(createTask, 'warnCustomFramework');
+
+    return createTask.run().then(function() {
+      td.verify(warnDouble());
+    });
   });
 
   context('initDirs', function() {
