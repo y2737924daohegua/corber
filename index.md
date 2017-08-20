@@ -3,9 +3,10 @@ layout: page
 title: "corber"
 ---
 
-corber CLI improves the hybrid app build experience with JS Frameworks - currently Ember, Vue & Glimmer and Cordova.
+corber CLI improves the hybrid app build experience with JS Frameworks - currently for Ember, Vue & Glimmer apps using Cordova. It can be used with existing or new JS applications.
 
-It merges your build pipelines for build & livereload, and adds utility functions for icons, plugins, etc. Where needed it can [proxy](/pages/cli#proxy) to the Cordova CLI.
+corber merges the JS/Hybrid build builders for hybrid builds exposed as a single command (e.g. `corber build`) without affecting existing web builders.
+Included in the CLI footprint are build and on-device livereload for development and utility functions for icons, plugins, etc. Where needed it can [proxy](/pages/cli#proxy) to the Cordova CLI.
 
 Ember users also have access to a series of plugin bindings exposed as Services.
 

@@ -3,7 +3,7 @@ layout: page
 title:  "CLI Reference"
 ---
 
-All commands follow the pattern `corber {command}`.
+All commands follow the pattern `corber {command}`. We recommend aliasing a shorthand, e.g. `co {command}`
 
 **Available Commands**
 
@@ -44,7 +44,7 @@ Opens the last built project from `corber build` in the native IDE.
 
 ### Build
 
-Start the build process - including building your JS application, copying assets and building Cordova. To learn more, [read here](/pages/workflow/building).
+Runs a corber build by building your JS application, copying assets to the Cordova web directory, and building the Cordova application. To learn more, [read here](/pages/workflow/building).
 
 | Options     | default   | desc |
 |------------ |---------- | ---- |
@@ -66,7 +66,7 @@ The build command also takes all of the non gradle-specific cordova build opts (
 
 ### lint-index
 
-Validates there are no leading `/` paths in your generated app. While corber will validate your framework config pre build, sometimes items such as hardcoded CND urls will slip through.
+Validates there are no leading `/` paths in your generated app. While corber will validate your framework config pre build, sometimes items such as hardcoded CDN urls will slip through.
 
 lint-index is automatically run on builds at WARN level.
 
@@ -116,7 +116,7 @@ Add or remove cordova plugins.
 
 ### Prepare
 
-Think of cdv:prepare like npm install in a Cordova context. Installs all plugins and platforms in config.xml
+Installs all plugins and platforms in config.xml. Similar to `npm install`, but for your Cordova context.
 
 #### Examples
 + `corber prepare`
@@ -127,12 +127,12 @@ Think of cdv:prepare like npm install in a Cordova context. Installs all plugins
 
 Passes commands straight to cordova, without interference.
 
-Because this proxies to cordova-cli, you will need cordova-cli installed (this is not required for usage anywhere else). Our hope is you won't need this command very much. If you are, open an issue and tell us.
+Because this proxies to cordova-cli, you will need cordova-cli installed (this is not required for usage anywhere else). Our hope is you won't need this command very much. If you do, consider opening an issue to let us know.
 
 When running a proxy command, file paths are relative to your **ember-cordova/cordova** directory.
 
-For example, running `corber cdv plugin add ../local-plugin-path` (hint: just use `corber plugin add ../local-plugin-path`), from your project root will probably fail.
-You most likely need `corber cordova plugin add ../../../local-plugin-path`.
+For example, running `corber proxy plugin add ../local-plugin-path` from your project root will likely fail, while `corber proxy plugin add ../../../local-plugin-path` would succeed.
+(hint: try using `corber plugin add ../local-plugin-path` instead)
 
 #### Examples
 + `corber proxy info`

@@ -5,9 +5,6 @@ title:  "Hooks"
 
 Use hooks for build-time customization, cleanup or warnings.
 
-The implementation details follow [Cordova's hooks](https://cordova.apache.org/docs/en/latest/guide/appdev/hooks/index.html#introduction), but fire under different circumstances. It is possible to use Cordova hooks in addition to ember-cordova hooks.
-
-
 To create a hook, create a file at `ember-cordova/hooks/<hook_type>.js` where `<hook_type>` is one of the following:
 
 * `beforeBuild` / `afterBuild`: fires on cdv:build and cdv:serve
@@ -24,7 +21,7 @@ module.exports = function() {
 };
 ```
 
-To ensure consistent behaviour they should return synchronous functions or promises (for Ember users, hooks closely resemble Tasks):
+To ensure consistent behaviour, a hook should return either a synchronous function or a Promise:
 
 ```js
 /* jshint node: true */

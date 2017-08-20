@@ -12,7 +12,7 @@ Platform & icon source are configurable as documented [in the cli](/pages/cli).
 
 Place an icon.svg file at ember-cordova/icon.svg and run `corber make-icons`. By default, icons for added platforms will be resized and injected.
 
-To specify a specific platform, use the `--platform` option with the desired platform.
+To specify a platform, use the `--platform` option:
 
 ```
 corber make-icons --platform ios
@@ -24,7 +24,7 @@ The source SVG should be a square of any size.
 
 Place a splash.svg file at ember-cordova/splash.svg and run `corber make-splashes`. By default, splashes for added platforms will be resized and injected.
 
-To specify a single platform, use the `--platform` option with the desired platform.
+o specify a platform, use the `--platform` option:
 
 ```
 corber make-splashes --platform ios

@@ -14,8 +14,8 @@ Frameworks refer to the *JS framework only* (e.g. Ember, Vue) and always impleme
 A typical build command looks a little like:
 
 - run before hooks;
-- run framework validate build (e.g. check ember config);
-- run target validate build (checks cordova config);
+- run framework validateBuild (e.g. check ember config);
+- run target validateBuild (checks cordova config);
 - run framework build;
 - copy the assets to the cordova project;
 - build the cordova project;
@@ -25,11 +25,12 @@ A typical build command looks a little like:
 #### Override framework functions
 Your local framework file can implement and thus override these functions - e.g. to support a custom build process - simply. When doing so, you can:
 
-- Choose to not take the base function; or
-- Call `this._super()` to run the base function.
+- Call `this._super()` to run the base function; or
+- Choose to not invoke the base function.
 
 e.g.
-```
+
+```javascript
 #ember-cordova/config/framework.js
 module.exports = EmberFramework.extend({
   validateBuild() {

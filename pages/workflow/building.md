@@ -15,14 +15,14 @@ ios is the default platform.
 
 After building, you will need to deploy to a device or emulator for testing. A build includes creating the iOS/Android application, but not bundle the run command.
 
-You can deploy to a device or emulator using `corber cdv run`, like so:
+`corber open` will open your project in Xcode or Android Studio. The IDE can then be used for starting emulators, code signing & app store uploads.
+
+Alternatively, you can deploy to a device or emulator using `corber cdv run`, like so:
 
 ```bash
-  corber run ios --emulator --nobuild   # Deploy to iOS simulator
-  corber run android --device --nobuild  # Deploy to Android device
+  corber cdv run ios --emulator --nobuild   # Deploy to iOS simulator
+  corber cdv run android --device --nobuild  # Deploy to Android device
 ```
-
-Alternatively `corber open` will open your project in Xcode or Android Studio. The IDE can then be used for starting emulators, code signing & app store uploads.
 
 To deploy to an iOS device, you must have Provisioning Profiles set up. Usually, Xcode can set up development profiles for you automatically.
 
@@ -32,8 +32,8 @@ By default, corber produces debug builds. You need to add a `--release` flag for
 
 
 ```bash
-  corber run ios --emulator --nobuild   # Deploy to iOS simulator
-  corber run android --device --nobuild  # Deploy to Android device
+  corber cdv run ios --emulator --nobuild   # Deploy to iOS simulator
+  corber cdv run android --device --nobuild  # Deploy to Android device
 ```
 
 #### Debugging

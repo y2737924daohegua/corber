@@ -4,9 +4,9 @@ title:  "Installation / Quickstart"
 ---
 
 #### Requirements
-- node 6/78 per [Ember Node LTS Support](http://emberjs.com/blog/2016/09/07/ember-node-lts-support.html);
-- A Macintosh machine is required for iOS builds;
+- node 6/7/8 per [Ember Node LTS Support](http://emberjs.com/blog/2016/09/07/ember-node-lts-support.html);
 - An existing JS application with one of the supported frameworks;
+- A Macintosh machine is required for iOS builds;
 
 #### Installation
 
