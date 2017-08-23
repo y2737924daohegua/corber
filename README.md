@@ -1,18 +1,35 @@
-# Ember Cordova
+# corber
 
 [![Build Status](https://travis-ci.org/isleofcode/corber.svg?branch=master)](https://travis-ci.org/isleofcode/corber)
 
-ember-cordova simplifies building Cordova applications with Ember.js.
+corber CLI improves the hybrid app build experience with JS Frameworks - currently for Ember, Vue & Glimmer apps using Cordova. It can be used with existing or new JS applications.
 
-Included is a CLI, icon generation & plugins/platforms, bindings to the Cordova platform and a growing ecosystem of Cordova plugins built to work with Ember. It is maintained by Isle of Code in Toronto, with a community of contributors.
+corber handles items such as framework + app build & validations with a single command: `corber build` - without affecting existing web flows. The CLI also includes on-device livereload for development and utility functions for icons, plugins, etc. Where needed it can proxy to the Cordova CLI.
 
-It supports Ember 1.13+ and node per [Ember Node LTS Support](http://emberjs.com/blog/2016/09/07/ember-node-lts-support.html)
+It is a continuation of the ember-cordova project. ember-cordova users can find detais [here](http://blog.isleofcode.com/announcing-corber-ember-cordova-vue), and continue to access the existing [ember addon](https://github.com/isleofcode/ember-cordova) and [documentation](http://ember-cordova.com).
 
 ## Quickstart
 
-`ember install ember-cordova`
+```
+yarn global add corber
 
-For documentation, please visit [embercordova.com](http://embercordova.com).
+#Create a mobile project - run from your existing Ember/Glimmer/Vue app
+corber init
+corber platform add ios
+
+#runs your JS builder and creates a mobile application
+corber build
+
+##You may also want to 
+#Set up on-device hot reload for development
+corber s
+
+#Build Icon & Splash Screens
+corber make:splashes
+corber make:icons
+```
+
+For documentation, please visit [corber.io](http://corber.io).
 
 ## Contributing
 
@@ -23,4 +40,4 @@ open an Issue for feedback.
 
 ## Credits
 
-ember-cordova is maintained by [Isle of Code](https://isleofcode.com), and started as a fork of [ember-cli-cordova](https://github.com/poetic/ember-cli-cordova).
+corber is maintained by [Isle of Code](https://isleofcode.com).
