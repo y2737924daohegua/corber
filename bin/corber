@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-process.title       = 'ember-cordova';
+process.title       = 'corber';
 
 const CLI           = require('../node_modules/ember-cli/lib/cli/cli.js');
 const Project       = require('../node_modules/ember-cli/lib/models/project.js');
@@ -31,8 +31,8 @@ let ui = new UI({
 
 let cli = new CLI({
   ui,
-  name: 'ember-cordova',
-  npmPackage: 'ember-cordova',
+  name: 'corber',
+  npmPackage: 'corber',
   root: path.resolve(__dirname, '..')
 });
 

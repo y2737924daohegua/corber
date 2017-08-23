@@ -1,5 +1,5 @@
 {
-  "name": "ember-cordova",
+  "name": "corber",
   "version": "1.0.4",
   "description": "Tooling for cordova and crosswalk hybrid applications built with Ember",
   "homepage": "https://github.com/isleofcode/ember-cordova",
@@ -19,7 +19,7 @@
     "node": "^4.5 || 6.* || 7.* || 8.*"
   },
   "bin": {
-    "ec": "./bin/ec"
+    "corber": "./bin/corber"
   },
   "author": {
     "name": "Alex Blom",
