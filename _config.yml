@@ -1,7 +1,7 @@
 title: ember-cordova
-description: "Documentation for ember-cordova, a CLI for packaging hybrid Cordova/Crosswalk/Phonegap apps with Ember"
+description: "Documentation for corber, a CLI for packaging hybrid Cordova/Crosswalk/Phonegap apps with Ember/Vue/Webpac/Glimmer"
 author: Isle of Code
-url: "http://embercordova.com"
+url: "http://corber.io"
 baseurl: ''
 twitter_username: isleOfCode
 github_username:  isleOfCode
