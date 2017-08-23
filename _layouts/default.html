@@ -9,7 +9,7 @@
     <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
     <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
     <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">
-    <link rel="stylesheet" href="/app.css">
+    <link rel="stylesheet" href="{{ "/app.css" | prepend: site.baseurl | prepend: site.url }}">
     <link href='http://fonts.googleapis.com/css?family=Raleway:100,300,400,500%7CLato:300,400' rel='stylesheet' type='text/css'>
   </head>
 
@@ -106,9 +106,9 @@
       </div>
     </footer>
 
-    <script src="/js/jquery-3.2.1.min.js"></script>
-    <script src="/js/theDocs.min.js"></script>
-    <script src="/js/custom.js"></script>
-    <script src="/js/prism.min.js"></script>
+    <script src="{{ "/js/jquery-3.2.1.min.js" | prepend: site.baseurl | prepend: site.url }}"></script>
+    <script src="{{ "/js/theDocs.min.js" | prepend: site.baseurl | prepend: site.url }}"></script>
+    <script src="{{ "/js/custom.js" | prepend: site.baseurl | prepend: site.url }}"></script>
+    <script src="{{ "/js/prism.min.js" | prepend: site.baseurl | prepend: site.url }}"></script>
   </body>
 </html>
