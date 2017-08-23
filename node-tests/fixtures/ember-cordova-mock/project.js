@@ -10,7 +10,10 @@ module.exports = {
   project: {
     root: path.resolve(__dirname, '..', '..', 'fixtures', 'ember-cordova-mock'),
     name: function() { return 'ember-cordova-mock' },
-    isEmberCLIProject: function() { return true; }
+    isEmberCLIProject: function() { return true; },
+    config: function() {
+      return {}
+    }
   },
 
   config: function() {}

@@ -54,6 +54,24 @@ describe('Update gitignore Task', function() {
     });
   });
 
+  it('creates gitignore if it does not exist', function() {
+    var writeContent;
+    var task = createTask('');
+
+    td.replace(fsUtils, 'read', function() {
+      return Promise.reject();
+    });
+
+    td.replace(fsUtils, 'write', function(path, content) {
+      writeContent = content;
+      return Promise.resolve();
+    });
+
+    return task.run().then(function() {
+      expect(writeContent).to.equal(expectedGitkeep);
+    });
+  });
+
   it('stubs empty gitkeeps, and then writes gitkeep', function() {
     var calls = [];
     td.replace(fsUtils, 'write', function(path, content) {
@@ -101,16 +119,5 @@ describe('Update gitignore Task', function() {
     return task.run().then(function() {
       expect(writeContent).to.equal(expected);
     });
-  });
-
-  it('outputs an error message and resolves if write fails', function() {
-    td.replace(fsUtils, 'write', function() {
-      return Promise.reject();
-    });
-    var task = createTask();
-
-    return expect(task.run()).to.be.rejectedWith(
-      /failed to update \.gitignore/
-    );
   });
 });

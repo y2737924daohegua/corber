@@ -1,36 +1,54 @@
-'use strict';
+const td               = require('testdouble');
+const expect           = require('../../helpers/expect');
+const mockProject      = require('../../fixtures/ember-cordova-mock/project');
+const Promise          = require('rsvp').Promise;
+const isAnything       = td.matchers.anything();
 
-var td              = require('testdouble');
-var expect          = require('../../helpers/expect');
-var mockProject     = require('../../fixtures/ember-cordova-mock/project');
-var Promise         = require('rsvp').Promise;
+const setupCmd = function() {
+  let InitCommand = require('../../../lib/commands/init');
+  return new InitCommand({
+    project: mockProject.project,
+    ui: mockProject.ui
+  });
+};
 
 describe('Init Command', function() {
-  var init;
-  var called = false;
-
-  beforeEach(function() {
-    called = false;
-
-    td.replace('../../../lib/utils/init-project', function() {
-      called = true;
-      return Promise.resolve();
-    });
-
-    var InitCommand     = require('../../../lib/commands/init');
-    init = new InitCommand({
-      project: mockProject.project,
-      ui: mockProject.ui
-    });
-  });
-
   afterEach(function() {
     td.reset();
   });
 
-  it('runs the init util', function() {
+  it('runs Create project task', function() {
+    let called = false;
+
+    let CreateTask = require('../../../lib/tasks/create-project');
+    td.replace(CreateTask.prototype, 'run', function() {
+      called = true;
+      return Promise.resolve();
+    });
+
+    let init = setupCmd();
+
     return init.run({}).then(function() {
       expect(called).to.equal(true);
     });
+  });
+
+  it('sets cordovaId, name & templatePath', function() {
+    let CreateDouble = td.replace('../../../lib/tasks/create-project');
+
+    let init = setupCmd();
+    init.run({
+      cordovaId: 'cordovaId',
+      name: 'cordovaName',
+      templatePath: 'templatePath'
+    });
+
+    td.verify(new CreateDouble({
+      project: isAnything,
+      ui: undefined,
+      cordovaId: 'cordovaId',
+      name: 'cordovaName',
+      templatePath: 'templatePath'
+    }));
   });
 });

@@ -52,17 +52,19 @@ describe('Index', function() {
       });
 
       it('first gets cordova asset paths, then validates them', function() {
-        var cordovaAssets = require('../../lib/utils/cordova-assets');
-        td.replace('../../lib/utils/cordova-path');
+        /* eslint-disable max-len */
+        var cdvAssets = require('../../lib/targets/cordova/utils/cordova-assets');
+        td.replace('../../lib/targets/cordova/utils/get-path');
+        /* eslint-enable max-len */
 
         var assetCalls = [];
-        td.replace(cordovaAssets, 'getPaths', function() {
+        td.replace(cdvAssets, 'getPaths', function() {
           assetCalls.push('get-paths');
           return {
             assetsPath: ''
           }
         });
-        td.replace(cordovaAssets, 'validatePaths', function() {
+        td.replace(cdvAssets, 'validatePaths', function() {
           assetCalls.push('validate-paths');
         });
 

@@ -20,12 +20,7 @@ describe('Run Hook Task', function() {
 
   it('runs a hook at the provided path that has an error', function() {
     var hookTask = new HookTask(mockProject);
-    return expect(hookTask.run('hook-with-error')).to.be.rejected;
-  });
-
-  it('is resolved if the hook does not exist', function() {
-    var hookTask = new HookTask(mockProject);
-    return expect(hookTask.run('invalid')).to.be.fulfilled;
+    return expect(hookTask.run('hook-with-error')).to.eventually.be.rejected;
   });
 
   it('is resolved if the hook is resolved', function() {
@@ -33,7 +28,7 @@ describe('Run Hook Task', function() {
     var expectation = expect(hookTask.run('hook-promise-resolved'));
     return Promise.all([
       expectation.to.eventually.equal('resolved promise from hook'),
-      expectation.to.be.fulfilled,
+      expectation.to.eventually.be.fulfilled,
     ]);
   });
 
@@ -42,7 +37,7 @@ describe('Run Hook Task', function() {
     var expectation = expect(hookTask.run('hook-promise-rejected'));
     return Promise.all([
       expectation.to.eventually.equal('hook rejected'),
-      expectation.to.be.rejected,
+      expectation.to.eventually.be.rejected,
     ]);
   });
 });

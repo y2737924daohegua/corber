@@ -1,35 +1,49 @@
-'use strict';
+const td               = require('testdouble');
+const expect           = require('../../helpers/expect');
+const mockProject      = require('../../fixtures/ember-cordova-mock/project');
+const Promise          = require('rsvp').Promise;
+const isAnything       = td.matchers.anything();
 
-var td              = require('testdouble');
-var expect          = require('../../helpers/expect');
-var mockProject     = require('../../fixtures/ember-cordova-mock/project');
-var Promise         = require('rsvp').Promise;
+const setupIndex = function() {
+  let index = require('../../../blueprints/ember-cordova/index');
+  index.project = mockProject.project;
+  return index;
+}
 
 describe('Blueprint Index', function() {
-  var index;
-  var called = false;
+  it('runs Create Project Task', function() {
+    let called = false;
 
-  beforeEach(function() {
-    called = false;
-
-    td.replace('../../../lib/utils/init-project', function() {
+    let CreateTask = require('../../../lib/tasks/create-project');
+    td.replace(CreateTask.prototype, 'run', function() {
       called = true;
       return Promise.resolve();
     });
 
-    index = require('../../../blueprints/ember-cordova/index');
-    index.project = mockProject.project;
-    index.ui = mockProject.ui;
-  });
+    let index = setupIndex();
 
-  afterEach(function() {
-    td.reset();
-  });
-
-
-  it('runs the init util', function() {
     return index.afterInstall({}).then(function() {
       expect(called).to.equal(true);
     });
+  });
+
+  it('sets cordovaId, name & templatePath', function() {
+    let CreateDouble = td.replace('../../../lib/tasks/create-project');
+
+    let index = setupIndex();
+
+    index.afterInstall({
+      cordovaId: 'cordovaId',
+      name: 'cordovaName',
+      templatePath: 'templatePath'
+    });
+
+    td.verify(new CreateDouble({
+      project: isAnything,
+      ui: undefined,
+      cordovaId: 'cordovaId',
+      name: 'cordovaName',
+      templatePath: 'templatePath'
+    }));
   });
 });

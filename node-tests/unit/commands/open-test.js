@@ -4,7 +4,7 @@ var td              = require('testdouble');
 var PromiseExt      = require('rsvp');
 
 var OpenCmd         = require('../../../lib/commands/open');
-var OpenTask        = require('../../../lib/tasks/open-app');
+var OpenTask        = require('../../../lib/targets/cordova/tasks/open-app');
 
 var mockProject     = require('../../fixtures/ember-cordova-mock/project');
 var mockAnalytics   = require('../../fixtures/ember-cordova-mock/analytics');

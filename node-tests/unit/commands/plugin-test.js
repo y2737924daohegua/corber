@@ -1,13 +1,13 @@
-'use strict';
-
+ /* eslint-disable max-len */
 var td              = require('testdouble');
 var PluginCmd       = require('../../../lib/commands/plugin');
-var CdvRawTask      = require('../../../lib/tasks/cordova-raw');
+var CdvRawTask      = require('../../../lib/targets/cordova/tasks/raw');
 
 var mockProject     = require('../../fixtures/ember-cordova-mock/project');
 var mockAnalytics   = require('../../fixtures/ember-cordova-mock/analytics');
 var isAnything      = td.matchers.anything();
 var contains        = td.matchers.contains;
+ /* eslint-enable max-len */
 
 describe('Plugin Command', function() {
   var rawDouble, plugin;

@@ -1,6 +1,4 @@
-'use strict';
-
-var initProject = require('../../lib/utils/init-project');
+var CreateTask = require('../../lib/tasks/create-project');
 
 module.exports = {
   name: 'ember-cordova',
@@ -32,6 +30,14 @@ module.exports = {
   },
 
   afterInstall: function(options) {
-    return initProject(options, this.project, this.ui);
+    let create = new CreateTask({
+      project: this.project,
+      ui: this.ui,
+      cordovaId: options.cordovaId,
+      name: options.name,
+      templatePath: options.templatePath
+    });
+
+    return create.run();
   }
 };

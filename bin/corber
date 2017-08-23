@@ -1,0 +1,49 @@
+#!/usr/bin/env node
+'use strict';
+
+process.title       = 'corber';
+
+const CLI           = require('../node_modules/ember-cli/lib/cli/cli.js');
+const Project       = require('../node_modules/ember-cli/lib/models/project.js');
+const UI            = require('console-ui');
+const resolve       = require('resolve');
+const path          = require('path');
+const requireAsHash = require('../node_modules/ember-cli/lib/utilities/require-as-hash');
+
+function loadCommands() {
+  const Command = require('../node_modules/ember-cli/lib/models/command.js');
+  let hash = requireAsHash('../lib/commands/*.js', Command);
+  return hash;
+};
+
+function loadTasks() {
+  const Task = require('../node_modules/ember-cli/lib/models/task.js');
+  let hash = requireAsHash('../lib/tasks/*.js', Task);
+  return hash;
+};
+
+let ui = new UI({
+  inputStream: process.stdin,
+  outputStream: process.stdout,
+  errorStream: process.stderr,
+  errorLog: [],
+});
+
+let cli = new CLI({
+  ui,
+  name: 'corber',
+  npmPackage: 'corber',
+  root: path.resolve(__dirname, '..')
+});
+
+let project = Project.projectOrnullProject(ui, cli);
+
+let environment = {
+  tasks: loadTasks(),
+  cliArgs: process.argv.slice(2),
+  commands: loadCommands(),
+  project,
+  settings: {}
+}
+
+return cli.run(environment);
