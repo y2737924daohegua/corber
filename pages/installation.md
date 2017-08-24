@@ -17,7 +17,7 @@ title:  "Installation / Quickstart"
 
 #### Project Setup
 
-From a supported JS projected, run `et init`. For a list of supported projects, see [framework integrations](/pages/frameworks/index).
+From a supported JS projected, run `corber init`. For a list of supported projects, see [framework integrations](/pages/frameworks/index).
 
 This will:
 
@@ -35,7 +35,7 @@ This will:
 | templatePath| String path to cordova template |
 
 ```cli
-ec new-android-project --name=AppName --cordovaid=com.isleofcode.app --templatePath=../template
+corber init new-android-project --name=AppName --cordovaid=com.isleofcode.app --templatePath=../template
 ```
 **cordovaid flag**
 
