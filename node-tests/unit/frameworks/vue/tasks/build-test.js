@@ -16,11 +16,6 @@ describe('Vue Build Task', function() {
       return Promise.resolve();
     });
 
-    td.replace(Bash.prototype, 'prepare', function() {
-      tasks.push('bash-task-2');
-      return Promise.resolve();
-    });
-
     buildTask = new Build({
       buildCommand: 'fakeBuildCommand',
       buildPath: 'fakePath',
@@ -36,7 +31,7 @@ describe('Vue Build Task', function() {
     return buildTask.run({cordovaOutputPath: 'fakePath'}).then(function() {
       expect(tasks).to.deep.equal([
         'bash-task',
-        'bash-task-2'
+        'bash-task'
       ]);
     });
   });
