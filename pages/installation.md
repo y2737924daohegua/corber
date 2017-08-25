@@ -11,7 +11,7 @@ title:  "Installation / Quickstart"
 #### Installation
 
 ```cli
-  yarn install -g corber
+  yarn global add corber
   npm install -g corber
 ```
 
