@@ -112,7 +112,7 @@ describe('Build Command', function() {
 
   it('skips ember-build with the --skip-ember-build flag', function() {
     let build = setupBuild();
-    baseOpts.skipEmberBuild = true;
+    baseOpts.skipFrameworkBuild = true;
 
     return build.run(baseOpts)
     .then(function() {

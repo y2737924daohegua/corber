@@ -143,7 +143,7 @@ describe('Serve Command', function() {
 
   it('skips emer & cordova builds with --skip flags', function() {
     return serveCmd.run({
-      skipEmberBuild: true,
+      skipFrameworkBuild: true,
       skipCordovaBuild: true
     }).then(function() {
       expect(tasks).to.deep.equal([
