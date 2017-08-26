@@ -16,7 +16,7 @@ describe('Update gitignore Task', function() {
     td.reset();
   });
 
-  xit('adds the current version of corber to package.json', function() {
+  it('adds the current version of corber to package.json', function() {
     let writeDouble = td.replace(fsUtils, 'write');
     td.replace('../../../lib/tasks/bash');
 
