@@ -4,6 +4,8 @@ const expect         = require('../../helpers/expect');
 const mockProject    = require('../../fixtures/ember-cordova-mock/project');
 const Promise        = require('rsvp');
 const GitIgnore      = require('../../../lib/tasks/update-gitignore');
+const InstallPackage = require('../../../lib/tasks/install-package');
+
 
 const isAnything     = td.matchers.anything;
 const fsUtils        = require('../../../lib/utils/fs-utils');
@@ -12,6 +14,7 @@ const frameworkType  = require('../../../lib/utils/framework-type');
 const contains       = td.matchers.contains;
 
 let CreateCordova    = require('../../../lib/targets/cordova/tasks/create-project');
+
  /* eslint-enable max-len */
 
 describe('Create Project', function() {
@@ -49,6 +52,11 @@ describe('Create Project', function() {
       return Promise.resolve();
     });
 
+    td.replace(InstallPackage.prototype, 'run', function() {
+      tasks.push('install-package');
+      return Promise.resolve();
+    });
+
     if (mockInitDirs) {
       td.replace(createTask, 'initDirs', function() {
         tasks.push('create-dirs');
@@ -69,6 +77,7 @@ describe('Create Project', function() {
         'create-dirs',
         'create-cordova-project',
         'update-gitignore',
+        'install-package',
         'framework-after-install'
       ]);
     });
