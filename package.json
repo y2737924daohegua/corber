@@ -52,8 +52,6 @@
     "mobile"
   ],
   "dependencies": {
-    "broccoli-funnel": "^1.1.0",
-    "broccoli-merge-trees": "1.2.4",
     "chalk": "^2.0.0",
     "configstore": "3.1.0",
     "console-ui": "^2.0.0",
@@ -76,19 +74,10 @@
     "xml2js": "^0.4.17"
   },
   "devDependencies": {
-    "broccoli-asset-rev": "^2.4.5",
     "chai": "^4.0.2",
     "chai-as-promised": "^7.1.1",
     "ember-cli-dependency-checker": "^2.0.0",
-    "ember-cli-htmlbars": "^2.0.0",
-    "ember-cli-htmlbars-inline-precompile": "^1.0.0",
-    "ember-cli-inject-live-reload": "^1.4.1",
     "ember-cli-shims": "^1.0.2",
-    "ember-disable-prototype-extensions": "^1.1.0",
-    "ember-export-application-global": "^2.0.0",
-    "ember-load-initializers": "^1.0.0",
-    "ember-resolver": "^4.0.0",
-    "ember-source": "^2.13.3",
     "eslint-plugin-chai-expect": "^1.1.1",
     "loaderjs": "^0.1.8",
     "mocha": "^3.4.2",
