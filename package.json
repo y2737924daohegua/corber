@@ -5,7 +5,7 @@
   "homepage": "https://github.com/isleofcode/corber",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/isleofcode/corber.git"
+    "url": "https://github.com/isleofcode/corber"
   },
   "main": "index.js",
   "directories": {
