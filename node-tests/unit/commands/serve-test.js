@@ -69,7 +69,8 @@ describe('Serve Command', function() {
       };
     });
 
-    td.replace(HookTask.prototype, 'run', function(hookName) {
+    td.replace(HookTask.prototype, 'run', function(hookName, options) {
+      expect(options, `${hookName} options`).to.be.an('object');
       tasks.push('hook ' + hookName);
       return Promise.resolve();
     });
