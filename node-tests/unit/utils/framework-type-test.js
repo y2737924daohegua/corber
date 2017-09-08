@@ -1,7 +1,7 @@
 const td             = require('testdouble');
 const expect         = require('../../helpers/expect');
 
-const mockProject    = require('../../fixtures/ember-cordova-mock/project');
+const mockProject    = require('../../fixtures/corber-mock/project');
 const frameworkType  = require('../../../lib/utils/framework-type');
 
 const root           = mockProject.project.root;

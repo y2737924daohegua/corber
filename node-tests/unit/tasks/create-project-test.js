@@ -1,7 +1,7 @@
  /* eslint-disable max-len */
 const td             = require('testdouble');
 const expect         = require('../../helpers/expect');
-const mockProject    = require('../../fixtures/ember-cordova-mock/project');
+const mockProject    = require('../../fixtures/corber-mock/project');
 const Promise        = require('rsvp');
 const GitIgnore      = require('../../../lib/tasks/update-gitignore');
 const InstallPackage = require('../../../lib/tasks/install-package');
@@ -38,8 +38,8 @@ describe('Create Project', function() {
     createTask = new CreateProject({
       project: mockProject.project,
       ui: mockProject.ui,
-      cordovaId: 'com.embercordova.app',
-      name: 'com.emberCordova.app'
+      cordovaId: 'io.corber.app',
+      name: 'io.corber.app'
     });
 
     td.replace(CreateCordova.prototype, 'run', function() {
@@ -91,8 +91,8 @@ describe('Create Project', function() {
 
     return createTask.run().then(function() {
       td.verify(new CreateCordova({
-        id: 'com.embercordova.emberCordovaMock',
-        name: 'com.emberCordova.app',
+        id: 'io.corber.corberMock',
+        name: 'io.corber.app',
         templatePath: 'passedTemplatePath',
         project: isAnything(),
         ui: isAnything()
@@ -117,8 +117,8 @@ describe('Create Project', function() {
     let emberCdvPath = path.resolve(
       __dirname, '..', '..',
       'fixtures',
-      'ember-cordova-mock',
-      'ember-cordova'
+      'corber-mock',
+      'corber'
     );
 
     beforeEach(function() {
@@ -131,7 +131,7 @@ describe('Create Project', function() {
       td.reset();
     });
 
-    it('inits ember-cordova && config directories', function() {
+    it('inits corber && config directories', function() {
       let mkDouble = td.replace(fsUtils, 'mkdir');
       td.replace(fsUtils, 'copy');
 

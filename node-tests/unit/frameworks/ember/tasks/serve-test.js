@@ -4,8 +4,8 @@ const expect         = require('../../../../helpers/expect')
 const Promise        = require('rsvp');
 const isObject       = td.matchers.isA(Object);
 const clone          = require('lodash').clone;
-const mockProject    = require('../../../../fixtures/ember-cordova-mock/project');
-const mockAnalytics  = require('../../../../fixtures/ember-cordova-mock/analytics');
+const mockProject    = require('../../../../fixtures/corber-mock/project');
+const mockAnalytics  = require('../../../../fixtures/corber-mock/analytics');
  /* eslint-enable max-len */
 
 describe('Ember Serve Task', function() {
@@ -59,7 +59,7 @@ describe('Ember Serve Task', function() {
 
     td.verify(new EmberBuilder({
       ui: undefined,
-      outputPath: 'ember-cordova/tmp-livereload',
+      outputPath: 'corber/tmp-livereload',
       project: isObject,
       environment: 'development'
     }))
@@ -91,7 +91,7 @@ describe('Ember Serve Task', function() {
       cloned.addons[0].treeFor();
 
       td.verify(new Funnel(
-        'ember-cordova/cordova', {
+        'corber/cordova', {
           srcDir: 'fake-src-dir',
           include: ['cordova.js', 'cordova_plugins.js']
         }

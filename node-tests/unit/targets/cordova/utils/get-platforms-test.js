@@ -5,7 +5,7 @@ var getCordovaPath  = require('../../../../../lib/targets/cordova/utils/get-path
 
 var path            = require('path');
 
-var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
+var mockProject     = require('../../../../fixtures/corber-mock/project');
  /* eslint-enable max-len */
 
 describe('Get Added Platforms Util', function() {

@@ -1,5 +1,5 @@
 const td             = require('testdouble');
-const mockProject    = require('../../fixtures/ember-cordova-mock/project');
+const mockProject    = require('../../fixtures/corber-mock/project');
 const fsUtils        = require('../../../lib/utils/fs-utils');
 const path           = require('path');
 const isAnything     = td.matchers.anything;

@@ -1,8 +1,8 @@
 const td             = require('testdouble');
 const expect         = require('../../helpers/expect');
 const Promise        = require('rsvp');
-const mockProject    = require('../../fixtures/ember-cordova-mock/project');
-const mockAnalytics  = require('../../fixtures/ember-cordova-mock/analytics');
+const mockProject    = require('../../fixtures/corber-mock/project');
+const mockAnalytics  = require('../../fixtures/corber-mock/analytics');
 
 describe('Build Command', function() {
   let baseOpts, tasks;
@@ -10,7 +10,7 @@ describe('Build Command', function() {
 
   beforeEach(function() {
     baseOpts = {
-      cordovaOutputPath: 'ember-cordova/cordova/www',
+      cordovaOutputPath: 'corber/cordova/www',
       platform: 'ios'
     };
   });
@@ -152,7 +152,7 @@ describe('Build Command', function() {
     let build = setupBuild();
     return build.run(baseOpts).then(function() {
       td.verify(new AddCordovaJS({
-        source: 'ember-cordova/cordova/www/index.html'
+        source: 'corber/cordova/www/index.html'
       }));
     });
   });

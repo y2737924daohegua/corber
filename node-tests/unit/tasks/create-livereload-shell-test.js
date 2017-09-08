@@ -2,7 +2,7 @@
 
 var td              = require('testdouble');
 var Promise         = require('rsvp');
-var mockProject     = require('../../fixtures/ember-cordova-mock/project');
+var mockProject     = require('../../fixtures/corber-mock/project');
 var fsUtils         = require('../../../lib/utils/fs-utils');
 
 var expect          = require('../../helpers/expect');

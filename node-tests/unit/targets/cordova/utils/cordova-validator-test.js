@@ -3,7 +3,7 @@ var expect          = require('../../../../helpers/expect');
 var td              = require('testdouble');
 var fsUtils         = require('../../../../../lib/utils/fs-utils');
 
-var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
+var mockProject     = require('../../../../fixtures/corber-mock/project');
 var CordovaValidator = require('../../../../../lib/targets/cordova/utils/cordova-validator');
  /* eslint-enable max-len */
 

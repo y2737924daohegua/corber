@@ -5,8 +5,8 @@ var CdvRawTask      = require('../../../lib/targets/cordova/tasks/raw');
 var SetupViewTask   = require('../../../lib/targets/cordova/tasks/setup-webview');
 var Promise         = require('rsvp');
 
-var mockProject     = require('../../fixtures/ember-cordova-mock/project');
-var mockAnalytics   = require('../../fixtures/ember-cordova-mock/analytics');
+var mockProject     = require('../../fixtures/corber-mock/project');
+var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
  /* eslint-enable max-len */
 
 describe('Platform Command', function() {

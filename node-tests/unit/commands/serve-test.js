@@ -13,8 +13,8 @@ var editXml         = require('../../../lib/targets/cordova/utils/edit-xml');
 var parseXml        = require('../../../lib/utils/parse-xml');
 var cordovaPath     = require('../../../lib/targets/cordova/utils/get-path');
 
-var mockProject     = require('../../fixtures/ember-cordova-mock/project');
-var mockAnalytics   = require('../../fixtures/ember-cordova-mock/analytics');
+var mockProject     = require('../../fixtures/corber-mock/project');
+var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
 
 /* eslint-disable max-len */
 var ValidatePlatform        = require('../../../lib/targets/cordova/validators/platform');

@@ -4,12 +4,12 @@ var path            = require('path');
 
 module.exports = {
   env: 'development',
-  id: 'ember-cordova-mock',
-  name: 'ember-cordova-mock',
+  id: 'corber-mock',
+  name: 'corber-mock',
 
   project: {
-    root: path.resolve(__dirname, '..', '..', 'fixtures', 'ember-cordova-mock'),
-    name: function() { return 'ember-cordova-mock' },
+    root: path.resolve(__dirname, '..', '..', 'fixtures', 'corber-mock'),
+    name: function() { return 'corber-mock' },
     isEmberCLIProject: function() { return true; },
     config: function() {
       return {}

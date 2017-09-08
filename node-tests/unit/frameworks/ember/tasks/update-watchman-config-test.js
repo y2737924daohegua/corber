@@ -2,7 +2,7 @@
 var td              = require('testdouble');
 var expect          = require('../../../../helpers/expect');
 var path            = require('path');
-var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
+var mockProject     = require('../../../../fixtures/corber-mock/project');
 var Promise         = require('rsvp').Promise;
 
 var WatchmanConfig  = require('../../../../../lib/frameworks/ember/tasks/update-watchman-config');
@@ -37,9 +37,9 @@ describe('Update Watchman Config Task', function() {
     expect(actualPath).to.equal(expectedPath);
   });
 
-  it('adds ember-cordova to existing ignore_dirs array', function() {
+  it('adds corber to existing ignore_dirs array', function() {
     var writeContents;
-    var expectedWrite = '{"ignore_dirs":["tmp","dist","ember-cordova"]}';
+    var expectedWrite = '{"ignore_dirs":["tmp","dist","corber"]}';
 
     td.replace(fsUtils, 'read', function(path) {
       return new Promise(function(resolve) {
@@ -72,17 +72,17 @@ describe('Update Watchman Config Task', function() {
     });
 
     return watchmanTask.run().then(function() {
-      expect(writeContents).to.equal('{"ignore_dirs":["ember-cordova"]}');
+      expect(writeContents).to.equal('{"ignore_dirs":["corber"]}');
     });
   });
 
   it('does not duplicate content', function() {
     var writeContents;
-    var expectedWrite = '{"ignore_dirs":["tmp","dist","ember-cordova"]}';
+    var expectedWrite = '{"ignore_dirs":["tmp","dist","corber"]}';
 
     td.replace(fsUtils, 'read', function(path) {
       return new Promise(function(resolve) {
-        resolve('\{"ignore_dirs": ["tmp", "dist", "ember-cordova"]\}');
+        resolve('\{"ignore_dirs": ["tmp", "dist", "corber"]\}');
       });
     });
 

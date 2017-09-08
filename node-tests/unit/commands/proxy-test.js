@@ -8,8 +8,8 @@ var logger          = require('../../../lib/utils/logger');
 var td              = require('testdouble');
 var Promise         = require('rsvp');
 
-var mockProject     = require('../../fixtures/ember-cordova-mock/project');
-var mockAnalytics   = require('../../fixtures/ember-cordova-mock/analytics');
+var mockProject     = require('../../fixtures/corber-mock/project');
+var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
 var isObject        = td.matchers.isA(Object);
 var contains        = td.matchers.contains;
  /* eslint-enable max-len */
@@ -32,7 +32,7 @@ describe('Cordova Command', function() {
     td.reset();
   });
 
-  it('warns if an ember-cordova command is used', function() {
+  it('warns if an corber  command is used', function() {
     var logDouble = td.replace(logger, 'warn');
     var cmd = setupCmd();
 
@@ -41,7 +41,7 @@ describe('Cordova Command', function() {
     });
 
     return cmd.validateAndRun(['build']).then(function() {
-      td.verify(logDouble(contains('bypassed ember-cordova command')));
+      td.verify(logDouble(contains('bypassed corber command')));
     });
   });
 

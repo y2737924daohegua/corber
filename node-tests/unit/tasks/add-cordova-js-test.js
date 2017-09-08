@@ -1,18 +1,15 @@
  /* eslint-disable max-len */
 var td              = require('testdouble');
-var expect          = require('../../../../helpers/expect');
+var expect          = require('../../helpers/expect');
 var Promise         = require('rsvp').Promise;
-var path            = require('path');
-var cordovaPath     = require('../../../../../lib/targets/cordova/utils/get-path');
-var fsUtils         = require('../../../../../lib/utils/fs-utils');
-var logger          = require('../../../../../lib/utils/logger');
-var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
+var fsUtils         = require('../../../lib/utils/fs-utils');
+var logger          = require('../../../lib/utils/logger');
+var mockProject     = require('../../fixtures/corber-mock/project');
 
-var AddCordovaJS    = require('../../../../../lib/targets/cordova/tasks/add-cordova-js');
+var AddCordovaJS    = require('../../../lib/tasks/add-cordova-js');
  /* eslint-enable max-len */
 
 describe('Add Cordova JS Task', function() {
-  var projectPath = cordovaPath(mockProject.project);
   var source = 'www/index.html';
   var task, subject, infoArg, readFileArgs, writeFileArgs;
 
@@ -57,7 +54,7 @@ describe('Add Cordova JS Task', function() {
 
     it('calls fsUtils.read', function() {
       return subject.then(function() {
-        expect(readFileArgs.path).to.eql(path.join(projectPath, source));
+        expect(readFileArgs.path).to.eql(source);
       });
     });
 
@@ -100,13 +97,13 @@ describe('Add Cordova JS Task', function() {
 
     it('calls fsUtils.read', function() {
       return subject.then(function() {
-        expect(readFileArgs.path).to.eql(path.join(projectPath, source));
+        expect(readFileArgs.path).to.eql(source);
       });
     });
 
     it('calls fsUtils.write with added script reference', function() {
       return subject.then(function() {
-        expect(writeFileArgs.path).to.eql(path.join(projectPath, source));
+        expect(writeFileArgs.path).to.eql(source);
         expect(writeFileArgs.contents).to.contain(
           '<script src="cordova.js"></script>'
         );

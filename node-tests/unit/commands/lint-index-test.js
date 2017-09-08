@@ -4,8 +4,8 @@ var td              = require('testdouble');
 var expect          = require('../../helpers/expect');
 var Promise         = require('rsvp').Promise;
 var LintTask        = require('../../../lib/tasks/lint-index');
-var mockProject     = require('../../fixtures/ember-cordova-mock/project');
-var mockAnalytics   = require('../../fixtures/ember-cordova-mock/analytics');
+var mockProject     = require('../../fixtures/corber-mock/project');
+var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
 
 var LintCommand     = require('../../../lib/commands/lint-index');
 

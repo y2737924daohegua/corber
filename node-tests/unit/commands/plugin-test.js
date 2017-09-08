@@ -3,8 +3,8 @@ var td              = require('testdouble');
 var PluginCmd       = require('../../../lib/commands/plugin');
 var CdvRawTask      = require('../../../lib/targets/cordova/tasks/raw');
 
-var mockProject     = require('../../fixtures/ember-cordova-mock/project');
-var mockAnalytics   = require('../../fixtures/ember-cordova-mock/analytics');
+var mockProject     = require('../../fixtures/corber-mock/project');
+var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
 var isAnything      = td.matchers.anything();
 var contains        = td.matchers.contains;
  /* eslint-enable max-len */
