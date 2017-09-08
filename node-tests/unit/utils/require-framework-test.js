@@ -1,13 +1,13 @@
 const td               = require('testdouble');
 const expect           = require('../../helpers/expect');
-const mockProject      = require('../../fixtures/ember-cordova-mock/project');
+const mockProject      = require('../../fixtures/corber-mock/project');
 const requireFramework = require('../../../lib/utils/require-framework');
 const path             = require('path');
 
 describe('requireFramework util', function() {
   let configPath = path.join(
     mockProject.project.root,
-    'ember-cordova/config/framework.js'
+    'corber/config/framework.js'
   );
 
   afterEach(function() {

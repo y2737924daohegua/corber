@@ -6,7 +6,7 @@ var logger          = require('../../../../../lib/utils/logger');
 
 var CdvRawTask      = require('../../../../../lib/targets/cordova/tasks/raw');
 var SetupViewTask   = require('../../../../../lib/targets/cordova/tasks/setup-webview');
-var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
+var mockProject     = require('../../../../fixtures/corber-mock/project');
 var contains        = td.matchers.contains;
  /* eslint-enable max-len */
 

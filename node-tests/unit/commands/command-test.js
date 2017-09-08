@@ -3,8 +3,8 @@
 var expect          = require('../../helpers/expect');
 var td              = require('testdouble');
 var Command         = require('../../../lib/commands/-command');
-var mockProject     = require('../../fixtures/ember-cordova-mock/project');
-var mockAnalytics   = require('../../fixtures/ember-cordova-mock/analytics');
+var mockProject     = require('../../fixtures/corber-mock/project');
+var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
 var isAnything      = td.matchers.anything();
 
 describe('Command', function() {

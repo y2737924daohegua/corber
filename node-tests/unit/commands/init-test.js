@@ -1,6 +1,6 @@
 const td               = require('testdouble');
 const expect           = require('../../helpers/expect');
-const mockProject      = require('../../fixtures/ember-cordova-mock/project');
+const mockProject      = require('../../fixtures/corber-mock/project');
 const Promise          = require('rsvp').Promise;
 const isAnything       = td.matchers.anything();
 

@@ -5,7 +5,7 @@ var fsUtils         = require('../../../../../lib/utils/fs-utils');
 var logger          = require('../../../../../lib/utils/logger');
 
 var cordovaProj     = require('cordova-lib').cordova;
-var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
+var mockProject     = require('../../../../fixtures/corber-mock/project');
 var isObject        = td.matchers.isA(Object);
 var isString        = td.matchers.isA(String);
 var contains        = td.matchers.contains;

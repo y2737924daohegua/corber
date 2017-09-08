@@ -5,7 +5,7 @@ var BashTask        = require('../../../../../lib/tasks/bash');
 var OpenAppTask     = require('../../../../../lib/targets/cordova/tasks/open-app');
 var expect          = require('../../../../helpers/expect');
 var openCommand     = require('../../../../../lib/utils/open-app-command');
-var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
+var mockProject     = require('../../../../fixtures/corber-mock/project');
 var _merge          = require('lodash').merge;
 var isObject        = td.matchers.isA(Object);
  /* eslint-enable max-len */
@@ -18,7 +18,7 @@ describe('Cordova Open App Task', function() {
     cdvPath = path.resolve(
       __dirname, '../../../../',
       'fixtures',
-      'ember-cordova-mock/ember-cordova/cordova'
+      'corber-mock/corber/cordova'
     );
 
     openApp = new OpenAppTask(_merge(mockProject, { platform: 'ios' }));

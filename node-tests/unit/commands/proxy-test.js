@@ -8,8 +8,8 @@ var logger          = require('../../../lib/utils/logger');
 var td              = require('testdouble');
 var Promise         = require('rsvp');
 
-var mockProject     = require('../../fixtures/ember-cordova-mock/project');
-var mockAnalytics   = require('../../fixtures/ember-cordova-mock/analytics');
+var mockProject     = require('../../fixtures/corber-mock/project');
+var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
 var isObject        = td.matchers.isA(Object);
 var contains        = td.matchers.contains;
  /* eslint-enable max-len */

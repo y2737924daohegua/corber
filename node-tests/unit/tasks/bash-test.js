@@ -4,7 +4,7 @@ var td              = require('testdouble');
 var childProcess    = require('child_process');
 var BashTask        = require('../../../lib/tasks/bash');
 
-var mockProject     = require('../../fixtures/ember-cordova-mock/project');
+var mockProject     = require('../../fixtures/corber-mock/project');
 var defaults        = require('lodash').defaults;
 var isObject        = td.matchers.isA(Object);
 

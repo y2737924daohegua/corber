@@ -1,8 +1,8 @@
 const td             = require('testdouble');
 const expect         = require('../../helpers/expect');
 const Promise        = require('rsvp');
-const mockProject    = require('../../fixtures/ember-cordova-mock/project');
-const mockAnalytics  = require('../../fixtures/ember-cordova-mock/analytics');
+const mockProject    = require('../../fixtures/corber-mock/project');
+const mockAnalytics  = require('../../fixtures/corber-mock/analytics');
 
 describe('Build Command', function() {
   let baseOpts, tasks;

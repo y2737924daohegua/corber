@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 var td              = require('testdouble');
 var expect          = require('../../../../helpers/expect');
-var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
+var mockProject     = require('../../../../fixtures/corber-mock/project');
 var SanitizeArgs    = require('../../../../../lib/targets/cordova/validators/addon-args');
 /* eslint-enable max-len */
 

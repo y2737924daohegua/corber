@@ -4,7 +4,7 @@ var expect          = require('../../../../helpers/expect');
 var Promise         = require('rsvp');
 
 var PluginTask      = require('../../../../../lib/targets/cordova//validators/plugin');
-var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
+var mockProject     = require('../../../../fixtures/corber-mock/project');
 var CordovaValidator = require('../../../../../lib/targets/cordova/utils/cordova-validator');
 /* eslint-enable max-len */
 

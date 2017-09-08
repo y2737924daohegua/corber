@@ -8,8 +8,8 @@ var PrepareCmd      = require('../../../lib/commands/prepare');
 var PrepareTask     = require('../../../lib/targets/cordova/tasks/prepare');
 var HookTask        = require('../../../lib/tasks/run-hook');
 
-var mockProject     = require('../../fixtures/ember-cordova-mock/project');
-var mockAnalytics   = require('../../fixtures/ember-cordova-mock/analytics');
+var mockProject     = require('../../fixtures/corber-mock/project');
+var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
 
 describe('Prepare Command', function() {
   var tasks, prepare;

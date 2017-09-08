@@ -2,7 +2,7 @@
 const td             = require('testdouble');
 const expect         = require('../../../../helpers/expect')
 const Promise        = require('rsvp');
-const mockProject    = require('../../../../fixtures/ember-cordova-mock/project');
+const mockProject    = require('../../../../fixtures/corber-mock/project');
  /* eslint-enable max-len */
 
 describe('Ember Build Task', function() {
@@ -60,7 +60,7 @@ describe('Ember Build Task', function() {
 
     let build  = new Build({project: mockProject.project});
     return build.run().then(function() {
-      td.verify(gitkeepDouble('ember-cordova/cordova/www/.gitkeep'));
+      td.verify(gitkeepDouble('corber/cordova/www/.gitkeep'));
     });
   });
 });

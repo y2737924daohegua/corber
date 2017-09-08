@@ -1,6 +1,6 @@
  /* eslint-disable max-len */
 var td              = require('testdouble');
-var mockProject     = require('../../../../fixtures/ember-cordova-mock/project');
+var mockProject     = require('../../../../fixtures/corber-mock/project');
 var CdvRawTask      = require('../../../../../lib/targets/cordova/tasks/raw');
  /* eslint-enable max-len */
 

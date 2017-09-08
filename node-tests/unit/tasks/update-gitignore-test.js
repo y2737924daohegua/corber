@@ -1,7 +1,7 @@
 'use strict';
 
 var td              = require('testdouble');
-var mockProject     = require('../../fixtures/ember-cordova-mock/project');
+var mockProject     = require('../../fixtures/corber-mock/project');
 var fsUtils         = require('../../../lib/utils/fs-utils');
 var Promise         = require('rsvp');
 
@@ -23,16 +23,16 @@ describe('Update gitignore Task', function() {
 
   beforeEach(function() {
     expectedGitkeep = '\n' +
-      'ember-cordova/tmp-livereload\n' +
-      'ember-cordova/cordova/node_modules\n' +
-      'ember-cordova/cordova/package.json\n' +
-      'ember-cordova/cordova/package-lock.json\n' +
-      'ember-cordova/cordova/platforms/*\n' +
-      '!ember-cordova/cordova/platforms/.gitkeep\n' +
-      'ember-cordova/cordova/plugins/*\n' +
-      '!ember-cordova/cordova/plugins/.gitkeep\n' +
-      'ember-cordova/cordova/www/*\n' +
-      '!ember-cordova/cordova/www/.gitkeep';
+      'corber/tmp-livereload\n' +
+      'corber/cordova/node_modules\n' +
+      'corber/cordova/package.json\n' +
+      'corber/cordova/package-lock.json\n' +
+      'corber/cordova/platforms/*\n' +
+      '!corber/cordova/platforms/.gitkeep\n' +
+      'corber/cordova/plugins/*\n' +
+      '!corber/cordova/plugins/.gitkeep\n' +
+      'corber/cordova/www/*\n' +
+      '!corber/cordova/www/.gitkeep';
 
   });
 
@@ -82,9 +82,9 @@ describe('Update gitignore Task', function() {
     var task = createTask();
     return task.run().then(function() {
       expect(calls).to.deep.equal([
-        'ember-cordova/cordova/platforms/.gitkeep',
-        'ember-cordova/cordova/plugins/.gitkeep',
-        'ember-cordova/cordova/www/.gitkeep',
+        'corber/cordova/platforms/.gitkeep',
+        'corber/cordova/plugins/.gitkeep',
+        'corber/cordova/www/.gitkeep',
         '.gitignore'
       ]);
     });

@@ -1,6 +1,6 @@
 const td             = require('testdouble');
 const expect         = require('../../../helpers/expect');
-const mockProject    = require('../../../fixtures/ember-cordova-mock/project');
+const mockProject    = require('../../../fixtures/corber-mock/project');
 
 describe('Vue Framework', function() {
   afterEach(function() {

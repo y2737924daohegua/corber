@@ -2,7 +2,7 @@
 
 var expect          = require('../../helpers/expect');
 var HookTask        = require('../../../lib/tasks/run-hook');
-var mockProject     = require('../../fixtures/ember-cordova-mock/project');
+var mockProject     = require('../../fixtures/corber-mock/project');
 var Promise         = require('rsvp').Promise;
 
 describe('Run Hook Task', function() {
