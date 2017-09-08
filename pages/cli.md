@@ -51,7 +51,7 @@ Runs a corber build by building your JS application, copying assets to the Cordo
 | environment | development| ember env |
 | platform    | ios | target cordova platform |
 | release     | debug | |
-| cordova-output-path | ember-cordova/cordova/www | |
+| cordova-output-path | corber/cordova/www | |
 | skip-ember-build (alias: seb) | false | only performs cordova build |
 | skip-cordova-build (alias: scb) | false | only performs ember build |
 
@@ -129,7 +129,7 @@ Passes commands straight to cordova, without interference.
 
 Because this proxies to cordova-cli, you will need cordova-cli installed (this is not required for usage anywhere else). Our hope is you won't need this command very much. If you do, consider opening an issue to let us know.
 
-When running a proxy command, file paths are relative to your **ember-cordova/cordova** directory.
+When running a proxy command, file paths are relative to your **corber/cordova** directory.
 
 For example, running `corber proxy plugin add ../local-plugin-path` from your project root will likely fail, while `corber proxy plugin add ../../../local-plugin-path` would succeed.
 (hint: try using `corber plugin add ../local-plugin-path` instead)
@@ -148,7 +148,7 @@ Live reload. To learn more, [read here](/pages/workflow/live_reload).
 |---------  |---------| ---- |
 | platform  | ios | cordova platform |
 | reloadUrl | auto detected ip | network ip of your machine |
-| cordova-output-path| ember-cordova/cordova/www | |
+| cordova-output-path| corber/cordova/www | |
 | skip-ember-build (alias: seb) | false | only performs cordova build |
 | skip-cordova-build (alias: scb) | false | only performs ember build |
 
@@ -165,7 +165,7 @@ Automatically generate platform icons from a single svg. For more information, s
 
 | Options    | default | desc |
 |---------  |---------| ----- |
-| source  | ember-cordova/icon.svg | splash svg |
+| source  | corber/icon.svg | splash svg |
 | platform | all | platform to build assets for |
 
 #### Examples
@@ -179,7 +179,7 @@ Automatically generate platform splashscreens from a single svg. For more inform
 
 | Options    | default | desc |
 |---------  |---------| ----- |
-| source  | ember-cordova/splash.svg | splash svg |
+| source  | corber/splash.svg | splash svg |
 | platform | all | platform to build assets for |
 
 

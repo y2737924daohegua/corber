@@ -3,8 +3,8 @@ layout: page
 title:  "Extending Frameworks"
 ---
 
-On init, corber will create a framework file at ember-cordova/config/framework.js.
-You will notice this object extends your selected framework - the base implementations can be found [here](https://github.com/isleofcode/ember-cordova/tree/master/lib/frameworks).
+On init, corber will create a framework file at corber/config/framework.js.
+You will notice this object extends your selected framework - the base implementations can be found [here](https://github.com/isleofcode/corber/tree/master/lib/frameworks).
 
 Frameworks refer to the *JS framework only* (e.g. Ember, Vue) and always implement the following functions:
 
@@ -31,7 +31,7 @@ Your local framework file can implement and thus override these functions - e.g.
 e.g.
 
 ```javascript
-#ember-cordova/config/framework.js
+#corber/config/framework.js
 module.exports = EmberFramework.extend({
   validateBuild() {
     console.log("HELLO");

@@ -5,7 +5,7 @@ title:  "Hooks"
 
 Use hooks for build-time customization, cleanup or warnings.
 
-To create a hook, create a file at `ember-cordova/hooks/<hook_type>.js` where `<hook_type>` is one of the following:
+To create a hook, create a file at `corber/hooks/<hook_type>.js` where `<hook_type>` is one of the following:
 
 * `beforeBuild` / `afterBuild`: fires on cdv:build and cdv:serve
 * `beforePrepare` / `afterPrepare`: fires on cdv:prepare
@@ -50,12 +50,12 @@ module.exports = function(options) {
 #### Example customization and cleanup
 If a project needed to build for web (`ember build`) and Cordova (`ember cdv:build`), we might decide to keep the template variable `rootURL` inside "app/index.html" for the web builds. 
 
-Using the corber "beforeBuild" hook we could backup the "app/index.html" file, then remove the string `"rootURL"` from it for the current build by creating the file `ember-cordova/hooks/beforeBuild.js` and writing something similar to:
+Using the corber "beforeBuild" hook we could backup the "app/index.html" file, then remove the string `"rootURL"` from it for the current build by creating the file `corber/hooks/beforeBuild.js` and writing something similar to:
 
 ```javascript
 /* jshint node: true */
 "use strict";
-const fsUtils = require('ember-cordova/lib/utils/fs-utils');
+const fsUtils = require('corber/lib/utils/fs-utils');
 
 module.exports = function() {
   // backup the index.html file and then remove {{rootURL}} before build.
@@ -77,12 +77,12 @@ module.exports = function() {
 
 Above we returned a promise so corber and EmberCLI will wait for our promise to settle before beginning the build. If the promise is rejected the build is prevented from continuing (*plan accordingly for any cleanup required in your hooks when rejecting returned promises or throwing Errors*).
 
-The corber "afterBuild" hook will run afterwards. This could be used to restore the backed up original version for "app/index.html" by creating a file at `ember-cordova/hooks/afterBuild.js`:
+The corber "afterBuild" hook will run afterwards. This could be used to restore the backed up original version for "app/index.html" by creating a file at `corber/hooks/afterBuild.js`:
 
 ```javascript
 /* jshint node: true */
 "use strict";
-const fsUtils = require('ember-cordova/lib/utils/fs-utils');
+const fsUtils = require('corber/lib/utils/fs-utils');
 
 module.exports = function() {
   // restore the index.html file
