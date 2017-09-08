@@ -32,7 +32,7 @@ describe('Cordova Command', function() {
     td.reset();
   });
 
-  it('warns if an ember-cordova command is used', function() {
+  it('warns if an corber  command is used', function() {
     var logDouble = td.replace(logger, 'warn');
     var cmd = setupCmd();
 
@@ -41,7 +41,7 @@ describe('Cordova Command', function() {
     });
 
     return cmd.validateAndRun(['build']).then(function() {
-      td.verify(logDouble(contains('bypassed ember-cordova command')));
+      td.verify(logDouble(contains('bypassed corber command')));
     });
   });
 

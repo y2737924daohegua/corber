@@ -40,7 +40,7 @@ describe('Get Platform Assets Util', function() {
       expect(function() {
         cordovaAssets.validatePaths();
       }).to.throw(
-        'ember-cordova: Platform asset path undefined, cant build'
+        'corber: Platform asset path undefined, cant build'
       );
     });
 

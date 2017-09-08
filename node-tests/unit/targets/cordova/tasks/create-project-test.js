@@ -43,14 +43,12 @@ describe('Cordova Create Project Task', function() {
 
   it('forces camelcased ids and names', function() {
     setupCreateTask();
-    create.id = 'ember-cordova-app';
-    create.name = 'ember-cordova-app';
+    create.id = 'corber-app';
+    create.name = 'corber-app';
 
     create.run();
 
-    /* eslint-disable max-len */
-    td.verify(rawDouble(isString, 'emberCordovaApp', 'emberCordovaApp', isObject));
-    /* eslint-enable max-len */
+    td.verify(rawDouble(isString, 'corberApp', 'corberApp', isObject));
   });
 
   it('raises a warning if cordova project already exists', function() {

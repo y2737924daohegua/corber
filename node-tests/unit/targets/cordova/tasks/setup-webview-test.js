@@ -37,7 +37,7 @@ describe('Cordova Setup Webview Task', function() {
 
     setupTask.run();
     td.verify(warnDouble(contains(
-      'ember-cordova initializes ios with the upgraded WKWebView'
+      'corber initializes ios with the upgraded WKWebView'
     )));
 
     td.verify(successDouble(contains(
