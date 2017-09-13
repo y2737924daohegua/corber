@@ -55,6 +55,19 @@ describe('Framework', function() {
     expect(frameworkType.get(root)).to.equal('vue');
   });
 
+  it('detect react', function() {
+    td.replace(frameworkType, 'getPackage', function() {
+      return {
+        name: 'my-app',
+        dependencies: {
+          'react': '0.0.0',
+        }
+      };
+    });
+
+    expect(frameworkType.get(root)).to.equal('react');
+  });
+
   it('returns custom if no type is detected', function() {
     td.replace(frameworkType, 'getPackage', function() {
       return {
