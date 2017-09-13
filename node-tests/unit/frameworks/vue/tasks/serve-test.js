@@ -18,9 +18,9 @@ describe('Vue Serve Task', function() {
     });
 
     let serveTask = new Serve();
-    return serveTask.run().then(function() {
+    return serveTask.run('ios').then(function() {
       td.verify(new Bash({
-        command: 'npm run dev'
+        command: 'node build/dev-server.js --CORBER_PLATFORM=ios'
       }));
 
       expect(tasks).to.deep.equal([

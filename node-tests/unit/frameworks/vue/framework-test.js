@@ -41,10 +41,10 @@ describe('Vue Framework', function() {
 
     let framework = new Vue();
 
-    framework.serve();
+    framework.serve({platform: 'ios'});
     td.verify(new ServeTask());
 
-    td.verify(serveDouble());
+    td.verify(serveDouble('ios'));
   });
 
   describe('buildValidators', function() {
@@ -81,8 +81,15 @@ describe('Vue Framework', function() {
     td.verify(runValidatorDouble(['validations']));
   });
 
+  /* eslint-disable max-len */
   it('validateServe calls _buildValidators then runs validators', function() {
     let runValidatorDouble = td.replace('../../../../lib/utils/run-validators');
+
+    let ValidateWebpack = td.replace('../../../../lib/frameworks/vue/validators/webpack-plugin');
+    td.replace(ValidateWebpack.prototype, 'run', function() {
+      return 'validate-webpack';
+    });
+
     let Vue = require('../../../../lib/frameworks/vue/framework');
     let framework = new Vue({root: mockProject.project.root});
 
@@ -95,6 +102,7 @@ describe('Vue Framework', function() {
     framework.validateServe({});
 
     expect(passedEnv).to.equal('dev');
-    td.verify(runValidatorDouble(['validations']));
+    td.verify(runValidatorDouble(['validations', 'validate-webpack']));
   });
+  /* eslint-enable max-len */
 });
