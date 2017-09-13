@@ -41,10 +41,10 @@ describe('Vue Framework', function() {
 
     let framework = new Vue();
 
-    framework.serve();
+    framework.serve({platform: 'ios'});
     td.verify(new ServeTask());
 
-    td.verify(serveDouble());
+    td.verify(serveDouble('ios'));
   });
 
   describe('buildValidators', function() {
