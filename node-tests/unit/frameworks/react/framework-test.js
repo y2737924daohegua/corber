@@ -2,14 +2,18 @@ const td             = require('testdouble');
 const expect         = require('../../../helpers/expect');
 const mockProject    = require('../../../fixtures/corber-mock/project');
 
+const initFramework = function() {
+  let React = require('../../../../lib/frameworks/react/framework');
+  return new React({root: mockProject.project.root});
+};
+
 describe('React Framework', function() {
   afterEach(function() {
     td.reset();
   });
 
   it('has required props', function() {
-    let React = require('../../../../lib/frameworks/react/framework');
-    let framework = new React();
+    let framework = initFramework();
 
     expect(framework.name).to.equal('react');
     expect(framework.buildCommand).to.equal('npm run build');
@@ -20,9 +24,8 @@ describe('React Framework', function() {
   it('build initializes a new BuildTask', function() {
     let BuildTask = td.replace('../../../../lib/frameworks/react/tasks/build');
     let buildDouble = td.replace(BuildTask.prototype, 'run');
-    let React = require('../../../../lib/frameworks/react/framework');
 
-    let framework = new React();
+    let framework = initFramework();
 
     framework.build({cordovaOutputPath: 'fakePath'});
     td.verify(new BuildTask({
@@ -37,13 +40,51 @@ describe('React Framework', function() {
   it('serve intializes a new ServeTask', function() {
     let ServeTask = td.replace('../../../../lib/frameworks/react/tasks/serve');
     let serveDouble = td.replace(ServeTask.prototype, 'run');
-    let React = require('../../../../lib/frameworks/react/framework');
 
-    let framework = new React();
+    let framework = initFramework();
 
     framework.serve({platform: 'ios'});
     td.verify(new ServeTask());
 
     td.verify(serveDouble('ios'));
+  });
+
+  it('buildValidators inits ValidateHomepage', function() {
+    let ValidateHomepage = td.replace('../../../../lib/frameworks/react/validators/homepage');
+    let framework = initFramework();
+
+    framework._buildValidators();
+    td.verify(new ValidateHomepage({
+      root: mockProject.project.root
+    }));
+  });
+
+  it('validateBuild calls buildValidators & then runs validators', function() {
+    let runValidatorDouble = td.replace('../../../../lib/utils/run-validators');
+
+    let framework = initFramework();
+    td.replace(framework, '_buildValidators', function() {
+      return ['validations'];
+    });
+
+    framework.validateBuild();
+    td.verify(runValidatorDouble(['validations']));
+  });
+
+  it('validateServe calls buildValdators, adds ValidateWebpack & runs validatgors', function() {
+    let runValidatorDouble = td.replace('../../../../lib/utils/run-validators');
+
+    let ValidateWebpack = td.replace('../../../../lib/frameworks/vue/validators/webpack-plugin');
+    td.replace(ValidateWebpack.prototype, 'run', function() {
+      return 'validate-webpack';
+    });
+
+    let framework = initFramework();
+    td.replace(framework, '_buildValidators', function() {
+      return ['validations'];
+    });
+
+    framework.validateServe();
+    td.verify(runValidatorDouble(['validations', 'validate-webpack']));
   });
 });
