@@ -1,5 +1,5 @@
 const td             = require('testdouble');
-const expect         = require('../../../../helpers/expect');
+const expect         = require('../../helpers/expect');
 const Promise        = require('rsvp').Promise;
 
 describe('Vue Build Task', function() {
@@ -8,8 +8,8 @@ describe('Vue Build Task', function() {
   beforeEach(function() {
     tasks = [];
 
-    Bash = td.replace('../../../../../lib/tasks/bash');
-    let Build = require('../../../../../lib/frameworks/vue/tasks/build');
+    Bash = td.replace('../../../lib/tasks/bash');
+    let Build = require('../../../lib/tasks/bash-build');
 
     td.replace(Bash.prototype, 'run', function() {
       tasks.push('bash-task');

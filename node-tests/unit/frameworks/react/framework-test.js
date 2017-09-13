@@ -17,12 +17,13 @@ describe('React Framework', function() {
 
     expect(framework.name).to.equal('react');
     expect(framework.buildCommand).to.equal('npm run build');
+    expect(framework.serveCommand).to.equal('node scripts/start.js');
     expect(framework.buildPath).to.equal('./build');
     expect(framework.port).to.equal(3000);
   });
 
   it('build initializes a new BuildTask', function() {
-    let BuildTask = td.replace('../../../../lib/frameworks/react/tasks/build');
+    let BuildTask = td.replace('../../../../lib/tasks/bash-build');
     let buildDouble = td.replace(BuildTask.prototype, 'run');
 
     let framework = initFramework();
@@ -38,15 +39,18 @@ describe('React Framework', function() {
   });
 
   it('serve intializes a new ServeTask', function() {
-    let ServeTask = td.replace('../../../../lib/frameworks/react/tasks/serve');
+    let ServeTask = td.replace('../../../../lib/tasks/bash-serve');
     let serveDouble = td.replace(ServeTask.prototype, 'run');
 
     let framework = initFramework();
 
     framework.serve({platform: 'ios'});
-    td.verify(new ServeTask());
+    td.verify(new ServeTask({
+      command: framework.serveCommand,
+      platform: 'ios'
+    }));
 
-    td.verify(serveDouble('ios'));
+    td.verify(serveDouble());
   });
 
   it('buildValidators inits ValidateHomepage', function() {
