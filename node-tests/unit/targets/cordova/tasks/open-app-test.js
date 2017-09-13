@@ -1,4 +1,3 @@
- /* eslint-disable max-len */
 var td              = require('testdouble');
 var path            = require('path');
 var BashTask        = require('../../../../../lib/tasks/bash');
@@ -8,7 +7,6 @@ var openCommand     = require('../../../../../lib/utils/open-app-command');
 var mockProject     = require('../../../../fixtures/corber-mock/project');
 var _merge          = require('lodash').merge;
 var isObject        = td.matchers.isA(Object);
- /* eslint-enable max-len */
 
 describe('Cordova Open App Task', function() {
   var bashDouble, openApp, cdvPath;

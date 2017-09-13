@@ -1,11 +1,9 @@
- /* eslint-disable max-len */
 const td             = require('testdouble');
 const expect         = require('../../../helpers/expect');
 const mockProject    = require('../../../fixtures/corber-mock/project');
 const WatchmanCfg    = require('../../../../lib/frameworks/ember/tasks/update-watchman-config');
 const Promise        = require('rsvp').Promise;
 const isAnything     = td.matchers.anything;
- /* eslint-enable max-len */
 
 describe('Ember Framework', function() {
   let Build, Serve;
@@ -94,14 +92,12 @@ describe('Ember Framework', function() {
 
   context('buildValidators', function() {
     it('inits validations', function() {
-      /* eslint-disable max-len */
       let ValidateLocation = td.replace('../../../../lib/frameworks/ember/validators/location-type');
       let ValidateRoot = td.replace('../../../../lib/validators/root-url');
       let Ember = require('../../../../lib/frameworks/ember/framework');
 
       let framework = new Ember({project: mockProject.project, isGlimmer: false});
       let validators = framework._buildValidators({});
-      /* eslint-enable max-len */
 
 
       td.verify(new ValidateLocation({
@@ -120,11 +116,9 @@ describe('Ember Framework', function() {
     });
 
     it('passes the force flag to ValidateRootURL', function() {
-      /* eslint-disable max-len */
       let ValidateRoot = td.replace('../../../../lib/validators/root-url');
       let Ember = require('../../../../lib/frameworks/ember/framework');
       let framework = new Ember({project: mockProject.project, isGlimmer: false});
-      /* eslint-enable max-len */
 
       framework._buildValidators({force: true});
       td.verify(new ValidateRoot({

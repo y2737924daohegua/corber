@@ -1,6 +1,5 @@
 'use strict';
 
-/* eslint-disable max-len */
 var td              = require('testdouble');
 var expect          = require('../../helpers/expect');
 var mockProject     = require('../../fixtures/corber-mock/project');
@@ -9,7 +8,6 @@ var chalk           = require('chalk');
 var contains        = td.matchers.contains;
 
 var ValidateRoot    = require('../../../lib/validators/root-url');
-/* eslint-enable max-len */
 
 var rejectMsg =
   chalk.red('* undefined: testProp has a leading slash. \n') +

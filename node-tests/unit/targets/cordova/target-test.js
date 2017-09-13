@@ -1,4 +1,3 @@
- /* eslint-disable max-len */
 const td             = require('testdouble');
 const expect         = require('../../../helpers/expect');
 const Promise        = require('rsvp').Promise;
@@ -7,7 +6,6 @@ const mockProject    = require('../../../fixtures/corber-mock/project');
 const ValidatePlatform        = require('../../../../lib/targets/cordova/validators/platform');
 const ValidatePlugin          = require('../../../../lib/targets/cordova/validators/plugin');
 const ValidateAllowNavigation = require('../../../../lib/targets/cordova/validators/allow-navigation');
- /* eslint-enable max-len */
 
 describe('Cordova Target', function() {
   let CordovaTarget;

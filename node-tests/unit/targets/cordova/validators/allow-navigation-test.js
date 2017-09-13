@@ -1,11 +1,9 @@
-/* eslint-disable max-len */
 var td              = require('testdouble');
 var expect          = require('../../../../helpers/expect');
 var mockProject     = require('../../../../fixtures/corber-mock/project');
 var ValidateNav     = require('../../../../../lib/targets/cordova/validators/allow-navigation');
 var logger          = require('../../../../../lib/utils/logger');
 var contains        = td.matchers.contains;
-/* eslint-enable max-len */
 
 describe('Validate Allow Navigation Test', function() {
   afterEach(function() {

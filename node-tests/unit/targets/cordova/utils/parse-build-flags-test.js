@@ -1,7 +1,5 @@
- /* eslint-disable max-len */
 var expect        = require('../../../../helpers/expect');
 var parseCordovaOpts = require('../../../../../lib/targets/cordova/utils/parse-build-flags');
- /* eslint-enable max-len */
 
 describe('Parse Cordova Build Options Util', function() {
   it('sets generic flags', function() {

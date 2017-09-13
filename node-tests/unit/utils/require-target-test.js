@@ -8,10 +8,8 @@ describe('requireTarget util', function() {
   });
 
   it('parses cordova build flag', function() {
-    /* eslint-disable max-len */
     let optDouble = td.replace('../../../lib/targets/cordova/utils/parse-build-flags');
     let requireTarget = require('../../../lib/utils/require-target');
-    /* eslint-enable max-len */
 
     requireTarget({}, {});
     td.verify(optDouble(isAnything(), isAnything()));

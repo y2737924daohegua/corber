@@ -1,4 +1,3 @@
- /* eslint-disable max-len */
 const td             = require('testdouble');
 const expect         = require('../../../../helpers/expect')
 const Promise        = require('rsvp');
@@ -6,7 +5,6 @@ const isObject       = td.matchers.isA(Object);
 const clone          = require('lodash').clone;
 const mockProject    = require('../../../../fixtures/corber-mock/project');
 const mockAnalytics  = require('../../../../fixtures/corber-mock/analytics');
- /* eslint-enable max-len */
 
 describe('Ember Serve Task', function() {
   let Serve, EmberBuilder, EmberWatcher, LiveReload, Express, Funnel;

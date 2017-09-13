@@ -1,9 +1,7 @@
- /* eslint-disable max-len */
 const td             = require('testdouble');
 const expect         = require('../../../../helpers/expect')
 const Promise        = require('rsvp');
 const mockProject    = require('../../../../fixtures/corber-mock/project');
- /* eslint-enable max-len */
 
 describe('Ember Build Task', function() {
   afterEach(function() {
