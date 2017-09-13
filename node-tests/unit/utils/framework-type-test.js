@@ -1,9 +1,6 @@
 const td             = require('testdouble');
 const expect         = require('../../helpers/expect');
-
 const mockProject    = require('../../fixtures/corber-mock/project');
-const frameworkType  = require('../../../lib/utils/framework-type');
-
 const root           = mockProject.project.root;
 
 describe('Framework', function() {
@@ -11,13 +8,8 @@ describe('Framework', function() {
     td.reset();
   });
 
-  it('attempts to read package.json at root', function() {
-    let packageJSON = frameworkType.getPackage(root);
-    expect(packageJSON.name).to.equal('mock-project');
-  });
-
   it('detects glimmer', function() {
-    td.replace(frameworkType, 'getPackage', function() {
+    td.replace('../../../lib/utils/get-package', function() {
       return {
         name: 'my-app',
         devDependencies: {
@@ -26,11 +18,12 @@ describe('Framework', function() {
       };
     });
 
+    let frameworkType  = require('../../../lib/utils/framework-type');
     expect(frameworkType.get(root)).to.equal('glimmer');
   });
 
   it('detects ember', function() {
-    td.replace(frameworkType, 'getPackage', function() {
+    td.replace('../../../lib/utils/get-package', function() {
       return {
         name: 'my-app',
         devDependencies: {
@@ -39,11 +32,12 @@ describe('Framework', function() {
       };
     });
 
+    let frameworkType  = require('../../../lib/utils/framework-type');
     expect(frameworkType.get(root)).to.equal('ember');
   });
 
   it('detect vue', function() {
-    td.replace(frameworkType, 'getPackage', function() {
+    td.replace('../../../lib/utils/get-package', function() {
       return {
         name: 'my-app',
         dependencies: {
@@ -52,11 +46,12 @@ describe('Framework', function() {
       };
     });
 
+    let frameworkType  = require('../../../lib/utils/framework-type');
     expect(frameworkType.get(root)).to.equal('vue');
   });
 
   it('detect react', function() {
-    td.replace(frameworkType, 'getPackage', function() {
+    td.replace('../../../lib/utils/get-package', function() {
       return {
         name: 'my-app',
         dependencies: {
@@ -65,17 +60,19 @@ describe('Framework', function() {
       };
     });
 
+    let frameworkType  = require('../../../lib/utils/framework-type');
     expect(frameworkType.get(root)).to.equal('react');
   });
 
   it('returns custom if no type is detected', function() {
-    td.replace(frameworkType, 'getPackage', function() {
+    td.replace('../../../lib/utils/get-package', function() {
       return {
         name: 'my-app',
         dependencies: {}
       };
     });
 
+    let frameworkType  = require('../../../lib/utils/framework-type');
     expect(frameworkType.get(root)).to.equal('custom');
   });
 });
