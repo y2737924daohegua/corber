@@ -2,23 +2,29 @@ const td              = require('testdouble');
 const expect          = require('../../../../helpers/expect');
 const mockProject     = require('../../../../fixtures/corber-mock/project');
 const path            = require('path');
+const contains        = td.matchers.contains;
 
-/* eslint-disable max-len */
-const ValidateWebpack  = require('../../../../../lib/frameworks/vue/validators/webpack-plugin');
-/* eslint-enable max-len */
+const initValidator = function() {
+  const ValidateWebpack  = require('../../../../../lib/frameworks/vue/validators/webpack-plugin');
+  let validateWebpack = new ValidateWebpack();
+
+  validateWebpack.configPath = path.join(
+    mockProject.project.root,
+    'build',
+    'webpack.dev.conf.js'
+  );
+
+  return validateWebpack;
+};
 
 describe('Validate Webpack Plugin', function() {
-  let validateWebpack;
-
-  beforeEach(function() {
-    validateWebpack = new ValidateWebpack();
-  });
-
   afterEach(function() {
     td.reset();
   });
 
   it('resolves if corber-webpack-plugin is listed', function() {
+    let validateWebpack = initValidator();
+
     validateWebpack.configPath = path.join(
       mockProject.project.root,
       'build',
@@ -29,16 +35,38 @@ describe('Validate Webpack Plugin', function() {
   });
 
   it('warns if corber-webpack-plugin is not listed', function() {
-    validateWebpack.configPath = path.join(
-      mockProject.project.root,
-      'build',
-      'webpack.dev.conf.js'
-    );
-
-    let warnDouble = td.replace(validateWebpack, 'warnMsg');
+    let validateWebpack = initValidator();
+    let warnMsgDouble = td.replace(validateWebpack, 'warnMsg');
 
     return validateWebpack.run().then(function() {
-      td.verify(warnDouble());
+      td.verify(warnMsgDouble());
+    });
+  });
+
+  context('warnMsg', function() {
+    let warnDouble;
+
+    beforeEach(function() {
+      let logDouble = td.replace('../../../../../lib/utils/logger');
+      warnDouble = td.replace(logDouble, 'warn');
+    });
+
+    it('includes vue specific info', function() {
+      let validateWebpack = initValidator();
+      validateWebpack.framework = 'vue';
+
+      return validateWebpack.run().then(function() {
+        td.verify(warnDouble(contains('build/webpack.dev.conf')));
+      });
+    });
+
+    it('includes react specific info', function() {
+      let validateWebpack = initValidator();
+      validateWebpack.framework = 'react';
+
+      return validateWebpack.run().then(function() {
+        td.verify(warnDouble(contains('config/webpack.config.dev.js')));
+      });
     });
   });
 });
