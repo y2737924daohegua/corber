@@ -16,11 +16,9 @@ var cordovaPath     = require('../../../lib/targets/cordova/utils/get-path');
 var mockProject     = require('../../fixtures/corber-mock/project');
 var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
 
-/* eslint-disable max-len */
 var ValidatePlatform        = require('../../../lib/targets/cordova/validators/platform');
 var ValidatePlugin          = require('../../../lib/targets/cordova/validators/plugin');
 var ValidateAllowNavigation = require('../../../lib/targets/cordova/validators/allow-navigation');
-/* eslint-enable max-len */
 
 describe('Serve Command', function() {
   var serveCmd;

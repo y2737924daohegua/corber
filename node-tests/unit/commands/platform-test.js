@@ -1,4 +1,3 @@
- /* eslint-disable max-len */
 var td              = require('testdouble');
 var expect          = require('../../helpers/expect');
 var CdvRawTask      = require('../../../lib/targets/cordova/tasks/raw');
@@ -7,7 +6,6 @@ var Promise         = require('rsvp');
 
 var mockProject     = require('../../fixtures/corber-mock/project');
 var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
- /* eslint-enable max-len */
 
 describe('Platform Command', function() {
   function setupCommand() {
@@ -71,7 +69,6 @@ describe('Platform Command', function() {
       });
     });
 
-    /* eslint-disable max-len */
     it('constructs SetupWebView appropriately', function() {
       let SetupView = td.replace('../../../lib/targets/cordova/tasks/setup-webview');
       let platform = setupCommand();
@@ -85,7 +82,6 @@ describe('Platform Command', function() {
         }));
       });
     });
-    /* eslint-enable max-len */
 
 
     it('runs SetupWebView to handle init', function() {

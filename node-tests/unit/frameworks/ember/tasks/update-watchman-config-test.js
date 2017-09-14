@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 var td              = require('testdouble');
 var expect          = require('../../../../helpers/expect');
 var path            = require('path');
@@ -7,7 +6,6 @@ var Promise         = require('rsvp').Promise;
 
 var WatchmanConfig  = require('../../../../../lib/frameworks/ember/tasks/update-watchman-config');
 var fsUtils         = require('../../../../../lib/utils/fs-utils');
- /* eslint-enable max-len */
 
 describe('Update Watchman Config Task', function() {
   var watchmanTask;

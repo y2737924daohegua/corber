@@ -47,7 +47,6 @@ describe('Make Splashes Command', function() {
       });
     });
 
-    /* eslint-disable max-len */
     context('when options and platform is `added`', function() {
       var options = {
         source: 'corber/splash.svg',
@@ -89,7 +88,6 @@ describe('Make Splashes Command', function() {
         td.verify(logger.info(`corber: Generating splashes for ${options.platform.join(', ')}`));
       });
     });
-    /* eslint-enable max-len */
   });
 
   context('when no added platforms', function() {

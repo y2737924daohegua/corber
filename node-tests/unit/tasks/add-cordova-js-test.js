@@ -1,4 +1,3 @@
- /* eslint-disable max-len */
 var td              = require('testdouble');
 var expect          = require('../../helpers/expect');
 var Promise         = require('rsvp').Promise;
@@ -7,7 +6,6 @@ var logger          = require('../../../lib/utils/logger');
 var mockProject     = require('../../fixtures/corber-mock/project');
 
 var AddCordovaJS    = require('../../../lib/tasks/add-cordova-js');
- /* eslint-enable max-len */
 
 describe('Add Cordova JS Task', function() {
   var source = 'www/index.html';

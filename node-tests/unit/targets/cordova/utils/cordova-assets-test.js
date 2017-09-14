@@ -1,11 +1,9 @@
- /* eslint-disable max-len */
 var td              = require('testdouble');
 var cordovaAssets   = require('../../../../../lib/targets/cordova/utils/cordova-assets');
 var expect          = require('../../../../helpers/expect');
 var fsUtils         = require('../../../../../lib/utils/fs-utils');
 var logger          = require('../../../../../lib/utils/logger');
 var contains        = td.matchers.contains;
- /* eslint-enable max-len */
 
 describe('Get Platform Assets Util', function() {
   describe('getPaths', function() {

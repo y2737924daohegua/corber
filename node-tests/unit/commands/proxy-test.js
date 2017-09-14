@@ -1,9 +1,7 @@
- /* eslint-disable max-len */
 var BashTask        = require('../../../lib/tasks/bash');
 var VerifyInstall   = require('../../../lib/targets/cordova/validators/is-installed');
 var CordovaCmd      = require('../../../lib/commands/proxy');
 var logger          = require('../../../lib/utils/logger');
-
 
 var td              = require('testdouble');
 var Promise         = require('rsvp');
@@ -12,7 +10,6 @@ var mockProject     = require('../../fixtures/corber-mock/project');
 var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
 var isObject        = td.matchers.isA(Object);
 var contains        = td.matchers.contains;
- /* eslint-enable max-len */
 
 describe('Cordova Command', function() {
   var setupCmd = function() {

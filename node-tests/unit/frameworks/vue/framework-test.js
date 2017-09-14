@@ -13,12 +13,13 @@ describe('Vue Framework', function() {
 
     expect(framework.name).to.equal('vue');
     expect(framework.buildCommand).to.equal('npm run build');
+    expect(framework.serveCommand).to.equal('node build/dev-server.js');
     expect(framework.buildPath).to.equal('./dist');
     expect(framework.port).to.equal(8080);
   });
 
   it('build initializes a new BuildTask', function() {
-    let BuildTask = td.replace('../../../../lib/frameworks/vue/tasks/build');
+    let BuildTask = td.replace('../../../../lib/tasks/bash-build');
     let buildDouble = td.replace(BuildTask.prototype, 'run');
     let Vue = require('../../../../lib/frameworks/vue/framework');
 
@@ -35,16 +36,19 @@ describe('Vue Framework', function() {
   });
 
   it('serve intializes a new ServeTask', function() {
-    let ServeTask = td.replace('../../../../lib/frameworks/vue/tasks/serve');
+    let ServeTask = td.replace('../../../../lib/tasks/bash-serve');
     let serveDouble = td.replace(ServeTask.prototype, 'run');
     let Vue = require('../../../../lib/frameworks/vue/framework');
 
     let framework = new Vue();
 
     framework.serve({platform: 'ios'});
-    td.verify(new ServeTask());
+    td.verify(new ServeTask({
+      command: framework.serveCommand,
+      platform: 'ios'
+    }));
 
-    td.verify(serveDouble('ios'));
+    td.verify(serveDouble());
   });
 
   describe('buildValidators', function() {
@@ -81,7 +85,6 @@ describe('Vue Framework', function() {
     td.verify(runValidatorDouble(['validations']));
   });
 
-  /* eslint-disable max-len */
   it('validateServe calls _buildValidators then runs validators', function() {
     let runValidatorDouble = td.replace('../../../../lib/utils/run-validators');
 
@@ -104,5 +107,4 @@ describe('Vue Framework', function() {
     expect(passedEnv).to.equal('dev');
     td.verify(runValidatorDouble(['validations', 'validate-webpack']));
   });
-  /* eslint-enable max-len */
 });

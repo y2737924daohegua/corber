@@ -1,4 +1,3 @@
- /* eslint-disable max-len */
 const td             = require('testdouble');
 const expect         = require('../../helpers/expect');
 const mockProject    = require('../../fixtures/corber-mock/project');
@@ -14,8 +13,6 @@ const frameworkType  = require('../../../lib/utils/framework-type');
 const contains       = td.matchers.contains;
 
 let CreateCordova    = require('../../../lib/targets/cordova/tasks/create-project');
-
- /* eslint-enable max-len */
 
 describe('Create Project', function() {
   let createTask;

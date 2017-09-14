@@ -1,4 +1,3 @@
- /* eslint-disable max-len */
 var td              = require('testdouble');
 
 var fsUtils         = require('../../../../../lib/utils/fs-utils');
@@ -9,7 +8,6 @@ var mockProject     = require('../../../../fixtures/corber-mock/project');
 var isObject        = td.matchers.isA(Object);
 var isString        = td.matchers.isA(String);
 var contains        = td.matchers.contains;
- /* eslint-enable max-len */
 
 describe('Cordova Create Project Task', function() {
   var create, rawDouble;
@@ -18,9 +16,7 @@ describe('Cordova Create Project Task', function() {
     //TODO - factor me out
     rawDouble = td.replace(cordovaProj.raw, 'create');
 
-    /* eslint-disable max-len */
     var CreateCdvTask = require('../../../../../lib/targets/cordova/tasks/create-project');
-    /* eslint-enable max-len */
     create = new CreateCdvTask(mockProject);
   };
 

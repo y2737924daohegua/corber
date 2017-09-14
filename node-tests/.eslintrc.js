@@ -1,16 +1,16 @@
+/* jshint node: true */
+// ht ember-cli
+
 module.exports = {
-  'parserOptions': {
-    'ecmaVersion': 6
+  globals: {
+    'describe': true,
+    'it': true,
+    'beforeEach': true,
+    'afterEach': true,
+    'context': true
   },
-
-  'env': {
-    'browser': false,
-    'node': true,
-    'mocha': true
-  },
-
-  'rules': {
-    // JSHint "expr", disabled due to chai expect assertions
-    'no-unused-expressions': 0
+  rules: {
+    'max-len': [2, { 'ignoreUrls': true, 'code': 120 }],
+    'no-unused-expressions': 'off'
   }
 };

@@ -47,7 +47,6 @@ describe('Make Icons Command', function() {
       });
     });
 
-    /* eslint-disable max-len */
     context('when options and platform is `added`', function() {
       var options = {
         source: 'corber/icon.svg',
@@ -89,7 +88,6 @@ describe('Make Icons Command', function() {
         td.verify(logger.info(`corber: Generating icons for ${options.platform.join(', ')}`));
       });
     });
-    /* eslint-enable max-len */
   });
 
   context('when no added platforms', function() {

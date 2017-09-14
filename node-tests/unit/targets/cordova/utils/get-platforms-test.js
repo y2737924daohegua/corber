@@ -1,4 +1,3 @@
- /* eslint-disable max-len */
 var td              = require('testdouble');
 var expect          = require('../../../../helpers/expect');
 var getCordovaPath  = require('../../../../../lib/targets/cordova/utils/get-path');
@@ -6,7 +5,6 @@ var getCordovaPath  = require('../../../../../lib/targets/cordova/utils/get-path
 var path            = require('path');
 
 var mockProject     = require('../../../../fixtures/corber-mock/project');
- /* eslint-enable max-len */
 
 describe('Get Added Platforms Util', function() {
   context('when project has platforms.json', function() {
@@ -18,9 +16,7 @@ describe('Get Added Platforms Util', function() {
 
       td.replace(platformsPath, { 'ios': '4.3.1' });
 
-      /* eslint-disable max-len */
       var getAddedPlatforms = require('../../../../../lib/targets/cordova/utils/get-platforms');
-      /* eslint-enable max-len */
 
       subject = getAddedPlatforms(mockProject.project);
     });
@@ -39,10 +35,7 @@ describe('Get Added Platforms Util', function() {
 
     beforeEach(function() {
       // Context relies on mockProject not including a platform.json.
-
-      /* eslint-disable max-len */
       var getAddedPlatforms = require('../../../../../lib/targets/cordova/utils/get-platforms');
-      /* eslint-enable max-len */
 
       subject = getAddedPlatforms(mockProject.project);
     });
