@@ -6,7 +6,7 @@ title:  "Extending Frameworks"
 On init, corber will create a framework file at corber/config/framework.js.
 You will notice this object extends your selected framework - the base implementations can be found [here](https://github.com/isleofcode/corber/tree/master/lib/frameworks).
 
-Frameworks refer to the *JS framework only* (e.g. Ember, Vue) and always implement the following functions:
+Frameworks refer to the *JS framework only* (e.g. Ember, Vue, React) and always implement the following functions:
 
 - validateBuild/build;
 - validateServe/serve;
@@ -43,3 +43,18 @@ module.exports = EmberFramework.extend({
 #### Create a custom framework
 
 So long as a framework implements validateBuild/build & validateServe/serve it will function. You can use this to implement a builder for a different JS framework, but still otherwise use the corber pipeline.
+
+
+#### Hard requirements
+
+For any corber app to work, your applications rootURL must not have a
+leading slash.
+
+
+#### Using with webpack
+
+corber should work with any webpack app. Start with reading the [React
+implementation](https://github.com/isleofcode/corber/tree/master/lib/frameworks/react) for an example.
+
+You may also want to use the corber-webpack-plugin for livereload.
+Read the [react](/pages/frameworks/react) for more details.
