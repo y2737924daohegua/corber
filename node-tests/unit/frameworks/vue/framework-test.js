@@ -1,6 +1,12 @@
 const td             = require('testdouble');
 const expect         = require('../../../helpers/expect');
 const mockProject    = require('../../../fixtures/corber-mock/project');
+const path           = require('path');
+
+const initFramework = function() {
+  let Vue = require('../../../../lib/frameworks/vue/framework');
+  return new Vue({root: mockProject.project.root});
+};
 
 describe('Vue Framework', function() {
   afterEach(function() {
@@ -8,8 +14,7 @@ describe('Vue Framework', function() {
   });
 
   it('has required props', function() {
-    let Vue = require('../../../../lib/frameworks/vue/framework');
-    let framework = new Vue();
+    let framework = initFramework();
 
     expect(framework.name).to.equal('vue');
     expect(framework.buildCommand).to.equal('npm run build');
@@ -21,9 +26,7 @@ describe('Vue Framework', function() {
   it('build initializes a new BuildTask', function() {
     let BuildTask = td.replace('../../../../lib/tasks/bash-build');
     let buildDouble = td.replace(BuildTask.prototype, 'run');
-    let Vue = require('../../../../lib/frameworks/vue/framework');
-
-    let framework = new Vue();
+    let framework = initFramework();
 
     framework.build({cordovaOutputPath: 'fakePath'});
     td.verify(new BuildTask({
@@ -38,9 +41,7 @@ describe('Vue Framework', function() {
   it('serve intializes a new ServeTask', function() {
     let ServeTask = td.replace('../../../../lib/tasks/bash-serve');
     let serveDouble = td.replace(ServeTask.prototype, 'run');
-    let Vue = require('../../../../lib/frameworks/vue/framework');
-
-    let framework = new Vue();
+    let framework = initFramework();
 
     framework.serve({platform: 'ios'});
     td.verify(new ServeTask({
@@ -54,8 +55,8 @@ describe('Vue Framework', function() {
   describe('buildValidators', function() {
     it('inits a root-url validator', function() {
       let ValidateRoot = td.replace('../../../../lib/validators/root-url');
-      let Vue = require('../../../../lib/frameworks/vue/framework');
-      let framework = new Vue({root: mockProject.project.root});
+      let framework = initFramework();
+
       framework._buildValidators('build', {});
 
       td.verify(new ValidateRoot({
@@ -70,8 +71,7 @@ describe('Vue Framework', function() {
 
   it('validateBuild calls _buildValidators then runs validators', function() {
     let runValidatorDouble = td.replace('../../../../lib/utils/run-validators');
-    let Vue = require('../../../../lib/frameworks/vue/framework');
-    let framework = new Vue({root: mockProject.project.root});
+    let framework = initFramework();
 
     let passedEnv = undefined;
     td.replace(framework, '_buildValidators', function(env) {
@@ -93,8 +93,7 @@ describe('Vue Framework', function() {
       return 'validate-webpack';
     });
 
-    let Vue = require('../../../../lib/frameworks/vue/framework');
-    let framework = new Vue({root: mockProject.project.root});
+    let framework = initFramework();
 
     let passedEnv = undefined;
     td.replace(framework, '_buildValidators', function(env) {
@@ -106,5 +105,18 @@ describe('Vue Framework', function() {
 
     expect(passedEnv).to.equal('dev');
     td.verify(runValidatorDouble(['validations', 'validate-webpack']));
+  });
+
+  it('validateServe passes required props to ValidateWebpack', function() {
+    td.replace('../../../../lib/utils/run-validators');
+    let ValidateWebpack = td.replace('../../../../lib/validators/webpack-plugin');
+    let framework = initFramework();
+
+    framework.validateServe({});
+
+    td.verify(new ValidateWebpack({
+      configPath: path.join(mockProject.project.root, 'build', 'webpack.dev.conf'),
+      framework: 'vue'
+    }));
   });
 });

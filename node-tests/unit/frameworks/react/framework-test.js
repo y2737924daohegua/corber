@@ -1,6 +1,7 @@
 const td             = require('testdouble');
 const expect         = require('../../../helpers/expect');
 const mockProject    = require('../../../fixtures/corber-mock/project');
+const path           = require('path');
 
 const initFramework = function() {
   let React = require('../../../../lib/frameworks/react/framework');
@@ -90,5 +91,18 @@ describe('React Framework', function() {
 
     framework.validateServe();
     td.verify(runValidatorDouble(['validations', 'validate-webpack']));
+  });
+
+  it('validateServe passes required props to ValidateWebpack', function() {
+    td.replace('../../../../lib/utils/run-validators');
+    let ValidateWebpack = td.replace('../../../../lib/validators/webpack-plugin');
+    let framework = initFramework();
+
+    framework.validateServe({});
+
+    td.verify(new ValidateWebpack({
+      configPath: path.join(mockProject.project.root, 'config', 'webpack.config.dev.js'),
+      framework: 'react'
+    }));
   });
 });
