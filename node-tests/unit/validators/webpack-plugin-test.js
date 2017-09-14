@@ -1,11 +1,11 @@
 const td              = require('testdouble');
-const expect          = require('../../../../helpers/expect');
-const mockProject     = require('../../../../fixtures/corber-mock/project');
+const expect          = require('../../helpers/expect');
+const mockProject     = require('../../fixtures/corber-mock/project');
 const path            = require('path');
 const contains        = td.matchers.contains;
 
 const initValidator = function() {
-  const ValidateWebpack  = require('../../../../../lib/frameworks/vue/validators/webpack-plugin');
+  const ValidateWebpack  = require('../../../lib/validators/webpack-plugin');
   let validateWebpack = new ValidateWebpack();
 
   validateWebpack.configPath = path.join(
@@ -47,7 +47,7 @@ describe('Validate Webpack Plugin', function() {
     let warnDouble;
 
     beforeEach(function() {
-      let logDouble = td.replace('../../../../../lib/utils/logger');
+      let logDouble = td.replace('../../../lib/utils/logger');
       warnDouble = td.replace(logDouble, 'warn');
     });
 

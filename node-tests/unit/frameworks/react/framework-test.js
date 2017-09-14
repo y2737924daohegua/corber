@@ -78,7 +78,7 @@ describe('React Framework', function() {
   it('validateServe calls buildValdators, adds ValidateWebpack & runs validatgors', function() {
     let runValidatorDouble = td.replace('../../../../lib/utils/run-validators');
 
-    let ValidateWebpack = td.replace('../../../../lib/frameworks/vue/validators/webpack-plugin');
+    let ValidateWebpack = td.replace('../../../../lib/validators/webpack-plugin');
     td.replace(ValidateWebpack.prototype, 'run', function() {
       return 'validate-webpack';
     });
