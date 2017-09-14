@@ -10,7 +10,7 @@ var contains        = td.matchers.contains;
 var ValidateRoot    = require('../../../lib/validators/root-url');
 
 var rejectMsg =
-  chalk.red('* undefined: testProp has a leading slash. \n') +
+  chalk.red('* undefined dev: testProp has a leading slash. \n') +
   chalk.grey(
     'This will not work in cordova, and needs to be removed. \n' +
     'You can pass the --force flag to ignore if otherwise handled. \n' +
@@ -24,6 +24,7 @@ describe('Validate Root Url', function() {
     validateRoot = new ValidateRoot({
       project: mockProject.project,
       rootProps: ['testProp'],
+      env: 'dev',
       config: mockProject.config()
     });
   });
@@ -66,7 +67,7 @@ describe('Validate Root Url', function() {
     })
   });
 
-  it('errorMsg returns an errorMsg with path & rootProps', function() {
+  it('errorMsg returns an errorMsg with path, env & rootProps', function() {
     return expect(validateRoot.errorMsg()).to.equal(rejectMsg);
   });
 
