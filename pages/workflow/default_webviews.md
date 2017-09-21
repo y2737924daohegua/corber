@@ -15,13 +15,10 @@ If you would instead like to initialize with a UIWebView, run `corber platform a
 
 ### For Android
 
-Due to the deprecation of [Crosswalk](https://crosswalk-project.org) and accordingly [cordova-plugin-crosswalk-webview](https://github.com/crosswalk-project/cordova-plugin-crosswalk-webview), we now use the default Android WebView.
+By default the standard Android WebView is used.
 
-Crosswalk is a custom WebView for Android, which will:
-- Ensure your app is running in the same JS environment, vs. standard Android fragmentation;
-- Give you consistency with CSS parsing; and
-- Improve JS performance, especially for older devices.
+On Android 7 and later, the Android WebView is [automatically linked to Chrome and kept up-to-date](https://developer.android.com/about/versions/nougat/android-7.0.html#webview).
 
-The downside of crosswalk is that builds will now give you two apks, one for each of the x86 and armv7 platforms respectively. If you are shipping via the Google Store, you can upload both apks and trust the right one will be delivered. In testing, it is important to ensure you are working from the correct apk. 
+A now deprecated option to use the [crosswalk webview](https://github.com/crosswalk-project/cordova-plugin-crosswalk-webview) still exist. But since [Crosswalk](https://crosswalk-project.org) itself is sunset, and newer versions of Android will auto-update the webview, we no longer recommend using it.
 
-To install crosswalk when adding a platform, run `corber platform add android --crosswalk`.
+If you still want to use the crosswalk webview, run `corber platform add android --crosswalk`.
