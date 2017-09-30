@@ -36,6 +36,13 @@ By default, corber produces debug builds. You need to add a `--release` flag for
   corber cdv run android --device --nobuild  # Deploy to Android device
 ```
 
+#### Obtaining provisioning profile UUID for signing iOS
+
+When signing while building as described [here](https://cordova.apache.org/docs/en/latest/guide/platforms/ios/index.html#signing-an-app), you can obtain your iOS provisioning profile UUID by downloading it from iTunesConnect and run the following command:
+```bash
+  grep -a -A 1 'UUID' /Users/me/Downloads/myapp_dev.mobileprovision
+```
+
 #### Debugging
 
 Android Builds can be remotely inspected in Chrome ([details](http://geeklearning.io/apache-cordova-and-remote-debugging-on-android/)), and iOS builds in Safari ([details](http://geeklearning.io/apache-cordova-and-remote-debugging-on-ios/)).
