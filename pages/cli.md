@@ -52,8 +52,8 @@ Runs a corber build by building your JS application, copying assets to the Cordo
 | platform    | ios | target cordova platform |
 | release     | debug | |
 | cordova-output-path | corber/cordova/www | |
-| skip-ember-build (alias: seb) | false | only performs cordova build |
-| skip-cordova-build (alias: scb) | false | only performs ember build |
+| skip-framework-build (alias: sfb) | false | only performs cordova build |
+| skip-cordova-build (alias: scb) | false | only performs framework build |
 
 The build command also takes all of the non gradle-specific cordova build opts (e.g. provisioningProfile, codeSignIdentity).
 
@@ -149,8 +149,8 @@ Live reload. To learn more, [read here](/pages/workflow/live_reload).
 | platform  | ios | cordova platform |
 | reloadUrl | auto detected ip | network ip of your machine |
 | cordova-output-path| corber/cordova/www | |
-| skip-ember-build (alias: seb) | false | only performs cordova build |
-| skip-cordova-build (alias: scb) | false | only performs ember build |
+| skip-framework-build (alias: sfb) | false | only performs cordova build |
+| skip-cordova-build (alias: scb) | false | only performs framework build |
 
 #### Examples
 + `corber serve`
