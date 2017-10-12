@@ -1,14 +1,20 @@
 #!/usr/bin/env node
 'use strict';
 
-process.title       = 'corber';
+process.title               = 'corber';
 
-const CLI           = require('../node_modules/ember-cli/lib/cli/cli.js');
-const Project       = require('../node_modules/ember-cli/lib/models/project.js');
-const UI            = require('console-ui');
-const resolve       = require('resolve');
-const path          = require('path');
-const requireAsHash = require('../node_modules/ember-cli/lib/utilities/require-as-hash');
+const CLI                   = require('../node_modules/ember-cli/lib/cli/cli.js');
+const Project               = require('../node_modules/ember-cli/lib/models/project.js');
+const UI                    = require('console-ui');
+const resolve               = require('resolve');
+const path                  = require('path');
+const requireAsHash         = require('../node_modules/ember-cli/lib/utilities/require-as-hash');
+const willInterruptProcess  = require('../node_modules/ember-cli/lib/utilities/will-interrupt-process');
+
+// `process` should be captured before we require any libraries which
+// may use `process.exit` work arounds for async cleanup.
+// See https://github.com/ember-cli/ember-cli/blob/953ba590d103fdf1161a385deb134805b6770553/lib/cli/index.js#L68
+willInterruptProcess.capture(process);
 
 function loadCommands() {
   const Command = require('../node_modules/ember-cli/lib/models/command.js');
