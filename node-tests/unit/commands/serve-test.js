@@ -114,11 +114,11 @@ describe('Serve Command', function() {
   it('runs tasks in the correct order', function() {
     return serveCmd.run({}).then(function() {
       expect(tasks).to.deep.equal([
+        'hook beforeBuild',
         'validate-allow-navigation',
         'validate-platform',
         'validate-plugin',
         'framework-validate-serve',
-        'hook beforeBuild',
         'create-livereload-shell',
         'cordova-build',
         'hook afterBuild',
@@ -146,11 +146,11 @@ describe('Serve Command', function() {
       skipCordovaBuild: true
     }).then(function() {
       expect(tasks).to.deep.equal([
+        'hook beforeBuild',
         'validate-allow-navigation',
         'validate-platform',
         'validate-plugin',
         'framework-validate-serve',
-        'hook beforeBuild',
         'create-livereload-shell',
         'hook afterBuild'
       ]);
