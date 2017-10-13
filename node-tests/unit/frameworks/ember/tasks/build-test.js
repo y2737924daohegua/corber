@@ -2,6 +2,7 @@ const td             = require('testdouble');
 const expect         = require('../../../../helpers/expect')
 const Promise        = require('rsvp');
 const mockProject    = require('../../../../fixtures/corber-mock/project');
+const isAnything     = td.matchers.anything()
 
 describe('Ember Build Task', function() {
   afterEach(function() {
@@ -18,7 +19,8 @@ describe('Ember Build Task', function() {
     td.verify(new EmberBuilder({
       project: mockProject.project,
       environment: undefined,
-      outputPath: undefined
+      outputPath: undefined,
+      onProcessInterrupt: isAnything
     }));
   });
 
