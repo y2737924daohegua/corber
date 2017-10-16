@@ -12,7 +12,7 @@ var cordovaLogger   = require('cordova-common').CordovaLogger.get();
 describe('Cordova Raw Task', function() {
   var setupTask = function() {
     return new RawTask({
-      rawApi: 'platform',
+      api: 'platform',
       project: mockProject.project
     });
   };
@@ -22,7 +22,7 @@ describe('Cordova Raw Task', function() {
   });
 
   it('attempts to run a raw cordova call', function(done) {
-    td.replace(cordovaProj.raw, 'platform', function() {
+    td.replace(cordovaProj, 'platform', function() {
       done();
     });
 
@@ -36,7 +36,7 @@ describe('Cordova Raw Task', function() {
     beforeEach(function() {
       chdirDouble = td.replace(process, 'chdir');
 
-      td.replace(RawTask.prototype, 'cordovaRawPromise', function() {
+      td.replace(RawTask.prototype, 'cordovaPromise', function() {
         return Promise.resolve();
       });
     });
@@ -83,7 +83,7 @@ describe('Cordova Raw Task', function() {
 
   describe('when the raw task fails', function() {
     beforeEach(function() {
-      td.replace(RawTask.prototype, 'cordovaRawPromise', function() {
+      td.replace(RawTask.prototype, 'cordovaPromise', function() {
         return Promise.reject(new Error('fail'));
       });
     });
