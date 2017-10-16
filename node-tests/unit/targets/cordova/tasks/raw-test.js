@@ -51,10 +51,9 @@ describe('Cordova Raw Task', function() {
     });
 
     it('inits a callback which resolves', function() {
-      var cdvPath = cordovaPath(mockProject.project);
       var raw = setupTask();
 
-        return expect(raw.run()).to.eventually.be.fulfilled;
+      return expect(raw.run()).to.eventually.be.fulfilled;
     });
 
     it('changes back to ember dir on compvarion', function() {
