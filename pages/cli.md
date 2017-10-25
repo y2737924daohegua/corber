@@ -102,7 +102,7 @@ Add or remove cordova plugins.
 
 | Options  | default | desc |
 |---------|---------| ---- |
-| save    | true | store plugin info in `config.xml`. See [comitting & cloning](/pages/workflow/comitting) |
+| save    | true | store plugin info in `config.xml`. See [committing & cloning](/pages/workflow/committing) |
 
 #### Examples
 + `corber plugin add cordova-plugin-name`
