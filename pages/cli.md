@@ -142,7 +142,7 @@ For example, running `corber proxy plugin add ../local-plugin-path` from your pr
 
 ### Serve
 
-Live reload. To learn more, [read here](/pages/workflow/live_reload).
+Live reload. To learn more, [read here](/pages/workflow/livereload).
 
 | Options    | default | desc |
 |---------  |---------| ---- |
