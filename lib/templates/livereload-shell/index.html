@@ -24,6 +24,12 @@
       if (window.location.href.indexOf('file://') > -1) {
         window.location.replace(url);
       }
+
+
+     setTimeout(function() {
+       let content = document.getElementsByTagName('p')[0].innerText;
+       alert(content);
+     }, 5000);
     </script>
   </body>
 </html>
