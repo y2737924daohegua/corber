@@ -18,7 +18,7 @@ describe('Validate Location Type', function() {
     td.reset();
   });
 
-  it('rejects when config.locationType is not hash', function() {
+  it('rejects when config.locationType is auto', function() {
     validateLoc.config = { locationType: 'auto' };
     return expect(validateLoc.run()).to.eventually.be.rejected;
   });
@@ -30,6 +30,11 @@ describe('Validate Location Type', function() {
 
   it('resolves if config.locationType is hash', function() {
     validateLoc.config = { locationType: 'hash' };
+    return expect(validateLoc.run()).to.eventually.be.fulfilled;
+  });
+
+  it('resolves if config.locationType is none', function() {
+    validateLoc.config = { locationType: 'none' };
     return expect(validateLoc.run()).to.eventually.be.fulfilled;
   });
 
