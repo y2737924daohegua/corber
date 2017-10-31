@@ -25,8 +25,8 @@ corber build
 corber s
 
 #Build Icon & Splash Screens
-corber make:splashes
-corber make:icons
+corber make-splashes
+corber make-icons
 ```
 
 For documentation, please visit [corber.io](http://corber.io).
