@@ -84,7 +84,7 @@ describe('Ember Serve Task', function() {
       let stubbedAddon = cloned.addons[0];
       expect(cloned.addons.length).to.equal(1);
       expect(stubbedAddon.treeFor).to.be.a('function');
-      expect(stubbedAddon.pkg).to.deep.equal({"ember-addon": {}});
+      expect(stubbedAddon.pkg).to.deep.equal({'ember-addon': {}});
       expect(stubbedAddon.root).to.equal('corber-livereload');
       expect(stubbedAddon.name).to.equal('corber-livereload');
       expect(stubbedAddon.addons).to.be.a('array');
