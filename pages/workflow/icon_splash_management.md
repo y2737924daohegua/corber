@@ -58,7 +58,7 @@ const {
 } = Ember;
 
 export default Route.extend({
-  splashscreenService: service('corber/splash'),
+  splashscreenService: service('ember-cordova/splash'),
 
   afterModel() {
     this.get('splashScreenService').hide();
