@@ -24,7 +24,8 @@ Some whitelisting may be required in config.xml to access the serve instance. co
 You will receive a warning on any build if these tags, for whatever reason, were not appropriately removed.
 
 This command builds a cordova container app and starts a slightly modified serve process for your configured framework.
-Once serve is running, deploy the newly generated app to a device/emulator as explained in [build workflow](/pages/workflow/building).
+
+Once serve is running, *deploy* the newly generated app to a device/emulator as explained in the [build workflow](/pages/workflow/building) section _Deploying to a device or emulator_. You do not want to re-run `corber build`, this will rebuild the static, not livereloading app.
 
 Code changes should immediately resolve on your device. If you are having further troubles, you likely need to customize the device livereload url.
 
