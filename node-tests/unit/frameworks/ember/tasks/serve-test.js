@@ -80,12 +80,18 @@ describe('Ember Serve Task', function() {
       serve.stubEmberAddon(cloned);
     });
 
-    it('stubs treeFor function', function() {
+    it('stubs valid ember addon /w treeFor function', function() {
+      let stubbedAddon = cloned.addons[0];
       expect(cloned.addons.length).to.equal(1);
-      expect(cloned.addons[0].treeFor).to.be.a('function');
+      expect(stubbedAddon.treeFor).to.be.a('function');
+      expect(stubbedAddon.pkg).to.deep.equal({"ember-addon": {}});
+      expect(stubbedAddon.root).to.equal('corber-livereload');
+      expect(stubbedAddon.name).to.equal('corber-livereload');
+      expect(stubbedAddon.addons).to.be.a('array');
+      expect(stubbedAddon.addons.length).to.equal(0);
     });
 
-    it('when tree is addon, it creates a Funnel with cordova-assets', function() {
+    it('when treeFor is addon, it creates a Funnel with cordova-assets', function() {
       cloned.addons[0].treeFor('addon');
 
       td.verify(new Funnel(
@@ -96,7 +102,7 @@ describe('Ember Serve Task', function() {
       ));
     });
 
-    it('when tree is not addon, it does nothing', function() {
+    it('when treeFor is not addon, it does nothing', function() {
       cloned.addons[0].treeFor('app');
 
       td.verify(new Funnel(), { times: 0 });
