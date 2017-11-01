@@ -85,8 +85,8 @@ describe('Ember Serve Task', function() {
       expect(cloned.addons[0].treeFor).to.be.a('function');
     });
 
-    it('creates a new Broccoli Funnel with cordova-assets paths', function() {
-      cloned.addons[0].treeFor();
+    it('when tree is addon, it creates a Funnel with cordova-assets', function() {
+      cloned.addons[0].treeFor('addon');
 
       td.verify(new Funnel(
         'corber/cordova', {
@@ -94,6 +94,12 @@ describe('Ember Serve Task', function() {
           include: ['cordova.js', 'cordova_plugins.js']
         }
       ));
+    });
+
+    it('when tree is not addon, it does nothing', function() {
+      cloned.addons[0].treeFor('app');
+
+      td.verify(new Funnel(), { times: 0 });
     });
   });
 });
