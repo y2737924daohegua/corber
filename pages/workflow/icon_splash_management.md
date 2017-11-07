@@ -3,7 +3,7 @@ layout: page
 title:  "Generate Icons & Splashscreens"
 ---
 
-The `corber make-icons` and `ember cdv:make-splashes` commands generate all required icons and splashes for your added platforms from a single SVG. This is powered by a separate library called [splicon](https://github.com/isleofcode/splicon).
+The `corber make-icons` and `corber make-splashes` commands generate all required icons and splashes for your added platforms from a single SVG. This is powered by a separate library called [splicon](https://github.com/isleofcode/splicon).
 
 By default, corber detects which platforms (e.g. ios) you have installed and only generates assets for those platforms.
 Platform & icon source are configurable as documented [in the cli](/pages/cli).
