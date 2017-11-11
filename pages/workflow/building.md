@@ -32,8 +32,8 @@ By default, corber produces debug builds. You need to add a `--release` flag for
 
 
 ```bash
-  corber proxy run ios --emulator --nobuild   # Deploy to iOS simulator
-  corber proxy run android --device --nobuild  # Deploy to Android device
+  corber build --platform=ios --environment=production --release   # Release build for iOS
+  corber build --platform=android --environment=production --release   # Release build for Android
 ```
 
 #### Obtaining provisioning profile UUID for signing iOS
