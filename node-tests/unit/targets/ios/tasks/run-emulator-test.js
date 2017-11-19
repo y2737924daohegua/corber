@@ -25,7 +25,7 @@ describe('iOS Run Emulator Task', function() {
 
     let runEmulator = setupRunTask();
     return runEmulator.run('emulator').then(function() {
-      expect(invokes.length).to.equal(3);
+      expect(invokes.length).to.equal(4);
 
       expect(invokes[0]).to.deep.equal([
         '/usr/bin/xcrun',
@@ -33,11 +33,16 @@ describe('iOS Run Emulator Task', function() {
       ]);
 
       expect(invokes[1]).to.deep.equal([
+        'open',
+        ['/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app']
+      ]);
+
+      expect(invokes[2]).to.deep.equal([
         '/usr/bin/xcrun',
         ['simctl', 'install', 'emulator', appPath]
       ]);
 
-      expect(invokes[2]).to.deep.equal([
+      expect(invokes[3]).to.deep.equal([
         '/usr/bin/xcrun',
         ['simctl', 'launch', 'emulator', 'io.corber.react']
       ]);
