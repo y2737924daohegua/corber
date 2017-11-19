@@ -161,8 +161,21 @@ describe('Build Command', function() {
     let build = setupBuild();
     return build.run(baseOpts).then(function() {
       td.verify(new LintTask({
-        source: 'www/index.html',
-        project: mockProject.project
+        source: 'corber/cordova/www/index.html',
+      }));
+    });
+  });
+
+  it('supports custom output path with --cordova-output-path option', function() {
+    let build = setupBuild();
+    baseOpts.cordovaOutputPath = 'foo';
+
+    return build.run(baseOpts).then(function() {
+      td.verify(new AddCordovaJS({
+        source: 'foo/index.html'
+      }));
+      td.verify(new LintTask({
+        source: 'foo/index.html'
       }));
     });
   });
