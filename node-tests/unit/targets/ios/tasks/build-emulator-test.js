@@ -22,30 +22,29 @@ describe('iOS Build Emulator Task', function() {
   });
 
   it('spawns xcode build with expected flags', function() {
-    let iosPath = path.join(process.cwd(), 'corber', 'cordova', 'platforms', 'ios');
     let build = setupBuildTask();
-    build.run({emulator: 'emulator'}, 'buildPath');
+    build.run({emulator: 'emulator'}, 'buildPath', 'testScheme', 'iosPath');
 
     td.verify(spawnDouble(
       '/usr/bin/xcodebuild',
       [
-        '-workspace', `${path.join(iosPath, 'react.xcworkspace')}`,
+        '-workspace', 'iosPath/testScheme.xcworkspace',
         '-configuration', 'Debug',
-        '-scheme', 'react',
+        '-scheme', 'testScheme',
         '-destination', 'platform=iOS Simulator,name=emulator',
         '-derivedDataPath', 'buildPath',
         'CODE_SIGN_REQUIRED=NO',
         'CODE_SIGN_IDENTITY='
       ],
       {
-        cwd: iosPath
+        cwd: 'iosPath'
       }
     ));
   });
 
   it('sets destination when building for emulator by name', function() {
     let build = setupBuildTask();
-    build.run({emulator: 'iPhone X'}, 'buildPath');
+    build.run({emulator: 'iPhone X'}, 'buildPath', 'testScheme', 'iosPath');
 
     td.verify(spawnDouble(
       isAnything(),
@@ -56,7 +55,7 @@ describe('iOS Build Emulator Task', function() {
 
   it('sets destination when building for emulator by id', function() {
     let build = setupBuildTask();
-    build.run({emulatorid: 'UUID'}, 'buildPath');
+    build.run({emulatorid: 'UUID'}, 'buildPath', 'testScheme', 'iosPath');
 
     td.verify(spawnDouble(
       isAnything(),

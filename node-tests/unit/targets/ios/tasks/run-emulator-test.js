@@ -24,7 +24,7 @@ describe('iOS Run Emulator Task', function() {
     });
 
     let runEmulator = setupRunTask();
-    return runEmulator.run('emulator').then(function() {
+    return runEmulator.run('emulator', 'appName', 'builtPath').then(function() {
       expect(invokes.length).to.equal(4);
 
       expect(invokes[0]).to.deep.equal([
@@ -39,12 +39,12 @@ describe('iOS Run Emulator Task', function() {
 
       expect(invokes[2]).to.deep.equal([
         '/usr/bin/xcrun',
-        ['simctl', 'install', 'emulator', appPath]
+        ['simctl', 'install', 'emulator', 'builtPath']
       ]);
 
       expect(invokes[3]).to.deep.equal([
         '/usr/bin/xcrun',
-        ['simctl', 'launch', 'emulator', 'io.corber.react']
+        ['simctl', 'launch', 'emulator', 'appName']
       ]);
     });
   });
