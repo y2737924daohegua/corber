@@ -8,6 +8,7 @@ var cordovaLib      = require('cordova-lib');
 var cordovaProj     = cordovaLib.cordova;
 var events          = cordovaLib.events;
 var cordovaLogger   = require('cordova-common').CordovaLogger.get();
+var logger          = require('../../../../../lib/utils/logger');
 
 describe('Cordova Raw Task', function() {
   var setupTask = function() {
@@ -77,11 +78,12 @@ describe('Cordova Raw Task', function() {
       });
     });
 
-    it('logs verbosely when requested', function() {
+    it('passes log level to cordova logger', function() {
       td.replace(cordovaLogger, 'setLevel');
+      td.when(td.replace(logger, 'getLogLevel')()).thenReturn('verbose');
       var raw = setupTask();
 
-      return raw.run({ verbose: true }).then(function() {
+      return raw.run().then(function() {
         td.verify(cordovaLogger.setLevel('verbose'));
       });
     });

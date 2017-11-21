@@ -70,8 +70,7 @@ describe('Cordova Target', function() {
       let opts = {
         project: mockProject.project,
         platform: 'ios',
-        cordovaOpts: {cordovaOpts: true},
-        verbose: true
+        cordovaOpts: {cordovaOpts: true}
       }
 
       let target = new CordovaTarget(opts);
