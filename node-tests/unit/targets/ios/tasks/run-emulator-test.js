@@ -1,5 +1,4 @@
 const td              = require('testdouble');
-const path            = require('path');
 const Promise         = require('rsvp').Promise;
 const expect          = require('../../../../helpers/expect');
 
@@ -15,8 +14,6 @@ describe('iOS Run Emulator Task', function() {
 
   it ('boots, installs & launches emulator app', function() {
     let invokes = [];
-    let appPath = path.join(process.cwd(), 'corber', 'tmp/builds/Build/Products/Debug-iphonesimulator/react.app');
-
 
     td.replace('../../../../../lib/utils/spawn', function(cmd, args) {
       invokes.push([...arguments]);
@@ -24,12 +21,12 @@ describe('iOS Run Emulator Task', function() {
     });
 
     let runEmulator = setupRunTask();
-    return runEmulator.run('emulator', 'appName', 'builtPath').then(function() {
+    return runEmulator.run({id: 'emulatorId'}, 'appName', 'builtPath').then(function() {
       expect(invokes.length).to.equal(4);
 
       expect(invokes[0]).to.deep.equal([
         '/usr/bin/xcrun',
-        ['simctl', 'boot', 'emulator']
+        ['simctl', 'boot', 'emulatorId']
       ]);
 
       expect(invokes[1]).to.deep.equal([
@@ -39,14 +36,13 @@ describe('iOS Run Emulator Task', function() {
 
       expect(invokes[2]).to.deep.equal([
         '/usr/bin/xcrun',
-        ['simctl', 'install', 'emulator', 'builtPath']
+        ['simctl', 'install', 'emulatorId', 'builtPath']
       ]);
 
       expect(invokes[3]).to.deep.equal([
         '/usr/bin/xcrun',
-        ['simctl', 'launch', 'emulator', 'appName']
+        ['simctl', 'launch', 'emulatorId', 'appName']
       ]);
     });
   });
 });
-
