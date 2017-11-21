@@ -45,4 +45,23 @@ describe('iOS Run Emulator Task', function() {
       ]);
     });
   });
+
+  it('does not spawn boot if the emulator state is Booted', function() {
+    let invokes = [];
+
+    td.replace('../../../../../lib/utils/spawn', function(cmd, args) {
+      invokes.push([...arguments]);
+      return Promise.resolve();
+    });
+
+    let runEmulator = setupRunTask();
+    return runEmulator.run({id: 'emulatorId', state: 'Booted'}, 'appName', 'builtPath').then(function() {
+      expect(invokes.length).to.equal(3);
+
+      expect(invokes[0]).to.deep.equal([
+        'open',
+        ['/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app']
+      ]);
+    });
+  });
 });
