@@ -3,7 +3,7 @@ layout: page
 title:  "Building"
 ---
 
-`corber build` builds your JS Framework app with Cordova assets injected, and then executes a Cordova build. Validators are run to ensure there are no known errors.
+`corber build` builds your JavaScript Framework app with Cordova assets injected, and then executes a Cordova build. Validators are run to ensure there are no known errors.
 
 ```
     corber build --platform=ios --environment=production

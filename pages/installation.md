@@ -5,7 +5,7 @@ title:  "Installation / Quickstart"
 
 #### Requirements
 - node 6/7/8 per [Ember Node LTS Support](http://emberjs.com/blog/2016/09/07/ember-node-lts-support.html);
-- An existing JS application with one of the supported frameworks;
+- An existing JavaScript application with one of the supported frameworks;
 - A Macintosh machine is required for iOS builds;
 
 #### Installation
@@ -17,7 +17,7 @@ title:  "Installation / Quickstart"
 
 #### Project Setup
 
-From a supported JS projected, run `corber init`. For a list of supported projects, see [framework integrations](/pages/frameworks/index).
+From a supported JavaScript projected, run `corber init`. For a list of supported projects, see [framework integrations](/pages/frameworks/index).
 
 This will:
 

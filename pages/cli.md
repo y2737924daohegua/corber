@@ -44,7 +44,7 @@ Opens the last built project from `corber build` in the native IDE.
 
 ### Build
 
-Runs a corber build by building your JS application, copying assets to the Cordova web directory, and building the Cordova application. To learn more, [read here](/pages/workflow/building).
+Runs a corber build by building your JavaScript application, copying assets to the Cordova web directory, and building the Cordova application. To learn more, [read here](/pages/workflow/building).
 
 | Options     | default   | desc |
 |------------ |---------- | ---- |

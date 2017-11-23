@@ -3,7 +3,7 @@ layout: page
 title: "corber"
 ---
 
-corber CLI improves the hybrid app build experience with JS Frameworks - currently for Ember, Vue, React & Glimmer apps using Cordova. It can be used with existing or new JS applications.
+corber CLI improves the hybrid app build experience with JavaScript Frameworks - currently for Ember, Vue, React & Glimmer apps using Cordova. It can be used with existing or new JavaScript applications.
 
 corber handles items such as framework + app build & validations with a single command: corber build - without affecting existing web flows. The CLI also includes on-device livereload for development and utility functions for icons, plugins, etc. Where needed it can [proxy](/pages/cli#proxy) to the Cordova CLI.
 
@@ -18,7 +18,7 @@ yarn global add corber
 corber init
 corber platform add ios
 
-#runs your JS builder and creates a mobile application
+#runs your JavaScript builder and creates a mobile application
 corber build
 ```
 

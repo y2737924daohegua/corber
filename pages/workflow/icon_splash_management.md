@@ -46,7 +46,7 @@ Placed in corber/cordova/config.xml
 </widget>
 ```
 
-2: Manually hide the splash screen after your JS App has booted. Ember users can leverage the [corber-splash](https://github.com/isleofcode/ember-cordova-splash) service to hide the splashscreen in the afterModel hook.
+2: Manually hide the splash screen after your JavaScript App has booted. Ember users can leverage the [corber-splash](https://github.com/isleofcode/ember-cordova-splash) service to hide the splashscreen in the afterModel hook.
 
 ```js
 // app/routes/application.js

@@ -9,7 +9,7 @@ The default Cordova WebViews are not always the most performant option. corber i
 
 In iOS, `corber platform add ios` will initialize a [WKWebView](https://developer.apple.com/reference/webkit/wkwebview) on your behalf, vs a [UIWebView](https://developer.apple.com/reference/uikit/uiwebview).
 
-The UIWebView has been a class since iOS 2, whereas WKWebView was introduced in iOS 8. It includes the modern iOS WebView API's and considerable performance improvements for JS applications.
+The UIWebView has been a class since iOS 2, whereas WKWebView was introduced in iOS 8. It includes the modern iOS WebView API's and considerable performance improvements for JavaScript applications.
 
 If you would instead like to initialize with a UIWebView, run `corber platform add ios --uiwebview`.
 

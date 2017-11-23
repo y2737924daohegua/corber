@@ -6,7 +6,7 @@ title:  "Extending Frameworks"
 On init, corber will create a framework file at corber/config/framework.js.
 You will notice this object extends your selected framework - the base implementations can be found [here](https://github.com/isleofcode/corber/tree/master/lib/frameworks).
 
-Frameworks refer to the *JS framework only* (e.g. Ember, Vue, React) and always implement the following functions:
+Frameworks refer to the *JavaScript framework only* (e.g. Ember, Vue, React) and always implement the following functions:
 
 - validateBuild/build;
 - validateServe/serve;
