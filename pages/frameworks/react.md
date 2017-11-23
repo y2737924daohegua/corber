@@ -18,7 +18,7 @@ config.
 - If you want to enable cordova.js & plugins in livereload, you will need to run:
 
 ```bash
-  yarn install corber-webpack-plugin --save-dev
+  yarn add corber-webpack-plugin --dev
 ```
 
 and then add the following to config/webpack.config.dev.js plugins array:
