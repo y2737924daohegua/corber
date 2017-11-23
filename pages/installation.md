@@ -4,9 +4,9 @@ title:  "Installation / Quickstart"
 ---
 
 #### Requirements
-- node 6/7/8 per [Ember Node LTS Support](http://emberjs.com/blog/2016/09/07/ember-node-lts-support.html);
-- An existing JavaScript application with one of the supported frameworks;
-- A Macintosh machine is required for iOS builds;
+- Node 6/7/8 per [Ember Node LTS Support](http://emberjs.com/blog/2016/09/07/ember-node-lts-support.html),
+- an existing JavaScript application with one of the supported frameworks, and
+- MacOS and Xcode are required for iOS builds.
 
 #### Installation
 
@@ -21,9 +21,9 @@ From a supported JavaScript projected, run `corber init`. For a list of supporte
 
 This will:
 
-- Identify your project type;
-- Create a new folder at corber, including corber configuration;
-- Initialize a Cordova project at corber/cordova;
+- identify your project type,
+- create a new folder at corber, including corber configuration, and
+- initialize a Cordova project at `corber/cordova`.
 
 ###### Supported Flags
 
