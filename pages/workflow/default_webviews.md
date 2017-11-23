@@ -1,6 +1,6 @@
 ---
 layout: page
-title:  "Default Webviews"
+title:  "Default WebViews"
 ---
 
 The default Cordova WebViews are not always the most performant option. corber initializes your platform with the most performant web view if you add platforms with the `corber platform add` command.

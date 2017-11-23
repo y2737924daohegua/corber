@@ -1,6 +1,6 @@
 ---
 layout: page
-title:  "React"
+title:  "React / Webpack"
 ---
 
 React support has been tested with apps from create-react-app, but
