@@ -20,8 +20,7 @@ Livereload apps can still access Cordova plugins and work on emulators and physi
   corber --environment=staging --platform=android
 ```
 
-Some whitelisting may be required in config.xml to access the serve instance. corber will add these changes - and remove them from non-livereload builds.
-You will receive a warning on any build if these tags, for whatever reason, were not appropriately removed.
+Some whitelisting may be required in config.xml to access the serve instance. corber will add these changes and remove them from non-livereload builds. You will receive a warning on any build if these tags, for whatever reason, were not appropriately removed.
 
 This command builds a cordova container app and starts a slightly modified serve process for your configured framework.
 

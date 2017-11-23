@@ -3,4 +3,4 @@ layout: page
 title:  "Glimmer"
 ---
 
-Congrats - there are no changes required for Glimmer support.
+Congrats&mdash;there are no changes required for Glimmer support.

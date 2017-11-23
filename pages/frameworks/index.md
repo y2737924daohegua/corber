@@ -12,5 +12,5 @@ corber currently supports:
   [configuration / extending](/pages/frameworks/extending);
 
 In general the experience for each framework is hands off. corber will
-walk you through any necessary changes, and warn you about problematic
-framework configuration - such as base urls with a leading slash.
+walk you through any necessary changes and warn you about problematic
+framework configuration, such as base urls with a leading slash.

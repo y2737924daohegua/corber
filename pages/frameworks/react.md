@@ -6,7 +6,7 @@ title:  "React"
 React support has been tested with apps from create-react-app, but
 these steps should generally apply to any Webpack application.
 
-The following custom changes are required to your React application - but the CLI will warn you if anything is missing.
+The following custom changes are required to your React application. The CLI will warn you if anything is missing.
 
 - In `package.json`: the homepage property must be defined and nto have
   a leading slash;

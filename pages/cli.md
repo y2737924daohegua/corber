@@ -16,7 +16,7 @@ All commands follow the pattern `corber {command}`. We recommend aliasing a shor
 * [corber proxy](#proxy)
 * [corber serve](#serve)
 
-Override default CLI flags in `.ember-cli` - which lives in your project root. For example, to change the default platform from ios to android:
+Override default CLI flags in `.ember-cli`, which lives in your project root. For example, to change the default platform from ios to android:
 
 ```
 #.ember-cli

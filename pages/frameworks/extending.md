@@ -4,7 +4,7 @@ title:  "Extending Frameworks"
 ---
 
 On init, corber will create a framework file at corber/config/framework.js.
-You will notice this object extends your selected framework - the base implementations can be found [here](https://github.com/isleofcode/corber/tree/master/lib/frameworks).
+You will notice this object extends your selected framework&mdash;the base implementations can be found [here](https://github.com/isleofcode/corber/tree/master/lib/frameworks).
 
 Frameworks refer to the *JavaScript framework only* (e.g. Ember, Vue, React) and always implement the following functions:
 
@@ -23,7 +23,7 @@ A typical build command looks a little like:
 - run after hooks;
 
 #### Override framework functions
-Your local framework file can implement and thus override these functions - e.g. to support a custom build process - simply. When doing so, you can:
+Your local framework file can implement and thus override these functions&mdash;e.g. to support a custom build process&mdash;simply. When doing so, you can:
 
 - Call `this._super()` to run the base function; or
 - Choose to not invoke the base function.
