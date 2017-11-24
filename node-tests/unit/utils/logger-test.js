@@ -6,4 +6,25 @@ describe('logger util', function() {
     logger.setLogLevel('error');
     expect(logger.getLogLevel()).to.equal('error');
   });
+
+  describe('shouldLog', function() {
+    beforeEach(function() {
+      logger.setLogLevel('info');
+    });
+
+    it('returns true for higher levels', function() {
+      let shouldLog = logger.shouldLog('success');
+      expect(shouldLog).to.equal(true);
+    });
+
+    it('returns true for equal levels', function() {
+      let shouldLog = logger.shouldLog('info');
+      expect(shouldLog).to.equal(true);
+    });
+
+    it('returns false for lower levels', function() {
+      let shouldLog = logger.shouldLog('verbose');
+      expect(shouldLog).to.equal(false);
+    });
+  });
 });
