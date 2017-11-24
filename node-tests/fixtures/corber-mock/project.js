@@ -1,6 +1,5 @@
-'use strict';
-
-var path            = require('path');
+const path            = require('path');
+const Promise         = require('rsvp').Promise;
 
 module.exports = {
   env: 'development',
@@ -9,12 +8,16 @@ module.exports = {
 
   project: {
     root: path.resolve(__dirname, '..', '..', 'fixtures', 'corber-mock'),
-    name: function() { return 'corber-mock' },
-    isEmberCLIProject: function() { return true; },
-    config: function() {
+    name() { return 'corber-mock' },
+    isEmberCLIProject() { return true; },
+    config() {
       return {}
     }
   },
 
-  config: function() {}
+  config() {},
+
+  ui: {
+    prompt() { return Promise.resolve(); }
+  }
 }
