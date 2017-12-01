@@ -129,6 +129,26 @@ describe('Build Command', function() {
     });
   });
 
+  it('adds cordova-js with --add-cordova-js --skip-framework-build flags', function() {
+    let build = setupBuild();
+    baseOpts.skipFrameworkBuild = true;
+    baseOpts.addCordovaJs = true;
+
+    return build.run(baseOpts)
+    .then(function() {
+      //h-t ember-electron for the pattern
+      expect(tasks).to.deep.equal([
+        'hook beforeBuild',
+        'framework-validate-build',
+        'cordova-target-validate-build',
+        'add-cordova-js',
+        'cordova-target-build',
+        'hook afterBuild',
+        'lint-index'
+      ]);
+    });
+  });
+
   it('skips cordova-build with the --skip-cordova-build flag', function() {
     let build = setupBuild();
     baseOpts.skipCordovaBuild = true;
