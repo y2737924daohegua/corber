@@ -1,11 +1,15 @@
 const td              = require('testdouble');
+const path            = require('path');
 const expect          = require('../../helpers/expect');
 const Promise         = require('rsvp');
 const LRloadShellTask = require('../../../lib/tasks/create-livereload-shell');
 const ListEmulators   = require('../../../lib/targets/ios/tasks/list-emulators');
+const CordovaRaw      = require('../../../lib/targets/cordova/tasks/raw');
+const IOSRun          = require('../../../lib/targets/ios/tasks/run-emulator');
+const IOSBuild        = require('../../../lib/targets/ios/tasks/build-emulator');
+const Hook            = require('../../../lib/tasks/run-hook');
 const mockProject     = require('../../fixtures/corber-mock/project');
 const mockAnalytics   = require('../../fixtures/corber-mock/analytics');
-
 
 const dummyEmulators = [{
   id: 1,
@@ -184,5 +188,54 @@ describe('Start Command', function() {
   });
 
   describe('buildAndRun', function() {
+    it('runs tasks in the correct order', function() {
+      let tasks = [];
+      let emulator = {name: 'fakeEmulator', id: 'fakeUuid'};
+      let opts = {platform: 'ios'};
+      let corberRoot = path.join(mockProject.project.root, 'corber');
+
+      td.replace(Hook.prototype, 'run', function(hookName, passedOpts) {
+        tasks.push(`hook-${hookName}`);
+        expect(passedOpts).to.deep.equal(opts);
+        return Promise.resolve();
+      });
+
+      td.replace(CordovaRaw.prototype, 'run', function(cdvOpts) {
+        tasks.push('prepare');
+        expect(cdvOpts).to.deep.equal({platforms: ['ios']});
+        return Promise.resolve();
+      });
+
+      td.replace(IOSBuild.prototype, 'run', function(passedEm, buildPath, scheme, iosPath) {
+        tasks.push('ios-build-em');
+        expect(passedEm).to.deep.equal(emulator);
+        expect(buildPath).to.equal(path.join(corberRoot, 'tmp', 'builds'));
+        expect(scheme).to.equal('emberCordovaDummyApp');
+        expect(iosPath).to.equal(path.join(corberRoot, 'cordova', 'platforms', 'ios'));
+        return Promise.resolve();
+      });
+
+      /* eslint-disable max-len */
+      td.replace(IOSRun.prototype, 'run', function(passedEm, appName, builtPath) {
+        tasks.push('ios-run-em');
+        expect(passedEm).to.deep.equal(emulator);
+        expect(appName).to.equal('emberCordovaDummyApp');
+        expect(builtPath).to.equal(path.join(corberRoot, 'tmp', 'builds', 'Build', 'Products', 'Debug-iphonesimulator', 'emberCordovaDummyApp.app'));
+        return Promise.resolve();
+      });
+      /* eslint-enable max-len */
+
+      let start = setupStart();
+
+      return start.buildAndRun(emulator, opts).then(function() {
+        expect(tasks).to.deep.equal([
+          'hook-beforeBuild',
+          'prepare',
+          'ios-build-em',
+          'hook-afterBuild',
+          'ios-run-em'
+        ]);
+      });
+    });
   });
 });
