@@ -21,10 +21,15 @@
 
     <script type="text/javascript">
       var url = '{{liveReloadUrl}}';
-      window.location.replace(url);
+
+      var redirect = setInterval(function() {
+        window.location.replace(url);
+      }, 250);
 
 
      setTimeout(function() {
+       clearInterval(redirect);
+
        let content = document.getElementsByTagName('p')[0].innerText;
        alert(content);
      }, 5000);
