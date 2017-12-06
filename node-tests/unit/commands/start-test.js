@@ -147,10 +147,6 @@ describe('Start Command', function() {
       });
     });
 
-    it('calls list-emulators to get locally installed emulators', function() {
-
-    });
-
     it('prompts for an emulator if one is not passed', function() {
       let start = setupStart();
 
