@@ -199,11 +199,4 @@ describe('Build Command', function() {
       }));
     });
   });
-
-  it('sets process.env.CORBER', function() {
-    let build = setupBuild();
-    return build.run(baseOpts).then(function() {
-      expect(process.env.CORBER).to.be.ok;
-    });
-  });
 });

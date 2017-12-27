@@ -42,5 +42,10 @@ describe('Command', function() {
     cmd.run();
     td.verify(trackDouble(isAnything));
   });
+
+  it('sets process.env.CORBER', function() {
+    setupCmd();
+    expect(process.env.CORBER).to.be.ok;
+  });
 });
 
