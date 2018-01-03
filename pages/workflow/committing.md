@@ -10,7 +10,7 @@ On install, corber will update your gitignore to ignore non-essential files.
 The happy path involves checking in:
 
 - `corber/config/framework.js`
-- the _empty_ `corber/www`, `plugin`, and `platform` directories. corber maintains these as empty folders with a `.gitkeep` to avoid problems with Cordova APIs, and
+- The _empty_ `corber/www`, `plugin`, and `platform` directories. corber maintains these as empty folders with a `.gitkeep` to avoid problems with Cordova APIs.
 - `corber/cordova/config.xml` should also be checked in, which is the Cordova equivalent of `package.json`.
 
 Nothing else is generally required.

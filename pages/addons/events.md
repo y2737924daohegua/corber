@@ -9,7 +9,7 @@ title:  "ember-cordova-events"
 
 There are two mechanisms to handle these events:
 
-- **Evented:** All events are available for subscription from inside a function, e.g. lifecycle hooks like `init` or `beforeModel`, via `Ember.Evented`; and
+- **Evented:** All events are available for subscription from inside a function, e.g. lifecycle hooks like `init` or `beforeModel`, via `Ember.Evented`.
 - **Subscribe:** The `subscribe` util is a function that will tear down your listeners and prevent memory leaks. Like the `computed` helper, you register it at the top-level of your file, declare your service property + event, and pass it a function that should fire.
 
 These are not interchangeable; `subscribe` relies on the `this` scope available on the object, while `Evented` relies on the `this` scope inside a function. Whenever possible, we endorse the use of `Subscribe` vs. `Evented`.

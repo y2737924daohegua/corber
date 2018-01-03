@@ -10,7 +10,6 @@ Livereload apps can still access Cordova plugins and work on emulators and physi
 **Caveats**
 
 - Livereload is not for production environments. It is not a solution for delivering over the air updates in a production context.
-
 - Your computer and phone/device must be on the same network.
 
 #### Usage
@@ -41,7 +40,7 @@ corber will detect and automatically set these values for you.
 There are times you may need to run livereload with a specific remote host and port, or to customize a local url because we are not detecting it correctly.
 You can do so:
 
-- Via command line arg: `corber server --reload-url="<url>"`; or
+- Via command line arg: `corber server --reload-url="<url>"`.
 - For Ember projects, via `.ember-cli`: `reloadUrl: "<url>"`.
 
 Where `<url>` above  refers to a fully qualified URL including protocol, host, and port (if applicable), e.g. http://localhost:4200

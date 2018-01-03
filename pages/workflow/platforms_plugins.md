@@ -13,10 +13,10 @@ ec add android
 ```
 
 Available platforms are:
-- ios
-- android
-- blackberry
-- windows
+- iOS
+- Android
+- Blackberry
+- Windows
 
 Browser as a platform will be respected, but does not imply 'webbrowser'.
 Some Cordova plugins

@@ -5,10 +5,10 @@ title:  "Frameworks"
 
 corber currently supports:
 
-- [Ember](/pages/frameworks/ember),
-- [Vue](/pages/frameworks/vue) (for users of vue-cli/Webpack),
-- [React](/pages/frameworks/react), and
-- [Glimmer](/pages/frameworks/glimmer).
+- [Ember](/pages/frameworks/ember)
+- [Vue](/pages/frameworks/vue) (for users of vue-cli/Webpack)
+- [React](/pages/frameworks/react)
+- [Glimmer](/pages/frameworks/glimmer)
 
 Custom Frameworks can be integrated, but are not well-documented. See [Frameworks / Extending](/pages/frameworks/extending).
 

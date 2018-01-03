@@ -8,14 +8,9 @@ these steps should generally apply to any Webpack application.
 
 The following custom changes are required to your React application. The CLI will warn you if anything is missing.
 
-- In `package.json`: the homepage property must be defined and nto have
-  a leading slash;
-
-- If you want to use livereload (you probably do), you will have needed
-  to run `yarn run eject`. corber requires access to your webpack
-config.
-
-- If you want to enable cordova.js & plugins in livereload, you will need to run:
+- In `package.json`, the `homepage` property must be defined and not have a leading slash.
+- If you want to use livereload (you probably do), you will have to run `yarn run eject`. corber requires access to your webpack config.
+- If you want to enable `cordova.js` and plugins in livereload, you will need to run:
 
 ```bash
   yarn add corber-webpack-plugin --dev

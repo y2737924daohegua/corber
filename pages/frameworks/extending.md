@@ -8,25 +8,25 @@ You will notice this object extends your selected framework&mdash;the base imple
 
 Frameworks refer to the *JavaScript framework only* (e.g. Ember, Vue, React) and always implement the following functions:
 
-- `validateBuild/build`, and
-- `validateServe/serve`.
+- `validateBuild/build`
+- `validateServe/serve`
 
 A typical build command looks a little like:
 
-- run "before" hooks,
-- run framework `validateBuild` function (e.g. check Ember config),
-- run target `validateBuild` function (checks Cordova config),
-- run framework `build`,
-- copy the assets to the Cordova project,
-- build the Cordova project,
-- run "after" validators, and
-- run "after" hooks.
+- Run "before" hooks.
+- Run framework `validateBuild` function (e.g. check Ember config).
+- Run target `validateBuild` function (checks Cordova config).
+- Run framework `build`.
+- Copy the assets to the Cordova project.
+- Build the Cordova project.
+- Run "after" validators.
+- Run "after" hooks.
 
 #### Override framework functions
 Your local framework file can implement and thus override these functions&mdash;e.g. to support a custom build process&mdash;simply. When doing so, you can:
 
-- call `this._super()` to run the base function, or
-- choose to not invoke the base function;
+- Call `this._super()` to run the base function.
+- Choose to not invoke the base function.
 
 e.g.
 
