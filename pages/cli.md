@@ -142,7 +142,7 @@ For example, running `corber proxy plugin add ../local-plugin-path` from your pr
 
 ### Serve
 
-Live reload. To learn more, [read here](/pages/workflow/livereload).
+Live reload. To learn more, [read here](/pages/workflow/livereload). 
 
 | Options    | default | desc |
 |---------  |---------| ---- |
@@ -156,6 +156,21 @@ Live reload. To learn more, [read here](/pages/workflow/livereload).
 + `corber serve`
 + `corber serve --platform=android --reloadUrl=192.168.1.1`
 + `corber serve --platform=browser --env "development"`
+
+
+### Start (beta)
+
+Updated implementation of livereload. For further details see the
+[RFC](https://github.com/isleofcode/corber/issues/428).
+
+| Options    | default | desc |
+|---------  |---------| ---- |
+| platform  | ios | cordova platform |
+| skip-framework-build (alias: sfb) | false | only performs cordova build |
+| skip-cordova-build (alias: scb) | false | only performs framework build |
+
+#### Examples
++ `corber start`
 
 ***
 
