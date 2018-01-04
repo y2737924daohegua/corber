@@ -29,8 +29,8 @@ corber build
 corber s
 
 #Build Icon & Splash Screens
-corber make:splashes
-corber make:icons
+corber make-splashes
+corber make-icons
 ```
 
 **Next**:
