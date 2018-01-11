@@ -3,58 +3,66 @@ layout: page
 title:  "Extending Frameworks"
 ---
 
-On init, corber will create a framework file at corber/config/framework.js.
-You will notice this object extends your selected framework&mdash;the base implementations can be found [here](https://github.com/isleofcode/corber/tree/master/lib/frameworks).
+#### Framework.js
 
-Frameworks refer to the *JavaScript framework only* (e.g. Ember, Vue, React) and always implement the following functions:
+When you run `corber init`, corber will create a *framework configuration file* located at `corber/config/framework.js`. This file contains the JavaScript framework-specific hooks that corber will execute in order to validate, build, and serve your app.
 
-- `validateBuild/build`
-- `validateServe/serve`
+These hooks are:
 
-A typical build command looks a little like:
+- `validateBuild`
+- `build`
+- `validateServe`
+- `serve`
 
-- Run "before" hooks.
-- Run framework `validateBuild` function (e.g. check Ember config).
-- Run target `validateBuild` function (checks Cordova config).
-- Run framework `build`.
-- Copy the assets to the Cordova project.
-- Build the Cordova project.
-- Run "after" validators.
-- Run "after" hooks.
+corber comes packaged with [base implementations](https://github.com/isleofcode/corber/tree/master/lib/frameworks) for Ember, Vue, and React, but you can write your own to support the framework of your choice.
 
-#### Override framework functions
-Your local framework file can implement and thus override these functions&mdash;e.g. to support a custom build process&mdash;simply. When doing so, you can:
+#### Build pipeline
 
-- Call `this._super()` to run the base function.
+A typical build command executes the following steps:
+
+1. Run "before" hooks.
+2. Run framework `validateBuild` function (e.g. check Ember config).
+3. Run target `validateBuild` function (checks Cordova config).
+4. Run framework `build`.
+5. Copy the assets to the Cordova project.
+6. Build the Cordova project.
+7. Run "after" validators.
+8. Run "after" hooks.
+
+#### Overriding base framework hooks
+
+You can customize one of the base framework implementations (e.g. Ember, React, Vue, etc.) by overriding one or more hooks in `framework.js`. This is a convenient way to implement custom build processes.
+
+When extending hooks, you can:
+
+- Call `this._super()` to run the base function, or
 - Choose to not invoke the base function.
 
-e.g.
+For example,
 
 ```javascript
-#corber/config/framework.js
+// corber/config/framework.js
 module.exports = EmberFramework.extend({
   validateBuild() {
-    console.log("HELLO");
+    console.log('HELLO');
     this._super();
   }
 });
 ```
 
-#### Create a custom framework
+#### Creating a custom framework.js for your own framework
 
-So long as a framework implements validateBuild/build & validateServe/serve it will function. You can use this to implement a builder for a different JS framework, but still otherwise use the corber pipeline.
-
+So long as `framework.js` implements the four hooks `validateBuild`, `validateServe`, `build`, and `serve`, corber is compatible with any framework you choose.
 
 #### Hard requirements
 
-For any corber app to work, your applications rootURL must not have a
+For any corber app to work, your application's `rootURL` must not have a
 leading slash.
 
+#### Usage with webpack
 
-#### Using with webpack
-
-corber should work with any webpack app. Start with reading the [React
+corber should work with any webpack app. Reading the [React
 implementation](https://github.com/isleofcode/corber/tree/master/lib/frameworks/react) for an example.
 
-You may also want to use the corber-webpack-plugin for livereload.
+You may also want to use the `corber-webpack-plugin` for livereload.
 Read the [react](/pages/frameworks/react) for more details.

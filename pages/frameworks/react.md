@@ -3,10 +3,9 @@ layout: page
 title:  "React / Webpack"
 ---
 
-React support has been tested with apps from create-react-app, but
-these steps should generally apply to any Webpack application.
+[React](https://reactjs.org/) support has been tested with apps from [Create React App](https://github.com/facebookincubator/create-react-app), but these steps should apply to any [webpack](https://webpack.js.org/) application.
 
-The following custom changes are required to your React application. The CLI will warn you if anything is missing.
+The following changes to your React application are required:
 
 - In `package.json`, the `homepage` property must be defined and not have a leading slash.
 - If you want to use livereload (you probably do), you will have to run `yarn run eject`. corber requires access to your webpack config.
@@ -16,7 +15,7 @@ The following custom changes are required to your React application. The CLI wil
   yarn add corber-webpack-plugin --dev
 ```
 
-and then add the following to config/webpack.config.dev.js plugins array:
+and then add the following to the `config/webpack.config.dev.js` plugins array:
 
 ```javascript
   const CorberWebpackPlugin = require('corber-webpack-plugin');
@@ -27,9 +26,10 @@ and then add the following to config/webpack.config.dev.js plugins array:
   ]
 ```
 
-##### Bug: "Conflict: Multiple assets emit to the same filename static/js/bundle.js"
+The CLI will warn you if anything is missing.
 
-In config/webpack.config.dev.js modify output.filename to use a
-dynamic segment:
+##### Bug: "Conflict: Multiple assets emit to the same filename `static/js/bundle.js`"
 
-e.g. from `filename: 'static/js/bundle.js'` to `filename: 'static/js/[name]-bundle.js'`
+In `config/webpack.config.dev.js`, modify `output.filename` to use a dynamic segment.
+
+E.g. Change `filename: 'static/js/bundle.js'` to `filename: 'static/js/[name]-bundle.js'`
