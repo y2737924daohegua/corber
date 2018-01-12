@@ -8,7 +8,7 @@ Vue support is limited to [vue-cli](https://github.com/vuejs/vue-cli) Webpack us
 The following changes to your Vue application are required:
 
 - In `config/index.js`, `assetsPublicPath` must not have a leading slash.
-- If you want to enable `cordova.js` and plugins in livereload, you will need to run:
+- If you want to enable `cordova.js` and plugins in live reload, you will need to run:
 
 ```bash
   npm install corber-webpack-plugin --save-dev

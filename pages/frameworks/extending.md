@@ -64,5 +64,5 @@ leading slash.
 Corber should work with any webpack app. Reading the [React
 implementation](https://github.com/isleofcode/corber/tree/master/lib/frameworks/react) for an example.
 
-You may also want to use the `corber-webpack-plugin` for livereload.
+You may also want to use the `corber-webpack-plugin` for live reload.
 Read the [react](/pages/frameworks/react) for more details.

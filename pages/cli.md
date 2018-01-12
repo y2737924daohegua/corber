@@ -160,7 +160,7 @@ Live reload. To learn more, [read here](/pages/workflow/livereload).
 
 ### Start (beta)
 
-Updated implementation of livereload. For further details see the
+Updated implementation of live reload. For further details see the
 [RFC](https://github.com/isleofcode/corber/issues/428).
 
 | Options    | default | desc |
