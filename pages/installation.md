@@ -22,7 +22,7 @@ From a supported JavaScript projected, run `corber init`. For a list of supporte
 This will:
 
 - Identify your project type.
-- Create a new folder at corber, including corber configuration.
+- Create a new folder at `corber`, including Corber configuration.
 - Initialize a Cordova project at `corber/cordova`.
 
 ###### Supported Flags

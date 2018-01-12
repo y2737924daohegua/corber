@@ -8,7 +8,7 @@ title:  "React / Webpack"
 The following changes to your React application are required:
 
 - In `package.json`, the `homepage` property must be defined and not have a leading slash.
-- If you want to use livereload (you probably do), you will have to run `yarn run eject`. corber requires access to your webpack config.
+- If you want to use livereload (you probably do), you will have to run `yarn run eject`. Corber requires access to your webpack config.
 - If you want to enable `cordova.js` and plugins in livereload, you will need to run:
 
 ```bash

@@ -3,7 +3,7 @@ layout: page
 title:  "Frameworks"
 ---
 
-corber currently supports:
+Corber currently supports:
 
 - [Ember](/pages/frameworks/ember)
 - [Vue](/pages/frameworks/vue) (for users of vue-cli/Webpack)
@@ -12,6 +12,6 @@ corber currently supports:
 
 Custom Frameworks can be integrated but are not well-documented. See [Frameworks/Extending](/pages/frameworks/extending).
 
-In general, the experience for each framework is hands off. corber will
+In general, the experience for each framework is hands off. Corber will
 walk you through any necessary changes and warn you about problematic
 framework configuration, such as base urls with a leading slash.

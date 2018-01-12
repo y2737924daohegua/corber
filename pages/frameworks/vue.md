@@ -3,7 +3,7 @@ layout: page
 title:  "Vue"
 ---
 
-Vue support is limited to [vue-cli](https://github.com/vuejs/vue-cli) Webpack users. corber will detect vue-cli projects and run accordingly.
+Vue support is limited to [vue-cli](https://github.com/vuejs/vue-cli) Webpack users. Corber will detect vue-cli projects and run accordingly.
 
 The following changes to your Vue application are required:
 

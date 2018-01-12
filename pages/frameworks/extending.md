@@ -5,7 +5,7 @@ title:  "Extending Frameworks"
 
 #### Framework.js
 
-When you run `corber init`, corber will create a *framework configuration file* located at `corber/config/framework.js`. This file contains the JavaScript framework-specific hooks that corber will execute in order to validate, build, and serve your app.
+When you run `corber init`, Corber will create a *framework configuration file* located at `corber/config/framework.js`. This file contains the JavaScript framework-specific hooks that Corber will execute in order to validate, build, and serve your app.
 
 These hooks are:
 
@@ -14,7 +14,7 @@ These hooks are:
 - `validateServe`
 - `serve`
 
-corber comes packaged with [base implementations](https://github.com/isleofcode/corber/tree/master/lib/frameworks) for Ember, Vue, and React, but you can write your own to support the framework of your choice.
+Corber comes packaged with [base implementations](https://github.com/isleofcode/corber/tree/master/lib/frameworks) for Ember, Vue, and React, but you can write your own to support the framework of your choice.
 
 #### Build pipeline
 
@@ -52,16 +52,16 @@ module.exports = EmberFramework.extend({
 
 #### Creating a custom framework.js for your own framework
 
-So long as `framework.js` implements the four hooks `validateBuild`, `validateServe`, `build`, and `serve`, corber is compatible with any framework you choose.
+So long as `framework.js` implements the four hooks `validateBuild`, `validateServe`, `build`, and `serve`, Corber is compatible with any framework you choose.
 
 #### Hard requirements
 
-For any corber app to work, your application's `rootURL` must not have a
+For any Corber app to work, your application's `rootURL` must not have a
 leading slash.
 
 #### Usage with webpack
 
-corber should work with any webpack app. Reading the [React
+Corber should work with any webpack app. Reading the [React
 implementation](https://github.com/isleofcode/corber/tree/master/lib/frameworks/react) for an example.
 
 You may also want to use the `corber-webpack-plugin` for livereload.

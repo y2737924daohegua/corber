@@ -28,7 +28,7 @@ To deploy to an iOS device, you must have Provisioning Profiles set up. Usually,
 
 #### Release Builds
 
-By default, corber produces debug builds. You need to add a `--release` flag for Cordova release builds, see the [cli reference](/pages/cli).
+By default, Corber produces debug builds. You need to add a `--release` flag for Cordova release builds, see the [cli reference](/pages/cli).
 
 
 ```bash

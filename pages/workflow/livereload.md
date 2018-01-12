@@ -3,7 +3,7 @@ layout: page
 title:  "Live Reload"
 ---
 
-Livereload takes your frameworks standard serve/livereload behaviour to corber apps.
+Livereload takes your frameworks standard serve/livereload behaviour to Corber apps.
 
 Livereload apps can still access Cordova plugins and work on emulators and physical devices.
 
@@ -19,7 +19,7 @@ Livereload apps can still access Cordova plugins and work on emulators and physi
   corber --environment=staging --platform=android
 ```
 
-Some whitelisting may be required in config.xml to access the serve instance. corber will add these changes and remove them from non-livereload builds. You will receive a warning on any build if these tags, for whatever reason, were not appropriately removed.
+Some whitelisting may be required in config.xml to access the serve instance. Corber will add these changes and remove them from non-livereload builds. You will receive a warning on any build if these tags, for whatever reason, were not appropriately removed.
 
 This command builds a cordova container app and starts a slightly modified serve process for your configured framework.
 
@@ -35,7 +35,7 @@ The whitelist plugin is also required for Android >4.0:
 #### Customize the device livereload url
 
 Livereload works by redirecting the cordova apps window.location from file://index.html to your locally running serve instance.
-corber will detect and automatically set these values for you.
+Corber will detect and automatically set these values for you.
 
 There are times you may need to run livereload with a specific remote host and port, or to customize a local url because we are not detecting it correctly.
 You can do so:

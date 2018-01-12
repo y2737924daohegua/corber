@@ -44,7 +44,7 @@ Opens the last built project from `corber build` in the native IDE.
 
 ### Build
 
-Runs a corber build by building your JavaScript application, copying assets to the Cordova web directory, and building the Cordova application. To learn more, [read here](/pages/workflow/building).
+Runs a Corber build by building your JavaScript application, copying assets to the Cordova web directory, and building the Cordova application. To learn more, [read here](/pages/workflow/building).
 
 | Options     | default   | desc |
 |------------ |---------- | ---- |
@@ -66,7 +66,7 @@ The build command also takes all of the non gradle-specific cordova build opts (
 
 ### lint-index
 
-Validates there are no leading `/` paths in your generated app. While corber will validate your framework config pre build, sometimes items such as hardcoded CDN urls will slip through.
+Validates there are no leading `/` paths in your generated app. While Corber will validate your framework config pre build, sometimes items such as hardcoded CDN urls will slip through.
 
 lint-index is automatically run on builds at WARN level.
 

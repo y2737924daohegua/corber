@@ -3,7 +3,7 @@ layout: page
 title:  "Platforms"
 ---
 
-A corber project can target one or more _platforms_, such as iOS or Android.
+A Corber project can target one or more _platforms_, such as iOS or Android.
 
 Each time you run `corber build`, your JavaScript app will be packaged in the appropriate shell for each platform (e.g. Xcode for iOS) in a subfolder of `corber/platforms`.
 

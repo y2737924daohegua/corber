@@ -3,7 +3,7 @@ layout: page
 title:  "Ember"
 ---
 
-corber will detect Ember projects and run accordingly.
+Corber will detect Ember projects and run accordingly.
 
 The following changes to your Ember application are required:
 
