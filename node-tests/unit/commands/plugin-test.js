@@ -35,4 +35,10 @@ describe('Plugin Command', function() {
       td.verify(rawDouble('add', 'cordova-plugin', contains({ save: false })));
     });
   });
+
+  it('defaults fetch to true', function() {
+    return plugin.run({}, ['add', 'cordova-plugin']).then(function() {
+      td.verify(rawDouble('add', 'cordova-plugin', contains({ fetch: true })));
+    });
+  });
 });
