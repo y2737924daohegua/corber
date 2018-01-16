@@ -3,7 +3,6 @@ const expect         = require('../../../helpers/expect');
 const Promise        = require('rsvp').Promise;
 const mockProject    = require('../../../fixtures/corber-mock/project');
 
-const ValidatePlatform        = require('../../../../lib/targets/cordova/validators/platform');
 const ValidatePlugin          = require('../../../../lib/targets/cordova/validators/plugin');
 const ValidateAllowNavigation = require('../../../../lib/targets/cordova/validators/allow-navigation');
 
@@ -22,10 +21,6 @@ describe('Cordova Target', function() {
       CordovaTarget = require('../../../../lib/targets/cordova/target');
 
       tasks = [];
-      td.replace(ValidatePlatform.prototype, 'run', function() {
-        tasks.push('validate-platform');
-        return Promise.resolve();
-      });
 
       td.replace(ValidatePlugin.prototype, 'run', function() {
         tasks.push('validate-plugin');
@@ -43,8 +38,7 @@ describe('Cordova Target', function() {
 
       return target.validateBuild().then(function() {
         expect(tasks).to.deep.equal([
-          'validate-allow-navigation',
-          'validate-platform',
+          'validate-allow-navigation'
         ]);
       });
     });
@@ -55,7 +49,6 @@ describe('Cordova Target', function() {
       return target.validateServe().then(function() {
         expect(tasks).to.deep.equal([
           'validate-allow-navigation',
-          'validate-platform',
           'validate-plugin'
         ]);
       });
