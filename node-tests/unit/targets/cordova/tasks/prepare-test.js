@@ -12,11 +12,11 @@ describe('Cordova Prepare Task', function() {
     td.reset();
   });
 
-  it('runs cordova prepare', function() {
+  it('runs cordova prepare with fetch defaulted', function() {
     var rawDouble = td.replace(CdvRawTask.prototype, 'run');
     var prepare = setupPrepareTask();
     prepare.run();
 
-    td.verify(rawDouble());
+    td.verify(new rawDouble({fetch: true}));
   });
 });
