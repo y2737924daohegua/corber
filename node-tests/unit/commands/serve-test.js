@@ -16,7 +16,6 @@ var cordovaPath     = require('../../../lib/targets/cordova/utils/get-path');
 var mockProject     = require('../../fixtures/corber-mock/project');
 var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
 
-var ValidatePlatform        = require('../../../lib/targets/cordova/validators/platform');
 var ValidatePlugin          = require('../../../lib/targets/cordova/validators/plugin');
 var ValidateAllowNavigation = require('../../../lib/targets/cordova/validators/allow-navigation');
 
@@ -73,11 +72,6 @@ describe('Serve Command', function() {
       return Promise.resolve();
     });
 
-    td.replace(ValidatePlatform.prototype, 'run', function() {
-      tasks.push('validate-platform');
-      return Promise.resolve();
-    });
-
     td.replace(ValidatePlugin.prototype, 'run', function() {
       tasks.push('validate-plugin');
       return Promise.resolve();
@@ -116,7 +110,6 @@ describe('Serve Command', function() {
       expect(tasks).to.deep.equal([
         'hook beforeBuild',
         'validate-allow-navigation',
-        'validate-platform',
         'validate-plugin',
         'framework-validate-serve',
         'create-livereload-shell',
@@ -148,7 +141,6 @@ describe('Serve Command', function() {
       expect(tasks).to.deep.equal([
         'hook beforeBuild',
         'validate-allow-navigation',
-        'validate-platform',
         'validate-plugin',
         'framework-validate-serve',
         'create-livereload-shell',
