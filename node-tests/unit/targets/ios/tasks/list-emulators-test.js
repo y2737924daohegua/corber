@@ -1,6 +1,7 @@
 const td              = require('testdouble');
 const Promise         = require('rsvp').Promise;
 const expect          = require('../../../../helpers/expect');
+const IOSEmulator     = require('../../../../../lib/objects/emulator/ios');
 
 const setupListTask = function() {
   let ListTask = require('../../../../../lib/targets/ios/tasks/list-emulators');
@@ -37,33 +38,43 @@ describe('iOS Run Emulator Task', function() {
     let list = setupListTask();
 
     return list.run().then(function(found) {
-      expect(found).to.deep.equal([{
-        iosVersion: '11.1',
+      expect(found).to.deep.equal([new IOSEmulator({
+        apiVersion: '11.1',
         name: 'iPad Pro',
-        id: 'uuid',
+        uuid: 'uuid',
+        platform: 'ios',
         state: 'Shutdown'
-      }, {
-        iosVersion: '11.1',
+      }), new IOSEmulator({
+        apiVersion: '11.1',
         name: 'iPhone X',
-        id: '3B388D0A-01F2-4E68-B86B-55FDB6F96B37',
+        uuid: '3B388D0A-01F2-4E68-B86B-55FDB6F96B37',
+        platform: 'ios',
         state: 'Shutdown'
-      }, { iosVersion: '9.1',
+      }), new IOSEmulator({
+        apiVersion: '9.1',
         name: 'iPhone 5',
-        id: 'uuid',
+        uuid: 'uuid',
+        platform: 'ios',
         state: 'Shutdown'
-      }, { iosVersion: '9.1',
+      }), new IOSEmulator({
+        apiVersion: '9.1',
         name: 'iPhone 4s',
-        id: 'uuid',
+        uuid: 'uuid',
+        platform: 'ios',
         state: 'Shutdown'
-      }, { iosVersion: '8.4',
+      }), new IOSEmulator({
+        apiVersion: '8.4',
         name: 'iPhone 5',
-        id: 'uuid',
+        uuid: 'uuid',
+        platform: 'ios',
         state: 'Shutdown'
-      }, { iosVersion: '8.4',
+      }), new IOSEmulator({
+        apiVersion: '8.4',
         name: 'iPhone 4s',
-        id: 'uuid',
+        uuid: 'uuid',
+        platform: 'ios',
         state: 'Shutdown'
-      }]);
+      })]);
     });
   });
 });
