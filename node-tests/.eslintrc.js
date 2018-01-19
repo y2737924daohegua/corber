@@ -10,7 +10,7 @@ module.exports = {
     'context': true
   },
   rules: {
-    'max-len': [2, { 'ignoreUrls': true, 'code': 120 }],
+    'max-len': [2, { 'ignoreUrls': true, 'code': 240 }],
     'no-unused-expressions': 'off'
   }
 };
