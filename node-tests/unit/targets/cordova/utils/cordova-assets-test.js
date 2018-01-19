@@ -13,9 +13,17 @@ describe('Get Platform Assets Util', function() {
       expect(assets.assetsPath).to.equal(expectedPath);
     });
 
-    it('is valid for android', function() {
+    it('pre cordova-android 7.0 is valid for android', function() {
+      cordovaAssets._exists = () => { return true; }
       var assets = cordovaAssets.getPaths('android', 'fakeProjectPath');
       var expectedPath = 'platforms/android/assets/www';
+      expect(assets.assetsPath).to.equal(expectedPath);
+    });
+
+    it('post cordova-android 7.0 is valid for android', function() {
+      cordovaAssets._exists = () => { return false; }
+      var assets = cordovaAssets.getPaths('android', 'fakeProjectPath');
+      var expectedPath = 'platforms/android/platform_www';
       expect(assets.assetsPath).to.equal(expectedPath);
     });
 
