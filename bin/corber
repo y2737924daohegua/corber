@@ -39,7 +39,8 @@ let cli = new CLI({
   ui,
   name: 'corber',
   npmPackage: 'corber',
-  root: path.resolve(__dirname, '..')
+  root: path.resolve(__dirname, '..'),
+  disableDependencyChecker: true
 });
 
 let project = Project.projectOrnullProject(ui, cli);
