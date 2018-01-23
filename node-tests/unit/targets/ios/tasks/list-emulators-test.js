@@ -3,12 +3,7 @@ const Promise         = require('rsvp').Promise;
 const expect          = require('../../../../helpers/expect');
 const IOSEmulator     = require('../../../../../lib/objects/emulator/ios');
 
-const setupListTask = function() {
-  let ListTask = require('../../../../../lib/targets/ios/tasks/list-emulators');
-  return new ListTask();
-};
-
-describe('iOS Run Emulator Task', function() {
+describe('iOS List Emulator Task', function() {
   afterEach(function() {
     td.reset();
   });
@@ -35,9 +30,9 @@ describe('iOS Run Emulator Task', function() {
       return Promise.resolve(emList);
     });
 
-    let list = setupListTask();
+    let list = require('../../../../../lib/targets/ios/tasks/list-emulators');
 
-    return list.run().then(function(found) {
+    return list().then(function(found) {
       expect(found).to.deep.equal([new IOSEmulator({
         apiVersion: '11.1',
         name: 'iPad Pro',
