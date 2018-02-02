@@ -19,6 +19,8 @@ describe('Android Install App', function() {
       adbPath,
       [
         '-e',
+        'install',
+        '-r',
         'apk-path'
       ]
     ));
