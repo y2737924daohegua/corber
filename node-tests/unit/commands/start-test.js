@@ -1,11 +1,9 @@
 const td              = require('testdouble');
-const path            = require('path');
 const expect          = require('../../helpers/expect');
 const Promise         = require('rsvp');
 const LRloadShell     = require('../../../lib/tasks/create-livereload-shell');
 const CdvTarget       = require('../../../lib/targets/cordova/target');
 const CdvRaw          = require('../../../lib/targets/cordova/tasks/raw');
-const CordovaRaw      = require('../../../lib/targets/cordova/tasks/raw');
 const IOSTarget       = require('../../../lib/targets/ios/target');
 const Hook            = require('../../../lib/tasks/run-hook');
 const mockProject     = require('../../fixtures/corber-mock/project');
@@ -230,33 +228,33 @@ describe('Start Command', function() {
     it('only shows emulators for the selected platform', function() {
       let start = setupStart();
 
-       let promptArgs;
-        start.ui = {
-          prompt: function(opts) {
-            promptArgs = opts;
-            return Promise.resolve({emulator: iosEmulators[0]});
-          }
+      let promptArgs;
+      start.ui = {
+        prompt: function(opts) {
+          promptArgs = opts;
+          return Promise.resolve({emulator: iosEmulators[0]});
         }
+      }
 
-        return start.selectEmulator({emulator: '', platform: 'android'}).then(function() {
-          expect(promptArgs.choices.length).to.equal(1);
-        });
+      return start.selectEmulator({emulator: '', platform: 'android'}).then(function() {
+        expect(promptArgs.choices.length).to.equal(1);
+      });
     });
 
     it('defaults to including emulators from both platforms', function() {
       let start = setupStart();
 
-       let promptArgs;
-        start.ui = {
-          prompt: function(opts) {
-            promptArgs = opts;
-            return Promise.resolve({emulator: iosEmulators[0]});
-          }
+      let promptArgs;
+      start.ui = {
+        prompt: function(opts) {
+          promptArgs = opts;
+          return Promise.resolve({emulator: iosEmulators[0]});
         }
+      }
 
-        return start.selectEmulator({emulator: ''}).then(function() {
-          expect(promptArgs.choices.length).to.equal(3);
-        });
+      return start.selectEmulator({emulator: ''}).then(function() {
+        expect(promptArgs.choices.length).to.equal(3);
+      });
     });
   });
 });
