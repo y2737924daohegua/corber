@@ -1,11 +1,11 @@
 ---
 layout: page
-title:  "Platform Service"
+title:  "ember-cordova-platform"
 ---
 
 #### Summary
 
-Provides information about the current platform. Heavily inspired and partially forked from [Ionic Platform](http://ionicframework.com/docs/api/utility/ionic.Platform/).
+This Ember service provides information about the current platform. Heavily inspired and partially forked from [Ionic Platform](http://ionicframework.com/docs/api/utility/ionic.Platform/).
 
 #### Installation
 

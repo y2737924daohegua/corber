@@ -9,7 +9,7 @@
     <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
     <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
     <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">
-    <link rel="stylesheet" href="{{ "/app.css" | prepend: site.baseurl | prepend: site.url }}">
+    <link rel="stylesheet" href="{{ "/app.css" | prepend: site.baseurl }}">
     <link href='http://fonts.googleapis.com/css?family=Raleway:100,300,400,500%7CLato:300,400' rel='stylesheet' type='text/css'>
   </head>
 
@@ -29,7 +29,7 @@
               <span class="icon-bar"></span>
             </button>
 
-            <a class="navbar-brand" href="{{ site.baseurl }}/">corber</a>
+            <a class="navbar-brand" href="{{ site.baseurl }}/">Corber</a>
           </div>
 
           <div id="navbar" class="navbar-collapse collapse" aria-expanded="true" role="banner">
@@ -61,7 +61,7 @@
                 <li> <a href="{{ site.baseurl }}/pages/frameworks/index">Overview</a> </li>
                 <li> <a href="{{ site.baseurl }}/pages/frameworks/ember">Ember</a> </li>
                 <li> <a href="{{ site.baseurl }}/pages/frameworks/vue">Vue</a> </li>
-                <li> <a href="{{ site.baseurl }}/pages/frameworks/react">React / Webpack</a> </li>
+                <li> <a href="{{ site.baseurl }}/pages/frameworks/react">React/Webpack</a> </li>
                 <li> <a href="{{ site.baseurl }}/pages/frameworks/glimmer">Glimmer</a> </li>
                 <li> <a href="{{ site.baseurl }}/pages/frameworks/extending">Extending</a> </li>
               </ul>
@@ -70,10 +70,11 @@
             <li>
              <a href="#">Workflow</a>
               <ul>
-                <li> <a href="{{ site.baseurl }}/pages/workflow/committing">Committing & Cloning</a> </li>
+                <li> <a href="{{ site.baseurl }}/pages/workflow/committing">Committing &amp; Cloning</a> </li>
+                <li> <a href="{{ site.baseurl }}/pages/workflow/platforms">Platforms</a> </li>
                 <li> <a href="{{ site.baseurl }}/pages/workflow/building">Building</a> </li>
-                <li> <a href="{{ site.baseurl }}/pages/workflow/livereload">Livereload</a> </li>
-                <li> <a href="{{ site.baseurl }}/pages/workflow/icon_splash_management">Icon & Splash</a> </li>
+                <li> <a href="{{ site.baseurl }}/pages/workflow/livereload">Live Reload</a> </li>
+                <li> <a href="{{ site.baseurl }}/pages/workflow/icon_splash_management">Icons &amp; Splashscreens</a> </li>
                 <li> <a href="{{ site.baseurl }}/pages/workflow/hooks">Hooks</a> </li>
                 <li> <a href="{{ site.baseurl }}/pages/workflow/default_webviews">Default WebViews</a> </li>
               </ul>
@@ -105,7 +106,7 @@
 
         <div class="row">
           <div class="col-md-6 col-sm-6">
-            <p>Copyright &copy; 2015 <a href="https://isleofcode.com">Isle of Code Inc.</a> All right reserved</p>
+            <p>Copyright &copy; {{ 'now' | date: "%Y" }} <a href="https://isleofcode.com">Isle of Code Inc.</a> All right reserved</p>
           </div>
           <div class="col-md-6 col-sm-6"></div>
         </div>

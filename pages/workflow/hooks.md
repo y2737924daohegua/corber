@@ -50,7 +50,7 @@ module.exports = function(options) {
 #### Example customization and cleanup
 If a project needed to build for web (`ember build`) and Cordova (`ember cdv:build`), we might decide to keep the template variable `rootURL` inside "app/index.html" for the web builds. 
 
-Using the corber "beforeBuild" hook we could backup the "app/index.html" file, then remove the string `"rootURL"` from it for the current build by creating the file `corber/hooks/beforeBuild.js` and writing something similar to:
+Using the Corber "beforeBuild" hook we could backup the "app/index.html" file, then remove the string `"rootURL"` from it for the current build by creating the file `corber/hooks/beforeBuild.js` and writing something similar to:
 
 ```javascript
 /* jshint node: true */
@@ -75,9 +75,9 @@ module.exports = function() {
 };
 ```
 
-Above we returned a promise so corber and EmberCLI will wait for our promise to settle before beginning the build. If the promise is rejected the build is prevented from continuing (*plan accordingly for any cleanup required in your hooks when rejecting returned promises or throwing Errors*).
+Above we returned a promise so Corber and EmberCLI will wait for our promise to settle before beginning the build. If the promise is rejected the build is prevented from continuing (*plan accordingly for any cleanup required in your hooks when rejecting returned promises or throwing Errors*).
 
-The corber "afterBuild" hook will run afterwards. This could be used to restore the backed up original version for "app/index.html" by creating a file at `corber/hooks/afterBuild.js`:
+The Corber "afterBuild" hook will run afterwards. This could be used to restore the backed up original version for "app/index.html" by creating a file at `corber/hooks/afterBuild.js`:
 
 ```javascript
 /* jshint node: true */

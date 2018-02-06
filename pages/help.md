@@ -3,7 +3,7 @@ layout: page
 title:  "Getting Help"
 ---
 
-corber is still under active development, and we encourage you
+Corber is still under active development, and we encourage you
 reaching out with bugs and confusing points. There are two main support
 avenues:
 

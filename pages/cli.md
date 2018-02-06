@@ -16,7 +16,7 @@ All commands follow the pattern `corber {command}`. We recommend aliasing a shor
 * [corber proxy](#proxy)
 * [corber serve](#serve)
 
-Override default CLI flags in `.ember-cli` - which lives in your project root. For example, to change the default platform from ios to android:
+Override default CLI flags in `.ember-cli`, which lives in your project root. For example, to change the default platform from ios to android:
 
 ```
 #.ember-cli
@@ -44,7 +44,7 @@ Opens the last built project from `corber build` in the native IDE.
 
 ### Build
 
-Runs a corber build by building your JS application, copying assets to the Cordova web directory, and building the Cordova application. To learn more, [read here](/pages/workflow/building).
+Runs a Corber build by building your JavaScript application, copying assets to the Cordova web directory, and building the Cordova application. To learn more, [read here](/pages/workflow/building).
 
 | Options     | default   | desc |
 |------------ |---------- | ---- |
@@ -66,7 +66,7 @@ The build command also takes all of the non gradle-specific cordova build opts (
 
 ### lint-index
 
-Validates there are no leading `/` paths in your generated app. While corber will validate your framework config pre build, sometimes items such as hardcoded CDN urls will slip through.
+Validates there are no leading `/` paths in your generated app. While Corber will validate your framework config pre build, sometimes items such as hardcoded CDN urls will slip through.
 
 lint-index is automatically run on builds at WARN level.
 
@@ -160,7 +160,7 @@ Live reload. To learn more, [read here](/pages/workflow/livereload).
 
 ### Start (beta)
 
-Updated implementation of livereload. For further details see the
+Updated implementation of live reload. For further details see the
 [RFC](https://github.com/isleofcode/corber/issues/428).
 
 | Options    | default | desc |

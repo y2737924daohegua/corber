@@ -3,7 +3,7 @@ layout: page
 title:  "Building"
 ---
 
-`corber build` builds your JS Framework app with Cordova assets injected, and then executes a Cordova build. Validators are run to ensure there are no known errors.
+`corber build` builds your JavaScript Framework app with Cordova assets injected, and then executes a Cordova build. Validators are run to ensure there are no known errors.
 
 ```
     corber build --platform=ios --environment=production
@@ -28,7 +28,7 @@ To deploy to an iOS device, you must have Provisioning Profiles set up. Usually,
 
 #### Release Builds
 
-By default, corber produces debug builds. You need to add a `--release` flag for Cordova release builds, see the [cli reference](/pages/cli).
+By default, Corber produces debug builds. You need to add a `--release` flag for Cordova release builds, see the [cli reference](/pages/cli).
 
 
 ```bash
