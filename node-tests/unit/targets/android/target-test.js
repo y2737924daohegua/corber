@@ -1,6 +1,5 @@
 const td              = require('testdouble');
 const Promise         = require('rsvp').Promise;
-const path            = require('path');
 const expect          = require('../../../helpers/expect');
 const mockProject     = require('../../../fixtures/corber-mock/project');
 
