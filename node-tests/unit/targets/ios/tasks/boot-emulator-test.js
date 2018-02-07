@@ -11,7 +11,7 @@ describe('iOS Boot Emulator Task', function() {
     let spawnDouble = td.replace('../../../../../lib/utils/spawn');
     let bootEm = require('../../../../../lib/targets/ios/tasks/boot-emulator');
 
-    bootEm({id: 'id', state: ''});
+    bootEm({uuid: 'id',});
     td.verify(spawnDouble(
       '/usr/bin/xcrun',
       ['simctl', 'boot', 'id']

@@ -40,7 +40,7 @@ describe('IOS Target', function() {
       let target = setupTarget();
       return target.init().then(function() {
         expect(target.scheme).to.equal('scheme');
-        expect(target.appName).to.equal('appName');
+        expect(target.packageName).to.equal('appName');
       });
     });
 
@@ -48,7 +48,7 @@ describe('IOS Target', function() {
       let target = setupTarget();
       return target.init().then(function() {
         expect(target.scheme).to.equal('emberCordovaDummyApp');
-        expect(target.appName).to.equal('emberCordovaDummyApp');
+        expect(target.packageName).to.equal('emberCordovaDummyApp');
       });
     });
   });

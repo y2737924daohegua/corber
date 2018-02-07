@@ -1,19 +1,14 @@
 const td              = require('testdouble');
-const mockProject     = require('../../../../fixtures/corber-mock/project');
 const contains        = td.matchers.contains;
 const isAnything      = td.matchers.anything;
 
-const setupBuildTask = function() {
-  let BuildTask = require('../../../../../lib/targets/ios/tasks/build-emulator');
-  return new BuildTask(mockProject);
-};
-
 describe('iOS Build Emulator Task', function() {
-  let spawnDouble;
+  let spawnDouble, buildTask;
 
   beforeEach(function() {
+
     spawnDouble = td.replace('../../../../../lib/utils/spawn');
-    return spawnDouble;
+    buildTask = require('../../../../../lib/targets/ios/tasks/build-emulator');
   });
 
   afterEach(function() {
@@ -21,8 +16,7 @@ describe('iOS Build Emulator Task', function() {
   });
 
   it('spawns xcode build with expected flags', function() {
-    let build = setupBuildTask();
-    build.run({id: 'emulatorId'}, 'buildPath', 'testScheme', 'iosPath');
+    buildTask('emulatorId', 'buildPath', 'testScheme', 'iosPath');
 
     td.verify(spawnDouble(
       '/usr/bin/xcodebuild',
@@ -42,8 +36,7 @@ describe('iOS Build Emulator Task', function() {
   });
 
   it('sets destination when building for emulator by id', function() {
-    let build = setupBuildTask();
-    build.run({id: 'UUID'}, 'buildPath', 'testScheme', 'iosPath');
+    buildTask('UUID', 'buildPath', 'testScheme', 'iosPath');
 
     td.verify(spawnDouble(
       isAnything(),
