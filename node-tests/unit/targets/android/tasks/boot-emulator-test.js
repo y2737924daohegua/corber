@@ -1,6 +1,6 @@
 const td              = require('testdouble');
 const expect          = require('../../../../helpers/expect');
-const emList          = 'emulator-5554          device product:sdk_gphone_x86 model:Android_SDK_built_for_x86 device:generic_x86 transport_id:26';
+const emList          = 'Pixel_2_API_27';
 
 const path            = require('path');
 const sdkPath         = path.join(process.env['HOME'], 'Library/Android/sdk');
@@ -47,6 +47,21 @@ describe('Android Boot Emulator', function() {
     bootEm({name: 'fake-emulator'}).then(function(bootedEm) {
       expect(called).to.equal(true);
       expect(bootedEm).to.equal('foo');
+    });
+  });
+
+  it('once booted, sets uuid on the emulator', function() {
+    td.replace('../../../../../lib/utils/spawn', function() {
+      return Promise.resolve();
+    });
+
+    td.replace('../../../../../lib/targets/android/tasks/list-running-emulators', function() {
+      return Promise.resolve(emList);
+    });
+
+    let bootEm = require('../../../../../lib/targets/android/tasks/boot-emulator');
+    bootEm({name: 'fake-emulator'}).then(function(bootedEm) {
+      expect(bootedEm.uuid).to.equal
     });
   });
 });
