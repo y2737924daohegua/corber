@@ -1,6 +1,5 @@
 const td              = require('testdouble');
 const expect          = require('../../../../helpers/expect');
-const emList          = 'Pixel_2_API_27';
 
 const path            = require('path');
 const sdkPath         = path.join(process.env['HOME'], 'Library/Android/sdk');
@@ -20,8 +19,8 @@ describe('Android Boot Emulator', function() {
       return Promise.resolve();
     });
 
-    td.replace('../../../../../lib/targets/android/tasks/list-running-emulators', function() {
-      return Promise.resolve(emList);
+    td.replace('../../../../../lib/targets/android/tasks/get-emulator-state', function() {
+      return Promise.resolve('1');
     });
 
     let bootEm = require('../../../../../lib/targets/android/tasks/boot-emulator');
@@ -38,9 +37,9 @@ describe('Android Boot Emulator', function() {
     });
 
     let called = false;
-    td.replace('../../../../../lib/targets/android/tasks/list-running-emulators', function() {
+    td.replace('../../../../../lib/targets/android/tasks/get-emulator-state', function() {
       called = true;
-      return Promise.resolve(emList);
+      return Promise.resolve('1');
     });
 
     let bootEm = require('../../../../../lib/targets/android/tasks/boot-emulator');
@@ -55,8 +54,8 @@ describe('Android Boot Emulator', function() {
       return Promise.resolve();
     });
 
-    td.replace('../../../../../lib/targets/android/tasks/list-running-emulators', function() {
-      return Promise.resolve(emList);
+    td.replace('../../../../../lib/targets/android/tasks/get-emulator-state', function() {
+      return Promise.resolve('1');
     });
 
     let bootEm = require('../../../../../lib/targets/android/tasks/boot-emulator');
