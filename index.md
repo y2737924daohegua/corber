@@ -25,8 +25,12 @@ corber build
 ##### You may also want to
 
 ```bash
-# set up on-device hot reload for development
-corber s
+# boots emulator and live reload for development
+# cordova plugins are supported /w live reload
+corber start
+
+# set up hot reload for on-device usage
+corber serve
 
 # build icon & splash screens
 corber make-splashes
