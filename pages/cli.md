@@ -15,6 +15,7 @@ All commands follow the pattern `corber {command}`. We recommend aliasing a shor
 * [corber prepare](#prepare)
 * [corber proxy](#proxy)
 * [corber serve](#serve)
+* [corber start](#start)
 
 Override default CLI flags in `.ember-cli`, which lives in your project root. For example, to change the default platform from ios to android:
 
@@ -142,7 +143,10 @@ For example, running `corber proxy plugin add ../local-plugin-path` from your pr
 
 ### Serve
 
-Live reload. To learn more, [read here](/pages/workflow/livereload). 
+Live reload. To learn more, [read here](/pages/workflow/livereload).
+
+You may want to look at the start command, which is newer and provides a
+more integrated experience for emulator usage.
 
 | Options    | default | desc |
 |---------  |---------| ---- |
@@ -160,8 +164,12 @@ Live reload. To learn more, [read here](/pages/workflow/livereload).
 
 ### Start (beta)
 
-Updated implementation of live reload. For further details see the
-[RFC](https://github.com/isleofcode/corber/issues/428).
+The start command supports iOS and Android. It boots an emulator,
+installs / launches an application to the emulator and starts your
+frameworks development server for livereload.
+
+To learn more, [read here](/pages/workflow/livereload)
+
 
 | Options    | default | desc |
 |---------  |---------| ---- |
@@ -171,6 +179,7 @@ Updated implementation of live reload. For further details see the
 
 #### Examples
 + `corber start`
++ `corber start --platform=android`
 
 ***
 
