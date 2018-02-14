@@ -1,10 +1,14 @@
 const td              = require('testdouble');
 
-const path            = require('path');
-const sdkPath         = path.join(process.env['HOME'], 'Library/Android/sdk');
-const adbPath         = path.join(sdkPath, 'platform-tools', 'adb');
-
 describe('Android Install App', function() {
+  beforeEach(function() {
+    td.replace('../../../../../lib/targets/android/utils/sdk-paths', function() {
+      return {
+        adb: 'adbPath'
+      }
+    });
+  });
+
   afterEach(function() {
     td.reset();
   });
@@ -16,7 +20,7 @@ describe('Android Install App', function() {
     installApp('apk-path');
 
     td.verify(spawnDouble(
-      adbPath,
+      'adbPath',
       [
         '-e',
         'install',

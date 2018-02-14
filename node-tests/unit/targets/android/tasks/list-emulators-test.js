@@ -5,11 +5,15 @@ const AndroidEm       = require('../../../../../lib/objects/emulator');
 
 const emList          = 'Nexus_5X_API_27\nPixel_2_API_27';
 
-const path            = require('path');
-const sdkPath         = path.join(process.env['HOME'], 'Library/Android/sdk');
-const emPath          = path.join(sdkPath, 'tools', 'emulator');
-
 describe('Android List Emulators', function() {
+  beforeEach(function() {
+    td.replace('../../../../../lib/targets/android/utils/sdk-paths', function() {
+      return {
+        emulator: 'emulatorPath'
+      }
+    });
+  });
+
   afterEach(function() {
     td.reset();
   });
@@ -26,7 +30,7 @@ describe('Android List Emulators', function() {
     let listEms = require('../../../../../lib/targets/android/tasks/list-emulators');
 
     return listEms().then(function() {
-      expect(spawnProps.cmd).to.equal(emPath);
+      expect(spawnProps.cmd).to.equal('emulatorPath');
       expect(spawnProps.args).to.deep.equal(['emulator', '-list-avds']);
     });
   });
