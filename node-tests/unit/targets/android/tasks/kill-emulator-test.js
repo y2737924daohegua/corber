@@ -1,10 +1,14 @@
 const td              = require('testdouble');
 
-const path            = require('path');
-const sdkPath         = path.join(process.env['HOME'], 'Library/Android/sdk');
-const adbPath         = path.join(sdkPath, 'platform-tools', 'adb');
-
 describe('Android Kill Emulator', function() {
+  beforeEach(function() {
+    td.replace('../../../../../lib/targets/android/utils/sdk-paths', function() {
+      return {
+        adb: 'adbPath'
+      }
+    });
+  });
+
   afterEach(function() {
     td.reset();
   });
@@ -16,7 +20,7 @@ describe('Android Kill Emulator', function() {
     killEmulator('emulator-fake');
 
     td.verify(spawnDouble(
-      adbPath,
+      'adbPath',
       [
         '-s',
         'emulator-fake',

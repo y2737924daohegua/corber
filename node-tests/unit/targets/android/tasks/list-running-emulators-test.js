@@ -4,11 +4,15 @@ const Promise         = require('rsvp').Promise;
 
 const emList          = 'emulator-5554          device product:sdk_gphone_x86 model:Android_SDK_built_for_x86 device:generic_x86 transport_id:26';
 
-const path            = require('path');
-const sdkPath         = path.join(process.env['HOME'], 'Library/Android/sdk');
-const adbPath         = path.join(sdkPath, 'platform-tools', 'adb');
-
 describe('Android List Running Emulators', function() {
+  beforeEach(function() {
+    td.replace('../../../../../lib/targets/android/utils/sdk-paths', function() {
+      return {
+        adb: 'adbPath'
+      }
+    });
+  });
+
   afterEach(function() {
     td.reset();
   });
@@ -25,7 +29,7 @@ describe('Android List Running Emulators', function() {
     let listRunning = require('../../../../../lib/targets/android/tasks/list-running-emulators');
 
     return listRunning().then(function() {
-      expect(spawnProps.cmd).to.equal(adbPath);
+      expect(spawnProps.cmd).to.equal('adbPath');
       expect(spawnProps.args).to.deep.equal(['devices', '-l']);
     });
   });

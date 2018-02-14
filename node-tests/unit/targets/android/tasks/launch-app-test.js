@@ -1,10 +1,15 @@
 const td              = require('testdouble');
 const expect          = require('../../../../helpers/expect');
-const path            = require('path');
-const sdkPath         = path.join(process.env['HOME'], 'Library/Android/sdk');
-const adbPath         = path.join(sdkPath, 'platform-tools', 'adb');
 
 describe('Android LaunchApp', function() {
+  beforeEach(function() {
+    td.replace('../../../../../lib/targets/android/utils/sdk-paths', function() {
+      return {
+        adb: 'adbPath'
+      }
+    });
+  });
+
   afterEach(function() {
     td.reset();
   });
@@ -21,7 +26,7 @@ describe('Android LaunchApp', function() {
     let launchApp = require('../../../../../lib/targets/android/tasks/launch-app');
 
     return launchApp('io.corber.project').then(function() {
-      expect(spawnProps.cmd).to.equal(adbPath);
+      expect(spawnProps.cmd).to.equal('adbPath');
       expect(spawnProps.args).to.deep.equal([
         'shell',
         'monkey',

@@ -1,11 +1,15 @@
 const td              = require('testdouble');
 const expect          = require('../../../../helpers/expect');
 
-const path            = require('path');
-const sdkPath         = path.join(process.env['HOME'], 'Library/Android/sdk');
-const emulatorPath    = path.join(sdkPath, 'tools', 'emulator');
-
 describe('Android Boot Emulator', function() {
+  beforeEach(function() {
+    td.replace('../../../../../lib/targets/android/utils/sdk-paths', function() {
+      return {
+        emulator: 'emulatorPath'
+      }
+    });
+  });
+
   afterEach(function() {
     td.reset();
   });
@@ -26,7 +30,7 @@ describe('Android Boot Emulator', function() {
     let bootEm = require('../../../../../lib/targets/android/tasks/boot-emulator');
 
     return bootEm({name: 'fake-emulator'}).then(function() {
-      expect(spawnProps.cmd).to.equal(emulatorPath);
+      expect(spawnProps.cmd).to.equal('emulatorPath');
       expect(spawnProps.args).to.deep.equal(['-avd', 'fake-emulator']);
     });
   });
