@@ -13,9 +13,9 @@ describe('Android Install App', function() {
     td.reset();
   });
 
-  it('spawns adb kill', function() {
+  it('spawns adb install', function() {
     let spawnDouble = td.replace('../../../../../lib/utils/spawn');
-    let installApp = require('../../../../../lib/targets/android/tasks/install-app');
+    let installApp = require('../../../../../lib/targets/android/tasks/install-app-emulator');
 
     installApp('apk-path');
 

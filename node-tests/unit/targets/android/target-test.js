@@ -71,7 +71,7 @@ describe('Android Target', function() {
         return Promise.resolve();
       });
 
-      td.replace(`${libPath}/targets/android/tasks/install-app`, function() {
+      td.replace(`${libPath}/targets/android/tasks/install-app-emulator`, function() {
         tasks.push('install-app');
         return Promise.resolve();
       });
