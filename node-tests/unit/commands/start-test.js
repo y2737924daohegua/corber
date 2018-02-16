@@ -16,7 +16,8 @@ const iosEmulators = [{
     return 'iOS Em 1 Label';
   },
   state: 'Booted',
-  platform: 'ios'
+  platform: 'ios',
+  deviceType: 'device'
 }, {
   id: 2,
   name: 'iOS Em 2',
@@ -24,7 +25,8 @@ const iosEmulators = [{
     return 'iOS Em 2 Label';
   },
   state: 'Shutdown',
-  platform: 'ios'
+  platform: 'ios',
+  deviceType: 'device'
 }];
 
 const androidEmulators = [{
@@ -33,7 +35,18 @@ const androidEmulators = [{
   label() {
     return 'Android Em 1 Label';
   },
-  platform: 'android'
+  platform: 'android',
+  deviceType: 'emulator'
+}];
+
+const androidDevices = [{
+  id: 1,
+  name: 'Android Device 1',
+  label() {
+    return 'Android Device 1 Label';
+  },
+  platform: 'android',
+  deviceType: 'device'
 }];
 
 const setupStart = function() {
@@ -188,6 +201,10 @@ describe('Start Command', function() {
       td.replace('../../../lib/targets/android/tasks/list-emulators', function() {
         return Promise.resolve(androidEmulators);
       });
+
+      td.replace('../../../lib/targets/android/tasks/list-devices', function() {
+        return Promise.resolve(androidDevices);
+      });
     });
 
     it('prompts for an emulator if one is not passed', function() {
@@ -237,7 +254,7 @@ describe('Start Command', function() {
       }
 
       return start.selectEmulator({emulator: '', platform: 'android'}).then(function() {
-        expect(promptArgs.choices.length).to.equal(1);
+        expect(promptArgs.choices.length).to.equal(2);
       });
     });
 
@@ -253,7 +270,7 @@ describe('Start Command', function() {
       }
 
       return start.selectEmulator({emulator: ''}).then(function() {
-        expect(promptArgs.choices.length).to.equal(3);
+        expect(promptArgs.choices.length).to.equal(4);
       });
     });
   });
