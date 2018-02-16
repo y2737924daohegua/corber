@@ -1,7 +1,7 @@
 const td              = require('testdouble');
 const Promise         = require('rsvp').Promise;
 const expect          = require('../../../../helpers/expect');
-const IOSEmulator     = require('../../../../../lib/objects/emulator/ios');
+const Device          = require('../../../../../lib/objects/device');
 
 describe('iOS List Emulator Task', function() {
   afterEach(function() {
@@ -33,41 +33,47 @@ describe('iOS List Emulator Task', function() {
     let list = require('../../../../../lib/targets/ios/tasks/list-emulators');
 
     return list().then(function(found) {
-      expect(found).to.deep.equal([new IOSEmulator({
+      expect(found).to.deep.equal([new Device({
         apiVersion: '11.1',
         name: 'iPad Pro',
         uuid: 'uuid',
         platform: 'ios',
+        deviceType: 'emulator',
         state: 'Shutdown'
-      }), new IOSEmulator({
+      }), new Device({
         apiVersion: '11.1',
         name: 'iPhone X',
         uuid: '3B388D0A-01F2-4E68-B86B-55FDB6F96B37',
         platform: 'ios',
+        deviceType: 'emulator',
         state: 'Shutdown'
-      }), new IOSEmulator({
+      }), new Device({
         apiVersion: '9.1',
         name: 'iPhone 5',
         uuid: 'uuid',
         platform: 'ios',
+        deviceType: 'emulator',
         state: 'Shutdown'
-      }), new IOSEmulator({
+      }), new Device({
         apiVersion: '9.1',
         name: 'iPhone 4s',
         uuid: 'uuid',
         platform: 'ios',
+        deviceType: 'emulator',
         state: 'Shutdown'
-      }), new IOSEmulator({
+      }), new Device({
         apiVersion: '8.4',
         name: 'iPhone 5',
         uuid: 'uuid',
         platform: 'ios',
+        deviceType: 'emulator',
         state: 'Shutdown'
-      }), new IOSEmulator({
+      }), new Device({
         apiVersion: '8.4',
         name: 'iPhone 4s',
         uuid: 'uuid',
         platform: 'ios',
+        deviceType: 'emulator',
         state: 'Shutdown'
       })]);
     });

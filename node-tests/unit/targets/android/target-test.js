@@ -4,15 +4,16 @@ const expect          = require('../../../helpers/expect');
 const mockProject     = require('../../../fixtures/corber-mock/project');
 
 const libPath         = '../../../../lib';
-const Emulator         = require(`${libPath}/objects/emulator`);
+const Device          = require(`${libPath}/objects/device`);
 
 const setupTarget = function() {
   let AndroidTarget = require(`${libPath}/targets/android/target`);
   return new AndroidTarget({
-    emulator: new Emulator({
+    emulator: new Device({
       name: 'Emultor',
       uuid: 'uuid',
-      platform: 'android'
+      platform: 'android',
+      deviceType: 'emulator'
     }),
     project: mockProject.project
   });

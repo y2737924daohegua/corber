@@ -1,7 +1,7 @@
 const td              = require('testdouble');
 const expect          = require('../../../../helpers/expect');
 const Promise         = require('rsvp').Promise;
-const AndroidEm       = require('../../../../../lib/objects/emulator');
+const Device          = require('../../../../../lib/objects/device');
 
 const emList          = 'Nexus_5X_API_27\nPixel_2_API_27';
 
@@ -44,13 +44,15 @@ describe('Android List Emulators', function() {
 
     return listEms().then(function(found) {
       expect(found).to.deep.equal([
-        new AndroidEm({
+        new Device({
           name: 'Pixel_2_API_27',
-          platform: 'android'
+          platform: 'android',
+          deviceType: 'emulator'
         }),
-        new AndroidEm({
+        new Device({
           name: 'Nexus_5X_API_27',
-          platform: 'android'
+          platform: 'android',
+          deviceType: 'emulator'
         })]);
     });
   });
