@@ -140,15 +140,49 @@ describe('Start Command', function() {
         expect(tasks).to.deep.equal([
           'select-emulator',
           'framework-validate-serve',
+          'hook-beforeBuild',
           'add-navigation',
           'create-livereload-shell',
           'cordova-prepare',
-          'hook-beforeBuild',
           'cordova-validate-serve',
           'platform-target-build',
           'hook-afterBuild',
           'platform-target-run',
           'framework-serve'
+        ]);
+      });
+    });
+
+    it('skips platformTarget build with --scb', function() {
+      return start.run({skipCordovaBuild: true}).then(function() {
+        expect(tasks).to.deep.equal([
+          'select-emulator',
+          'framework-validate-serve',
+          'hook-beforeBuild',
+          'add-navigation',
+          'create-livereload-shell',
+          'cordova-prepare',
+          'cordova-validate-serve',
+          'hook-afterBuild',
+          'platform-target-run',
+          'framework-serve'
+        ]);
+      });
+    });
+
+    it('skips framework serve with --sfb', function() {
+      return start.run({skipFrameworkBuild: true}).then(function() {
+        expect(tasks).to.deep.equal([
+          'select-emulator',
+          'framework-validate-serve',
+          'hook-beforeBuild',
+          'add-navigation',
+          'create-livereload-shell',
+          'cordova-prepare',
+          'cordova-validate-serve',
+          'platform-target-build',
+          'hook-afterBuild',
+          'platform-target-run'
         ]);
       });
     });
