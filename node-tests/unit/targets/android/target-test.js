@@ -9,7 +9,7 @@ const Device          = require(`${libPath}/objects/device`);
 const setupTarget = function() {
   let AndroidTarget = require(`${libPath}/targets/android/target`);
   return new AndroidTarget({
-    emulator: new Device({
+    device: new Device({
       name: 'Emultor',
       uuid: 'uuid',
       platform: 'android',
@@ -64,8 +64,10 @@ describe('Android Target', function() {
 
 
   context('run', function() {
-    it('runs tasks in the correct order', function() {
-      let tasks = [];
+    let tasks;
+
+    beforeEach(function() {
+      tasks = [];
 
       td.replace(`${libPath}/targets/android/tasks/boot-emulator`, function() {
         tasks.push('boot-emulator');
@@ -73,7 +75,12 @@ describe('Android Target', function() {
       });
 
       td.replace(`${libPath}/targets/android/tasks/install-app-emulator`, function() {
-        tasks.push('install-app');
+        tasks.push('install-app-emulator');
+        return Promise.resolve();
+      });
+
+      td.replace(`${libPath}/targets/android/tasks/install-app-device`, function() {
+        tasks.push('install-app-device');
         return Promise.resolve();
       });
 
@@ -81,12 +88,27 @@ describe('Android Target', function() {
         tasks.push('launch-app');
         return Promise.resolve();
       });
+    });
 
+    it('deviceType: device runs tasks in the correct order', function() {
       let target = setupTarget();
+      target.device.deviceType = 'device';
+
+      return target.run().then(function() {
+        expect(tasks).to.deep.equal([
+          'install-app-device',
+          'launch-app'
+        ]);
+      });
+    });
+
+    it('deviceType: emulator runs tasks in the correct order', function() {
+      let target = setupTarget();
+
       return target.run().then(function() {
         expect(tasks).to.deep.equal([
           'boot-emulator',
-          'install-app',
+          'install-app-emulator',
           'launch-app'
         ]);
       });
