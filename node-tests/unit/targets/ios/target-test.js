@@ -10,7 +10,7 @@ const Device          = require(`${libPath}/objects/device`);
 const setupTarget = function() {
   let IOSTarget = require(`${libPath}/targets/ios/target`);
   return new IOSTarget({
-    emulator: new Device({
+    device: new Device({
       apiVersion: '11.1',
       name: 'iPad Pro',
       uuid: 'uuid',
