@@ -187,10 +187,10 @@ describe('Start Command', function() {
       });
     });
 
-    it('makes the required changes to project', function() {
+    it('sets vars for webpack livereload', function() {
       return start.run({build: false, platform: 'ios'}).then(function() {
         expect(mockProject.project.targetIsCordova).to.equal(true);
-        expect(mockProject.project.CORDOVA_PLATFORM).to.equal('ios')
+        expect(mockProject.project.CORBER_PLATFORM).to.equal('ios')
         expect(mockProject.project.targetIsCordovaLivereload).to.equal(true);
       });
     });

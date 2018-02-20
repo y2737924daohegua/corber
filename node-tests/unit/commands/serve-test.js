@@ -105,6 +105,15 @@ describe('Serve Command', function() {
     }).not.to.throw(Error);
   });
 
+  it('sets vars for webpack livereload', function() {
+    return serveCmd.run({platform: 'ios'}).then(function() {
+      let project = mockProject.project;
+      expect(project.targetIsCordova).to.equal(true);
+      expect(project.targetIsCordovaLivereload).to.equal(true);
+      expect(project.CORBER_PLATFORM).to.equal('ios');
+    });
+  });
+
   it('runs tasks in the correct order', function() {
     return serveCmd.run({}).then(function() {
       expect(tasks).to.deep.equal([
