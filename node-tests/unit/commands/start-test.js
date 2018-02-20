@@ -129,7 +129,7 @@ describe('Start Command', function() {
 
       start = setupStart();
 
-      td.replace(start, 'selectEmulator', function() {
+      td.replace(start, 'selectDevice', function() {
         tasks.push('select-emulator');
         return Promise.resolve({name: 'emulator', platform: 'ios'});
       });
@@ -226,7 +226,7 @@ describe('Start Command', function() {
     });
   });
 
-  describe('selectEmulator', function() {
+  describe('selectDevice', function() {
     beforeEach(function() {
       td.replace('../../../lib/targets/ios/tasks/list-emulators', function() {
         return Promise.resolve(iosEmulators);
@@ -252,8 +252,8 @@ describe('Start Command', function() {
         }
       }
 
-      return start.selectEmulator({emulator: '', platform: 'ios'}).then(function() {
-        expect(promptArgs.message).to.equal('Select an emulator');
+      return start.selectDevice({emulator: '', platform: 'ios'}).then(function() {
+        expect(promptArgs.message).to.equal('Select a device/emulator');
         expect(promptArgs.type).to.equal('list');
         expect(promptArgs.choices[0].value).to.deep.equal(iosEmulators[0]);
         expect(promptArgs.choices[1].value).to.deep.equal(iosEmulators[1]);
@@ -263,16 +263,8 @@ describe('Start Command', function() {
     it('finds emulator by name', function() {
       let start = setupStart();
 
-      return start.selectEmulator({emulator: 'iOS Em 1'}).then(function(selected) {
+      return start.selectDevice({emulator: 'iOS Em 1'}).then(function(selected) {
         expect(selected).to.deep.equal(iosEmulators[0]);
-      });
-    });
-
-    it('finds emulator by id', function() {
-      let start = setupStart();
-
-      return start.selectEmulator({emulatorid: 2}).then(function(selected) {
-        expect(selected).to.deep.equal(iosEmulators[1]);
       });
     });
 
@@ -287,7 +279,7 @@ describe('Start Command', function() {
         }
       }
 
-      return start.selectEmulator({emulator: '', platform: 'android'}).then(function() {
+      return start.selectDevice({emulator: '', platform: 'android'}).then(function() {
         expect(promptArgs.choices.length).to.equal(2);
       });
     });
@@ -303,7 +295,7 @@ describe('Start Command', function() {
         }
       }
 
-      return start.selectEmulator({emulator: ''}).then(function() {
+      return start.selectDevice({emulator: ''}).then(function() {
         expect(promptArgs.choices.length).to.equal(4);
       });
     });
