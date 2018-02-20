@@ -117,6 +117,10 @@ describe('Start Command', function() {
         return Promise.resolve();
       });
 
+      td.replace(CdvTarget.prototype, 'installedPlatforms', function() {
+        return ['ios'];
+      });
+
       td.replace(LRloadShell.prototype, 'run', function() {
         tasks.push('create-livereload-shell');
         return Promise.resolve();
@@ -252,7 +256,7 @@ describe('Start Command', function() {
         }
       }
 
-      return start.selectDevice({emulator: '', platform: 'ios'}).then(function() {
+      return start.selectDevice({emulator: '', platform: 'ios'}, ['ios']).then(function() {
         expect(promptArgs.message).to.equal('Select a device/emulator');
         expect(promptArgs.type).to.equal('list');
         expect(promptArgs.choices[0].value).to.deep.equal(iosEmulators[0]);
@@ -263,7 +267,7 @@ describe('Start Command', function() {
     it('finds emulator by name', function() {
       let start = setupStart();
 
-      return start.selectDevice({emulator: 'iOS Em 1'}).then(function(selected) {
+      return start.selectDevice({emulator: 'iOS Em 1'}, ['ios']).then(function(selected) {
         expect(selected).to.deep.equal(iosEmulators[0]);
       });
     });
@@ -279,7 +283,7 @@ describe('Start Command', function() {
         }
       }
 
-      return start.selectDevice({emulator: '', platform: 'android'}).then(function() {
+      return start.selectDevice({emulator: '', platform: 'android'}, ['android']).then(function() {
         expect(promptArgs.choices.length).to.equal(2);
       });
     });
@@ -295,9 +299,34 @@ describe('Start Command', function() {
         }
       }
 
-      return start.selectDevice({emulator: ''}).then(function() {
+      return start.selectDevice({emulator: ''}, ['ios', 'android']).then(function() {
         expect(promptArgs.choices.length).to.equal(4);
       });
+    });
+  });
+
+  describe('validatePlatform', function() {
+    afterEach(function() {
+      td.reset();
+    });
+
+    it('throws an error when builds are for a platform that is not installed', function() {
+      let logger = td.replace('../../../lib/utils/logger');
+
+
+      let start = setupStart();
+      start.validatePlatform(['ios'], 'android');
+
+      td.verify(logger.error(td.matchers.anything()));
+    });
+
+    it('passes when builds are for an installed platform', function() {
+      let logger = td.replace('../../../lib/utils/logger');
+
+      let start = setupStart();
+      start.validatePlatform(['ios'], 'ios');
+
+      td.verify(logger.error(), { times: 0 });
     });
   });
 });
