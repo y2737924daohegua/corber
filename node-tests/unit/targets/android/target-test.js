@@ -88,6 +88,11 @@ describe('Android Target', function() {
         tasks.push('launch-app');
         return Promise.resolve();
       });
+
+      td.replace(`${libPath}/targets/android/utils/apk-path`, function() {
+        tasks.push('apk-path');
+        return Promise.resolve('apk-path');
+      });
     });
 
     it('deviceType: device runs tasks in the correct order', function() {
@@ -96,6 +101,7 @@ describe('Android Target', function() {
 
       return target.run().then(function() {
         expect(tasks).to.deep.equal([
+          'apk-path',
           'install-app-device',
           'launch-app'
         ]);
@@ -107,6 +113,7 @@ describe('Android Target', function() {
 
       return target.run().then(function() {
         expect(tasks).to.deep.equal([
+          'apk-path',
           'boot-emulator',
           'install-app-emulator',
           'launch-app'
