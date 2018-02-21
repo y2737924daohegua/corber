@@ -10,6 +10,7 @@ const resolve               = require('resolve');
 const path                  = require('path');
 const requireAsHash         = require('ember-cli/lib/utilities/require-as-hash');
 const willInterruptProcess  = require('ember-cli/lib/utilities/will-interrupt-process');
+const exit                  = require('exit');
 
 // `process` should be captured before we require any libraries which
 // may use `process.exit` work arounds for async cleanup.
@@ -53,4 +54,15 @@ let environment = {
   settings: {}
 }
 
-return cli.run(environment);
+let promise = cli.run(environment);
+
+promise.then(function(result) {
+  let exitCode = typeof result === 'object'  && result.exitCode ? result.exitCode : 0;
+  exit(exitCode);
+});
+promise.catch((error) => {
+  let exitCode = typeof error === 'object'  && result.exitCode ? result.exitCode : 1;
+  exit(exitCode);
+});
+
+return promise;
