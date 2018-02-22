@@ -21,6 +21,3 @@ before_install:
 install:
   - npm install
   - bower install
-
-script:
-  - node_modules/.bin/ember try:each --skip-cleanup
