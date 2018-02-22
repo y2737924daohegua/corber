@@ -4,15 +4,16 @@ const expect          = require('../../../helpers/expect');
 const mockProject     = require('../../../fixtures/corber-mock/project');
 
 const libPath         = '../../../../lib';
-const Emulator         = require(`${libPath}/objects/emulator`);
+const Device          = require(`${libPath}/objects/device`);
 
 const setupTarget = function() {
   let AndroidTarget = require(`${libPath}/targets/android/target`);
   return new AndroidTarget({
-    emulator: new Emulator({
+    device: new Device({
       name: 'Emultor',
       uuid: 'uuid',
-      platform: 'android'
+      platform: 'android',
+      deviceType: 'emulator'
     }),
     project: mockProject.project
   });
@@ -63,16 +64,23 @@ describe('Android Target', function() {
 
 
   context('run', function() {
-    it('runs tasks in the correct order', function() {
-      let tasks = [];
+    let tasks;
+
+    beforeEach(function() {
+      tasks = [];
 
       td.replace(`${libPath}/targets/android/tasks/boot-emulator`, function() {
         tasks.push('boot-emulator');
         return Promise.resolve();
       });
 
-      td.replace(`${libPath}/targets/android/tasks/install-app`, function() {
-        tasks.push('install-app');
+      td.replace(`${libPath}/targets/android/tasks/install-app-emulator`, function() {
+        tasks.push('install-app-emulator');
+        return Promise.resolve();
+      });
+
+      td.replace(`${libPath}/targets/android/tasks/install-app-device`, function() {
+        tasks.push('install-app-device');
         return Promise.resolve();
       });
 
@@ -81,11 +89,33 @@ describe('Android Target', function() {
         return Promise.resolve();
       });
 
+      td.replace(`${libPath}/targets/android/utils/apk-path`, function() {
+        tasks.push('apk-path');
+        return Promise.resolve('apk-path');
+      });
+    });
+
+    it('deviceType: device runs tasks in the correct order', function() {
       let target = setupTarget();
+      target.device.deviceType = 'device';
+
       return target.run().then(function() {
         expect(tasks).to.deep.equal([
+          'apk-path',
+          'install-app-device',
+          'launch-app'
+        ]);
+      });
+    });
+
+    it('deviceType: emulator runs tasks in the correct order', function() {
+      let target = setupTarget();
+
+      return target.run().then(function() {
+        expect(tasks).to.deep.equal([
+          'apk-path',
           'boot-emulator',
-          'install-app',
+          'install-app-emulator',
           'launch-app'
         ]);
       });

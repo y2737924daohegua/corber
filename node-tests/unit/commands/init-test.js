@@ -87,7 +87,7 @@ describe('Init Command', function() {
     });
   });
 
-  it('does not call installPlatforms if the selected platfor is none', function() {
+  it('does not call installPlatforms if the selected platform is none', function() {
     let init = setupCmd(true);
     let installDouble = td.replace(init, 'installPlatforms');
     opts.platform = undefined;
@@ -129,6 +129,22 @@ describe('Init Command', function() {
 
       return init.installPlatforms(['ios', 'android']).then(() => {
         expect(calls).to.deep.equal(['ios', 'android']);
+      });
+    });
+
+    it('passes webview and save options to the platform task', function() {
+      let calls = [];
+
+      let PlatformTask = require('../../../lib/targets/cordova/tasks/platform');
+      td.replace(PlatformTask.prototype, 'run', function(action, platform, opts) {
+        calls.push(opts);
+        return Promise.resolve();
+      });
+
+      let init = setupCmd();
+
+      return init.installPlatforms(['ios', 'android'], {uiwebview: false, crosswalk: true}).then(function() {
+        expect(calls[0]).to.deep.equal({uiwebview: false, crosswalk: true, save: true});
       });
     });
   });

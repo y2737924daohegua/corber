@@ -5,16 +5,17 @@ const expect          = require('../../../helpers/expect');
 const mockProject     = require('../../../fixtures/corber-mock/project');
 
 const libPath         = '../../../../lib';
-const IOSEmulator     = require(`${libPath}/objects/emulator/ios`);
+const Device          = require(`${libPath}/objects/device`);
 
 const setupTarget = function() {
   let IOSTarget = require(`${libPath}/targets/ios/target`);
   return new IOSTarget({
-    emulator: new IOSEmulator({
+    device: new Device({
       apiVersion: '11.1',
       name: 'iPad Pro',
       uuid: 'uuid',
       platform: 'ios',
+      deviceType: 'emulator',
       state: 'Booted'
     }),
     project: mockProject.project

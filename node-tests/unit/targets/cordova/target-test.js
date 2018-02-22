@@ -55,6 +55,30 @@ describe('Cordova Target', function() {
     });
   });
 
+  context('installedPlatforms', function() {
+    it('returns platforms in cordova package.json', function() {
+      let fsUtils = require('../../../../lib/utils/fs-utils');
+      td.replace(fsUtils, 'existsSync', function() {
+        return true;
+      });
+
+      td.replace('../../../../lib/utils/get-package', function() {
+        return {
+          cordova: {
+            platforms: ['ios', 'android']
+          }
+        };
+      });
+
+      let CordovaTarget = require('../../../../lib/targets/cordova/target');
+      let target = new CordovaTarget({
+        project: mockProject.project
+      });
+
+      let installed = target.installedPlatforms();
+      expect(installed).to.deep.equal(['ios', 'android']);
+    });
+  });
 
   context('build', function() {
     it('runs cordova build task', function() {

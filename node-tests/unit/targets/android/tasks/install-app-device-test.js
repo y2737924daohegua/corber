@@ -1,6 +1,6 @@
 const td              = require('testdouble');
 
-describe('Android Install App', function() {
+describe('Android Install App - Device', function() {
   beforeEach(function() {
     td.replace('../../../../../lib/targets/android/utils/sdk-paths', function() {
       return {
@@ -13,18 +13,18 @@ describe('Android Install App', function() {
     td.reset();
   });
 
-  it('spawns adb kill', function() {
+  it('spawns adb install', function() {
     let spawnDouble = td.replace('../../../../../lib/utils/spawn');
-    let installApp = require('../../../../../lib/targets/android/tasks/install-app');
+    let installApp = require('../../../../../lib/targets/android/tasks/install-app-device');
 
-    installApp('apk-path');
+    installApp('uuid', 'apk-path');
 
     td.verify(spawnDouble(
       'adbPath',
       [
-        '-e',
+        '-s',
+        'uuid',
         'install',
-        '-r',
         'apk-path'
       ]
     ));
