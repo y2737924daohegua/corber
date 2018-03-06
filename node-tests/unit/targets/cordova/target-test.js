@@ -55,7 +55,7 @@ describe('Cordova Target', function() {
     });
   });
 
-  context('installedPlatforms', function() {
+  context('getInstalledPlatforms', function() {
     it('returns platforms in cordova package.json', function() {
       let fsUtils = require('../../../../lib/utils/fs-utils');
       td.replace(fsUtils, 'existsSync', function() {
@@ -75,8 +75,9 @@ describe('Cordova Target', function() {
         project: mockProject.project
       });
 
-      let installed = target.installedPlatforms();
-      expect(installed).to.deep.equal(['ios', 'android']);
+      return target.getInstalledPlatforms().then((platforms) => {
+        expect(platforms).to.deep.equal(['ios', 'android']);
+      });
     });
   });
 
