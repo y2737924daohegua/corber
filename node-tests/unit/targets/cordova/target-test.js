@@ -79,6 +79,33 @@ describe('Cordova Target', function() {
         expect(platforms).to.deep.equal(['ios', 'android']);
       });
     });
+
+    it('falls back to config.xml if package.json is missing', function () {
+      let fsUtils = require('../../../../lib/utils/fs-utils');
+      td.replace(fsUtils, 'existsSync', function (path) {
+        return path.endsWith('config.xml');
+      });
+
+      td.replace('../../../../lib/utils/parse-xml', function () {
+        return Promise.resolve({
+          widget: {
+            engine: [
+              { $: { name: 'p' } },
+              { $: { name: 'q' } },
+            ]
+          }
+        });
+      });
+
+      let CordovaTarget = require('../../../../lib/targets/cordova/target');
+      let target = new CordovaTarget({
+        project: mockProject.project
+      });
+
+      return target.getInstalledPlatforms().then((platforms) => {
+        expect(platforms).to.deep.equal(['p', 'q']);
+      });
+    });
   });
 
   context('build', function() {
