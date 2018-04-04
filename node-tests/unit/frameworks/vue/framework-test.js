@@ -61,8 +61,8 @@ describe('Vue Framework', function() {
 
       td.verify(new ValidateRoot({
         config: {},
-        rootProps: ['assetsPublicPath'],
-        path: 'config/index.js',
+        rootProps: ['baseUrl'],
+        path: 'vue.config.js',
         force: undefined,
         env: 'build'
       }));
@@ -115,7 +115,7 @@ describe('Vue Framework', function() {
     framework.validateServe({});
 
     td.verify(new ValidateWebpack({
-      configPath: path.join(mockProject.project.root, 'build', 'webpack.dev.conf'),
+      configPath: path.join(mockProject.project.root, 'vue.config.js'),
       framework: 'vue'
     }));
   });
