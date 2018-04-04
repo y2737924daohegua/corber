@@ -14,7 +14,7 @@ var rejectMsg =
   chalk.grey(
     'This will not work in cordova, and needs to be removed. \n' +
     'You can pass the --force flag to ignore if otherwise handled. \n' +
-    'See http://embercordova.com/pages/setup_guide for more info.'
+    'See http://corber.io/pages/frameworks/index for more info.'
   );
 
 describe('Validate Root Url', function() {
