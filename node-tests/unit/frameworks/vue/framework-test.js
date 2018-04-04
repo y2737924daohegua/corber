@@ -60,7 +60,7 @@ describe('Vue Framework', function() {
       framework._buildValidators('build', {});
 
       td.verify(new ValidateRoot({
-        config: {},
+        config: {configureWebpack: {plugins: []}},
         rootProps: ['baseUrl'],
         path: 'vue.config.js',
         force: undefined,
