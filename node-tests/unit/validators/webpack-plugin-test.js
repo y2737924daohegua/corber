@@ -54,9 +54,11 @@ describe('Validate Webpack Plugin', function() {
     it('includes vue specific info', function() {
       let validateWebpack = initValidator();
       validateWebpack.framework = 'vue';
+      validateWebpack.configPath =
+        path.join(mockProject.project.root, 'vue.config.js');
 
       return validateWebpack.run().then(function() {
-        td.verify(warnDouble(contains('build/webpack.dev.conf')));
+        td.verify(warnDouble(contains('vue.config.js')));
       });
     });
 
