@@ -10,7 +10,7 @@ var contains        = td.matchers.contains;
 var ValidateRoot    = require('../../../lib/validators/root-url');
 
 var rejectMsg =
-  chalk.red('* undefined dev: testProp has a leading slash. \n') +
+  chalk.red('* undefined dev: rootURL has a leading slash. \n') +
   chalk.grey(
     'This will not work in cordova, and needs to be removed. \n' +
     'You can pass the --force flag to ignore if otherwise handled. \n' +
@@ -23,7 +23,7 @@ describe('Validate Root Url', function() {
   beforeEach(function() {
     validateRoot = new ValidateRoot({
       project: mockProject.project,
-      rootProps: ['testProp'],
+      rootProps: ['rootURL'],
       env: 'dev',
       config: mockProject.config()
     });
@@ -42,6 +42,8 @@ describe('Validate Root Url', function() {
   });
 
   it('rejects if validRootValues is false', function() {
+    validateRoot.config = { rootURL: undefined };
+
     td.replace(validateRoot, 'validRootValues', function(path) {
       return false;
     });
@@ -50,8 +52,17 @@ describe('Validate Root Url', function() {
   });
 
   it('does not error when the value is undefined', function() {
-    validateRoot.config = { rootURL: undefined };
+    validateRoot.config = {};
     return expect(validateRoot.run()).to.eventually.be.fulfilled;
+  });
+
+  it('warns when the value is undefined', function() {
+    validateRoot.config = {};
+    var warnDouble = td.replace(logger, 'warn');
+
+    return validateRoot.run().then(function() {
+      td.verify(warnDouble(contains('Could not find rootURL in config')))
+    });
   });
 
   it('when force is true, throws a warning vs rejection', function() {
@@ -63,7 +74,7 @@ describe('Validate Root Url', function() {
     validateRoot.force = true;
 
     return validateRoot.run().then(function() {
-      td.verify(warnDouble(contains('You have passed the --force flag')));
+      td.verify(warnDouble(contains('Detected the --force flag')));
     })
   });
 
