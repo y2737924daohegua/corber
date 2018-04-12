@@ -117,6 +117,32 @@ describe('Init Command', function() {
     });
   });
 
+  describe('buildPromptOptions', function() {
+    context('is win32', function() {
+      it('does not includes an ios option', function() {
+        td.replace('../../../lib/utils/get-os', function() {
+          return 'win32';
+        });
+
+        let init = setupCmd();
+
+        expect(init.buildPromptOptions()['choices'].length).to.eq(2);
+      });
+    });
+
+    context('is darwin', function() {
+      it('includes an ios option', function() {
+        td.replace('../../../lib/utils/get-os', function() {
+          return 'darwin';
+        });
+
+        let init = setupCmd();
+
+        expect(init.buildPromptOptions()['choices'].length).to.eq(3);
+      });
+    });
+  });
+
   describe('installPlatforms', function() {
     it('installs each passed platform', function() {
       let calls = [];
