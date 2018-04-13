@@ -18,7 +18,7 @@ describe('Vue Framework', function() {
 
     expect(framework.name).to.equal('vue');
     expect(framework.buildCommand).to.equal('npm run build');
-    expect(framework.serveCommand).to.equal('node build/dev-server.js');
+    expect(framework.serveCommand).to.equal('npm run serve');
     expect(framework.buildPath).to.equal('./dist');
     expect(framework.port).to.equal(8080);
   });
