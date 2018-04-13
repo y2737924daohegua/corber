@@ -19,10 +19,26 @@ describe('Framework', function() {
     });
 
     let frameworkType  = require('../../../lib/utils/framework-type');
-    expect(frameworkType.get(root)).to.equal('glimmer');
+    let frameworks = frameworkType.detectAll(root);
+    expect(frameworks.length).to.eq(1);
+    expect(frameworks).to.include('glimmer');
   });
 
-  it('detects ember', function() {
+  it('detects ember as a dependency', function () {
+    td.replace('../../../lib/utils/get-package', function () {
+      return {
+        name: 'my-app',
+        dependencies: {
+          'ember-source': '^0.5.1',
+        }
+      };
+    });
+
+    let frameworkType = require('../../../lib/utils/framework-type');
+    expect(frameworkType.detectAll(root)).to.include('ember');
+  });
+
+  it('detects ember as a dev dependency', function() {
     td.replace('../../../lib/utils/get-package', function() {
       return {
         name: 'my-app',
@@ -33,7 +49,7 @@ describe('Framework', function() {
     });
 
     let frameworkType  = require('../../../lib/utils/framework-type');
-    expect(frameworkType.get(root)).to.equal('ember');
+    expect(frameworkType.detectAll(root)).to.include('ember');
   });
 
   it('detect vue', function() {
@@ -47,7 +63,7 @@ describe('Framework', function() {
     });
 
     let frameworkType  = require('../../../lib/utils/framework-type');
-    expect(frameworkType.get(root)).to.equal('vue');
+    expect(frameworkType.detectAll(root)).to.include('vue');
   });
 
   it('detect react', function() {
@@ -61,7 +77,7 @@ describe('Framework', function() {
     });
 
     let frameworkType  = require('../../../lib/utils/framework-type');
-    expect(frameworkType.get(root)).to.equal('react');
+    expect(frameworkType.detectAll(root)).to.include('react');
   });
 
   it('returns custom if no type is detected', function() {
@@ -73,6 +89,27 @@ describe('Framework', function() {
     });
 
     let frameworkType  = require('../../../lib/utils/framework-type');
-    expect(frameworkType.get(root)).to.equal('custom');
+    expect(frameworkType.detectAll(root)).to.include('custom');
+  });
+
+  it('detects more than one framework type', function() {
+    td.replace('../../../lib/utils/get-package', function () {
+      return {
+        name: 'my-app',
+        dependencies: {
+          'react': '0.0.0',
+          'vue': '0.0.0'
+        },
+        devDependencies: {
+          '@glimmer/application': '^0.5.1',
+          'ember-source': '^0.5.1',
+        }
+      };
+    });
+    let frameworkType = require('../../../lib/utils/framework-type');
+    expect(frameworkType.detectAll(root)).to.include('glimmer');
+    expect(frameworkType.detectAll(root)).to.include('ember');
+    expect(frameworkType.detectAll(root)).to.include('vue');
+    expect(frameworkType.detectAll(root)).to.include('react');
   });
 });

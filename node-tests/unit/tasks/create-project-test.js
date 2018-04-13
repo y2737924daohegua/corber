@@ -107,8 +107,8 @@ describe('Create Project', function() {
   });
 
   it('warns if framework type is custom', function() {
-    td.replace(frameworkType, 'get', function() {
-      return 'custom';
+    td.replace(frameworkType, 'detectAll', function() {
+      return ['custom'];
     });
 
     initTask(false);
@@ -127,9 +127,11 @@ describe('Create Project', function() {
       'corber'
     );
 
+    let emberCdvConfigPath = path.resolve(emberCdvPath, 'config');
+
     beforeEach(function() {
-      td.replace(frameworkType, 'get', function() {
-        return 'ember';
+      td.replace(frameworkType, 'detectAll', function() {
+        return ['ember'];
       });
     });
 
@@ -138,17 +140,18 @@ describe('Create Project', function() {
     });
 
     it('inits corber && config directories', function() {
-      let mkDirPath = '';
+      let mkDirPaths = [];
 
       td.replace(fsUtils, 'mkdir', function(corberPath) {
-        mkDirPath = corberPath;
+        mkDirPaths.push(corberPath);
         return Promise.resolve();
       });
 
       initTask(false);
-      createTask.run();
-
-      expect(mkDirPath).to.equal(emberCdvPath);
+      return createTask.run().then(function() {
+        expect(mkDirPaths).to.include(emberCdvPath);
+        expect(mkDirPaths).to.include(emberCdvConfigPath);
+      });
     });
 
     it('attempts to copy the frameworks config', function() {
