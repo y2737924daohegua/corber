@@ -12,7 +12,7 @@ describe('Framework', function() {
     let frameworkType  = require('../../../lib/utils/framework-type');
     let passedRoot = '';
 
-    let detectDouble = td.replace(frameworkType, 'detectAll', function(root) {
+    td.replace(frameworkType, 'detectAll', function(root) {
       passedRoot = root;
       return [root];
     });
