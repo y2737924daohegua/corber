@@ -8,6 +8,20 @@ describe('Framework', function() {
     td.reset();
   });
 
+  it('get passes root to detectAll', function() {
+    let frameworkType  = require('../../../lib/utils/framework-type');
+    let passedRoot = '';
+
+    let detectDouble = td.replace(frameworkType, 'detectAll', function(root) {
+      passedRoot = root;
+      return [root];
+    });
+
+    frameworkType.get('rootFoo');
+    expect(passedRoot).to.equal('rootFoo');
+
+  });
+
   it('detects glimmer', function() {
     td.replace('../../../lib/utils/get-package', function() {
       return {
