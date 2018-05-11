@@ -17,6 +17,7 @@
 npm-debug.log
 testem.log
 .idea
+yarn-error.log
 
 ember-cordova/tmp-livereload
 ember-cordova/cordova/www/*
