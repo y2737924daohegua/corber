@@ -103,6 +103,34 @@ describe('Init Command', function() {
     });
   });
 
+  describe('validateAndRun', function() {
+    context('when corber is already initialized', function() {
+      it('throws an exception', function() {
+        td.replace('../../../lib/utils/get-versions', () => {
+          return {
+            corber: {
+              project: '1.0.0'
+            }
+          };
+        });
+
+        let init = setupCmd();
+        expect(() => init.validateAndRun()).to.throw();
+      });
+    });
+
+    context('when corber folder already exists in project', function() {
+      it('throws an exception', function () {
+        td.replace('../../../lib/utils/fs-utils', 'existsSync', (path) => {
+          return path !== './corber';
+        });
+
+        let init = setupCmd();
+        expect(() => init.validateAndRun()).to.throw();
+      });
+    });
+  });
+
   describe('getPlatforms', function() {
     it('splits a single string', function() {
       let init = setupCmd();
