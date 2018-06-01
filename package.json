@@ -69,6 +69,7 @@
     "portfinder": "^1.0.5",
     "rimraf": "^2.5.4",
     "rsvp": "^4.6.1",
+    "semver": "^5.5.0",
     "sort-package-json": "^1.7.0",
     "splicon": "^0.0.14",
     "svg2png": "^4.1.0",

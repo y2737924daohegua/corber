@@ -92,13 +92,19 @@ describe('Ember Framework', function() {
 
   context('buildValidators', function() {
     it('inits validations', function() {
+      let ValidateBrowserTargets = td.replace('../../../../lib/frameworks/ember/validators/browser-targets');
       let ValidateLocation = td.replace('../../../../lib/frameworks/ember/validators/location-type');
       let ValidateRoot = td.replace('../../../../lib/validators/root-url');
+
       let Ember = require('../../../../lib/frameworks/ember/framework');
 
       let framework = new Ember({project: mockProject.project, isGlimmer: false});
       let validators = framework._buildValidators({});
 
+      td.verify(new ValidateBrowserTargets({
+        config: mockProject.project.config(),
+        root: mockProject.project.root
+      }));
 
       td.verify(new ValidateLocation({
         config: mockProject.project.config(),
@@ -112,7 +118,7 @@ describe('Ember Framework', function() {
         force: undefined
       }));
 
-      expect(validators.length).to.equal(2);
+      expect(validators.length).to.equal(3);
     });
 
     it('passes the force flag to ValidateRootURL', function() {
