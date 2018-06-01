@@ -109,7 +109,9 @@ describe('Init Command', function() {
         td.replace('../../../lib/utils/get-versions', () => {
           return {
             corber: {
-              project: '1.0.0'
+              project: {
+                required: '1.0.0'
+              }
             }
           };
         });
