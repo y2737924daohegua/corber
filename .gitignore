@@ -5,3 +5,6 @@ _site
 yarn.lock
 .idea
 /node_modules
+
+/vendor
+/.bundle
