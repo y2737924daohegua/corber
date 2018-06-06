@@ -3,7 +3,7 @@ layout: page
 title:  "Vue"
 ---
 
-Corber requires Vue projects to be made with `vue-cli`, which it automatically detects and runs with minimal configuration.
+Corber automatically detects and runs `vue-cli` projects with minimal configuration, but doesn't currently support non-`vue-cli` projects.
 
 First, install `corber-webpack-plugin`:
 
