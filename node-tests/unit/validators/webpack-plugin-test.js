@@ -21,9 +21,10 @@ describe('Validate Webpack Plugin', function() {
     td.reset();
   });
 
-  context('when framework is Vue', function() {
+  context('when config path from Vue CLI v3', function() {
     beforeEach(function() {
       validator = initValidator();
+      validator.root = mockProject.project.root;
       validator.framework = 'vue';
       validator.configPath = path.join(mockProject.project.root, 'vue.config.js');
     });
@@ -98,14 +99,77 @@ describe('Validate Webpack Plugin', function() {
     });
   });
 
-  context('when framework is other framework', function() {
+  context('when config path from Vue CLI v2', function() {
     beforeEach(function() {
       validator = initValidator();
-      validator.framework = 'react';
+      validator.root = mockProject.project.root;
+      validator.framework = 'vue';
       validator.configPath = path.join(
         mockProject.project.root,
         'build',
-        'webpack-with-plugin.dev.conf.js'
+        'webpack.dev.conf'
+      );
+    });
+
+    context('when plugins property missing', function () {
+      beforeEach(function() {
+        td.replace(validator, 'getConfig', () => new Object({
+          baseUrl: './',
+        }));
+      });
+
+      it('warns and resolves', function(done) {
+        validator.run().then(function() {
+          td.verify(warnDouble(contains('build/webpack.dev.conf')));
+          done();
+        }).catch(done);
+      });
+    });
+
+    context('when plugins property missing webpack plugin', function () {
+      beforeEach(function() {
+        td.replace(validator, 'getConfig', () => new Object({
+          baseUrl: './',
+          plugins: []
+        }));
+      });
+
+      it('warns and resolves', function(done) {
+        validator.run().then(function() {
+          td.verify(warnDouble(contains('build/webpack.dev.conf')));
+          done();
+        }).catch(done);
+      });
+    });
+
+    context('when plugins property includes webpack plugin', function () {
+      beforeEach(function() {
+        function CorberWebpackPlugin() {}
+
+        td.replace(validator, 'getConfig', () => new Object({
+          baseUrl: './',
+          plugins: [new CorberWebpackPlugin()]
+        }));
+      });
+
+      it('resolves silently', function(done) {
+        validator.run().then(function() {
+          td.verify(warnDouble(), { times: 0, ignoreExtraArgs: true });
+          done();
+        }).catch(done);
+      });
+    });
+  });
+
+  context('when config path is not from Vue CLI', function() {
+    beforeEach(function() {
+      validator = initValidator();
+      validator.root = mockProject.project.root;
+      validator.framework = 'react';
+      validator.configPath = path.join(
+        mockProject.project.root,
+        'config',
+        'webpack.config.dev.js'
       );
     });
 
