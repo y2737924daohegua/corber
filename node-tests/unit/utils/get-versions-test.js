@@ -2,11 +2,24 @@ const td                 = require('testdouble');
 const expect             = require('../../helpers/expect');
 const path               = require('path');
 const mockProject        = require('../../fixtures/corber-mock/project');
-const root               = mockProject.project.root;
 
-let globalPackagePath    = path.join('..', '..', 'package.json');
-let projectPackagePath   = path.join(root, 'package.json');
-let corberPackagePath    = path.join(root, 'node_modules', 'corber', 'package.json');
+const root               = mockProject.project.root;
+const projectPackagePath = path.join(root, 'package.json');
+
+const projectCorberPackagePath = path.join(
+  root,
+  'node_modules',
+  'corber',
+  'package.json'
+);
+
+const globalCorberPackagePath = path.resolve(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  'package.json'
+);
 
 describe('getVersions', () => {
   let getPackage, fsUtils;
@@ -17,17 +30,23 @@ describe('getVersions', () => {
     fsUtils = td.replace('../../../lib/utils/fs-utils');
     getVersions = require('../../../lib/utils/get-versions');
 
-    td.when(getPackage(globalPackagePath)).thenReturn({ version: '1.0.0' });
+    td.when(getPackage(globalCorberPackagePath)).thenReturn({
+      version: '1.0.0'
+    });
+
     td.when(getPackage(projectPackagePath)).thenReturn({
       devDependencies: {
         corber: '~1.2.3'
       }
     });
-    td.when(getPackage(corberPackagePath)).thenReturn({ version: '1.2.5' })
 
-    td.when(fsUtils.existsSync(globalPackagePath)).thenReturn(true);
+    td.when(getPackage(projectCorberPackagePath)).thenReturn({
+      version: '1.2.5'
+    })
+
+    td.when(fsUtils.existsSync(globalCorberPackagePath)).thenReturn(true);
     td.when(fsUtils.existsSync(projectPackagePath)).thenReturn(true);
-    td.when(fsUtils.existsSync(corberPackagePath)).thenReturn(true);
+    td.when(fsUtils.existsSync(projectCorberPackagePath)).thenReturn(true);
   });
 
   afterEach(() => {
@@ -72,7 +91,7 @@ describe('getVersions', () => {
 
   context('when ./node_modules/corber/package.json does not exist', () => {
     beforeEach(() => {
-      td.when(fsUtils.existsSync(corberPackagePath)).thenReturn(false);
+      td.when(fsUtils.existsSync(projectCorberPackagePath)).thenReturn(false);
     });
 
     it('does not contain an installed version', () => {
