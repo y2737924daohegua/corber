@@ -2,6 +2,9 @@
 layout: page
 title:  "Install on Windows"
 ---
+
+These instructions detail getting corber builds to work on Windows PowerShell environments. Windows bash environments require no special configuration.
+
 1. Install Chocolatey(suggested) -> [here]('https://chocolatey.org/install')
 
    Chocolatey is the package manager for Windows and will simplify the install of other dependencies.
