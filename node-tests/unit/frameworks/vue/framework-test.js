@@ -53,19 +53,54 @@ describe('Vue Framework', function() {
   });
 
   describe('buildValidators', function() {
-    it('inits a root-url validator', function() {
-      let ValidateRoot = td.replace('../../../../lib/validators/root-url');
-      let framework = initFramework();
+    context('when package.json from Vue CLI v3', function() {
+      beforeEach(function() {
+        td.replace('../../../../lib/utils/get-package', () => {
+          return { devDependencies: {} };
+        });
+      });
 
-      framework._buildValidators('build', {});
+      it('inits a root-url validator', function() {
+        let ValidateRoot = td.replace('../../../../lib/validators/root-url');
+        let framework = initFramework();
 
-      td.verify(new ValidateRoot({
-        config: {configureWebpack: {plugins: []}},
-        rootProps: ['baseUrl'],
-        path: 'vue.config.js',
-        force: undefined,
-        env: 'build'
-      }));
+        framework._buildValidators('build', {});
+
+        td.verify(new ValidateRoot({
+          config: {configureWebpack: {plugins: []}},
+          rootProps: ['baseUrl'],
+          path: 'vue.config.js',
+          force: undefined,
+          env: 'build'
+        }));
+      });
+    });
+
+    context('when package.json from Vue CLI v2', function() {
+      beforeEach(function() {
+        td.replace('../../../../lib/utils/get-package', () => {
+          return {
+            devDependencies: {
+              'webpack-dev-server': '^2.9.1'
+            }
+          };
+        });
+      });
+
+      it('inits a root-url validator', function() {
+        let ValidateRoot = td.replace('../../../../lib/validators/root-url');
+        let framework = initFramework();
+
+        framework._buildValidators('build', {});
+
+        td.verify(new ValidateRoot({
+          config: {plugins: []},
+          rootProps: ['baseUrl'],
+          path: 'build/webpack.dev.conf',
+          force: undefined,
+          env: 'build'
+        }));
+      });
     });
   });
 
@@ -107,16 +142,53 @@ describe('Vue Framework', function() {
     td.verify(runValidatorDouble(['validations', 'validate-webpack']));
   });
 
-  it('validateServe passes required props to ValidateWebpack', function() {
-    td.replace('../../../../lib/utils/run-validators');
-    let ValidateWebpack = td.replace('../../../../lib/validators/webpack-plugin');
-    let framework = initFramework();
+  describe('validateServe', function() {
+    context('when package.json from Vue CLI v3', function() {
+      beforeEach(function() {
+        td.replace('../../../../lib/utils/get-package', () => {
+          return { devDependencies: {} };
+        });
+      });
 
-    framework.validateServe({});
+      it('passes required props to ValidateWebpack', function() {
+        td.replace('../../../../lib/utils/run-validators');
+        let ValidateWebpack = td.replace('../../../../lib/validators/webpack-plugin');
+        let framework = initFramework();
 
-    td.verify(new ValidateWebpack({
-      configPath: path.join(mockProject.project.root, 'vue.config.js'),
-      framework: 'vue'
-    }));
+        framework.validateServe({});
+
+        td.verify(new ValidateWebpack({
+          root: mockProject.project.root,
+          framework: 'vue',
+          configPath: path.join(mockProject.project.root, 'vue.config.js')
+        }));
+      });
+    });
+
+    context('when package.json from Vue CLI v2', function() {
+      beforeEach(function() {
+        td.replace('../../../../lib/utils/get-package', () => {
+          return {
+            devDependencies: {
+              'webpack-dev-server': '^2.9.1'
+            }
+          };
+        });
+      });
+
+      it('passes required props to ValidateWebpack', function() {
+        td.replace('../../../../lib/utils/run-validators');
+        let ValidateWebpack = td.replace('../../../../lib/validators/webpack-plugin');
+        let framework = initFramework();
+
+        framework.validateServe({});
+
+        td.verify(new ValidateWebpack({
+          root: mockProject.project.root,
+          framework: 'vue',
+          configPath: path.join(mockProject.project.root, 'build/webpack.dev.conf')
+        }));
+      });
+    });
   });
 });
