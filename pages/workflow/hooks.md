@@ -26,7 +26,7 @@ To ensure consistent behaviour, a hook should return either a synchronous functi
 ```js
 /* jshint node: true */
 "use strict";
-import Promise from "ember-cli/lib/ext/promise";
+const Promise = require("ember-cli/lib/ext/promise");
 
 module.exports = function() {
   return new Promise(function (resolve, reject) {
