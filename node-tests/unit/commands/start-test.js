@@ -198,6 +198,12 @@ describe('Start Command', function() {
         expect(mockProject.project.targetIsCordovaLivereload).to.equal(true);
       });
     });
+
+    it('sets process.env.CORBER_PLATFORM', function() {
+      return start.run({build: false, platform: 'ios'}).then(function() {
+        expect(process.env.CORBER_PLATFORM).to.equal('ios');
+      });
+    });
   });
 
   describe('getReloadURL', function() {

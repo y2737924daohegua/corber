@@ -114,6 +114,12 @@ describe('Serve Command', function() {
     });
   });
 
+  it('sets process.env.CORBER_PLATFORM', function() {
+    return serveCmd.run({platform: 'ios'}).then(function() {
+      expect(process.env.CORBER_PLATFORM).to.equal('ios');
+    });
+  });
+
   it('runs tasks in the correct order', function() {
     return serveCmd.run({}).then(function() {
       expect(tasks).to.deep.equal([
