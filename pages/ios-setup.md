@@ -9,7 +9,7 @@ Only Apple devices can create Apple builds.
 - It is important you keep Xcode up to date, so your builds work on the most recent devices
 
 2. Once Xcode is downloaded open it and accept the licenses ->
-- If you see this error: `xcode-select: error: tool 'xcodebuild' requires Xcode` run `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`
+- If you see the error `xcode-select: error: tool 'xcodebuild' requires Xcode` or `No emulators or devices found.`, run `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`
 
 3. Xcode comes with a set of emulators pre installed. To expand the emulators available to corber create them through Xcode
 - Once Xcode is open press Window, Devices + Simulators
