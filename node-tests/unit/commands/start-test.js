@@ -194,7 +194,6 @@ describe('Start Command', function() {
     it('sets vars for webpack livereload', function() {
       return start.run({build: false, platform: 'ios'}).then(function() {
         expect(mockProject.project.CORBER_PLATFORM).to.equal('ios')
-        expect(mockProject.project.targetIsCordovaLivereload).to.equal(true);
       });
     });
 
