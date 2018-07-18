@@ -85,6 +85,7 @@ describe('Ember Framework', function() {
       let ValidateBrowserTargets = td.replace('../../../../lib/frameworks/ember/validators/browser-targets');
       let ValidateLocation = td.replace('../../../../lib/frameworks/ember/validators/location-type');
       let ValidateRoot = td.replace('../../../../lib/validators/root-url');
+      let ValidateCorberEmber = td.replace('../../../../lib/frameworks/ember/validators/corber-ember');
 
       let framework = initFramework();
       let validators = framework._buildValidators({});
@@ -106,7 +107,11 @@ describe('Ember Framework', function() {
         force: undefined
       }));
 
-      expect(validators.length).to.equal(3);
+      td.verify(new ValidateCorberEmber({
+        root: mockProject.project.root
+      }));
+
+      expect(validators.length).to.equal(4);
     });
 
     it('passes the force flag to ValidateRootURL', function() {
