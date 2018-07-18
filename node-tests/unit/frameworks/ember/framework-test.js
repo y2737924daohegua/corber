@@ -3,72 +3,63 @@ const expect         = require('../../../helpers/expect');
 const mockProject    = require('../../../fixtures/corber-mock/project');
 const WatchmanCfg    = require('../../../../lib/frameworks/ember/tasks/update-watchman-config');
 const Promise        = require('rsvp').Promise;
-const isAnything     = td.matchers.anything;
+
+const initFramework = function() {
+  let Ember = require('../../../../lib/frameworks/ember/framework');
+  return new Ember({
+    project:mockProject.project,
+    root: mockProject.project.root
+  })
+};
 
 describe('Ember Framework', function() {
-  let Build, Serve;
-
-  beforeEach(function() {
-    Build = td.replace('../../../../lib/frameworks/ember/tasks/build');
-    Serve = td.replace('../../../../lib/frameworks/ember/tasks/serve');
-  });
-
   afterEach(function() {
     td.reset();
   });
 
   it('has required props', function() {
-    let Ember = require('../../../../lib/frameworks/ember/framework');
-    let framework = new Ember();
+    let framework = initFramework();
 
     expect(framework.name).to.equal('ember');
-    expect(framework.buildCommand).to.equal(undefined);
-    expect(framework.buildPath).to.equal('/dist');
+    expect(framework.buildCommand).to.equal('ember build');
+    expect(framework.serveCommand).to.equal('ember serve');
+    expect(framework.buildPath).to.equal('./dist');
     expect(framework.port).to.equal(4200);
   });
 
-  it('build initializes and runs a BuildTask', function() {
-    let buildDouble = td.replace(Build.prototype, 'run');
-    let Ember = require('../../../../lib/frameworks/ember/framework');
-    let framework = new Ember({project: mockProject.project})
+  it('build initializes a new BuildTask', function() {
+    let BuildTask = td.replace('../../../../lib/tasks/bash-build');
+    let buildDouble = td.replace(BuildTask.prototype, 'run');
+    let framework = initFramework();
 
     framework.build({cordovaOutputPath: 'fakePath'});
-    td.verify(new Build({
-      project: mockProject.project,
-      environment: isAnything(),
-      outputPath: 'fakePath'
+    td.verify(new BuildTask({
+      cordovaOutputPath: 'fakePath',
+      buildCommand: 'ember build',
+      buildPath: './dist'
     }));
 
     td.verify(buildDouble());
   });
 
-  it('serve initializes and runs a ServeTask', function() {
-    let serveDouble = td.replace(Serve.prototype, 'run');
-    let Ember = require('../../../../lib/frameworks/ember/framework');
-    let framework = new Ember({project: mockProject.project})
+  it('serve intializes a new ServeTask', function() {
+    let ServeTask = td.replace('../../../../lib/tasks/bash-serve');
+    let serveDouble = td.replace(ServeTask.prototype, 'run');
+    let framework = initFramework();
 
-    return framework.serve({port: 80}).then(function() {
-      td.verify(new Serve({
-        project: mockProject.project,
-        ui: isAnything()
-      }));
+    framework.serve({}, {}, 'ios');
+    td.verify(new ServeTask({
+      command: framework.serveCommand,
+      platform: 'ios'
+    }));
 
-      td.verify(serveDouble({
-        port: 80,
-        liveReloadPort: isAnything(),
-        baseURL: '/',
-        rootURL: '/',
-        project: mockProject.project
-      }));
-    });
+    td.verify(serveDouble());
   });
-
 
   it('validateBuild calls _buildValidators then runs validators', function() {
     let runValidatorDouble = td.replace('../../../../lib/utils/run-validators');
-    let Ember = require('../../../../lib/frameworks/ember/framework');
+    let framework = initFramework();
 
-    let framework = new Ember({project: mockProject.project});
     td.replace(framework, '_buildValidators', function() {
       return ['validations'];
     });
@@ -79,9 +70,8 @@ describe('Ember Framework', function() {
 
   it('validateServe calls _buildValidators then runs validators', function() {
     let runValidatorDouble = td.replace('../../../../lib/utils/run-validators');
-    let Ember = require('../../../../lib/frameworks/ember/framework');
+    let framework = initFramework();
 
-    let framework = new Ember({project: mockProject.project});
     td.replace(framework, '_buildValidators', function() {
       return ['validations'];
     });
@@ -96,9 +86,7 @@ describe('Ember Framework', function() {
       let ValidateLocation = td.replace('../../../../lib/frameworks/ember/validators/location-type');
       let ValidateRoot = td.replace('../../../../lib/validators/root-url');
 
-      let Ember = require('../../../../lib/frameworks/ember/framework');
-
-      let framework = new Ember({project: mockProject.project, isGlimmer: false});
+      let framework = initFramework();
       let validators = framework._buildValidators({});
 
       td.verify(new ValidateBrowserTargets({
@@ -123,10 +111,10 @@ describe('Ember Framework', function() {
 
     it('passes the force flag to ValidateRootURL', function() {
       let ValidateRoot = td.replace('../../../../lib/validators/root-url');
-      let Ember = require('../../../../lib/frameworks/ember/framework');
-      let framework = new Ember({project: mockProject.project, isGlimmer: false});
+      let framework = initFramework();
 
       framework._buildValidators({force: true});
+
       td.verify(new ValidateRoot({
         config: mockProject.project.config(),
         rootProps: ['baseURL', 'rootURL', 'baseUrl', 'rootUrl'],
@@ -136,14 +124,11 @@ describe('Ember Framework', function() {
     });
 
     it('skips non-glimmer validations if isGlimmer === true', function() {
-      let Ember = require('../../../../lib/frameworks/ember/framework');
-
-      let framework = new Ember({
-        project: mockProject.project,
-        isGlimmer: true
-      });
+      let framework = initFramework();
+      framework.isGlimmer = true;
 
       let validators = framework._buildValidators({});
+
       expect(validators.length).to.equal(0);
     });
   });
@@ -157,8 +142,7 @@ describe('Ember Framework', function() {
       return Promise.resolve();
     });
 
-    let Ember = require('../../../../lib/frameworks/ember/framework');
-    let framework = new Ember({project: mockProject.project});
+    let framework = initFramework();
 
     return framework.afterInstall().then(function() {
       expect(tasks).to.deep.equal([
