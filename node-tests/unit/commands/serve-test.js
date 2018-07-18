@@ -108,15 +108,14 @@ describe('Serve Command', function() {
   it('sets vars for webpack livereload', function() {
     return serveCmd.run({platform: 'ios'}).then(function() {
       let project = mockProject.project;
-      expect(project.targetIsCordova).to.equal(true);
-      expect(project.targetIsCordovaLivereload).to.equal(true);
       expect(project.CORBER_PLATFORM).to.equal('ios');
     });
   });
 
-  it('sets process.env.CORBER_PLATFORM', function() {
+  it('sets process.env.CORBER_PLATFORM & CORBER_LIVERELOAD', function() {
     return serveCmd.run({platform: 'ios'}).then(function() {
       expect(process.env.CORBER_PLATFORM).to.equal('ios');
+      expect(process.env.CORBER_LIVERELOAD).to.equal('true');
     });
   });
 

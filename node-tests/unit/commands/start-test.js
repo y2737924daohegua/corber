@@ -193,15 +193,15 @@ describe('Start Command', function() {
 
     it('sets vars for webpack livereload', function() {
       return start.run({build: false, platform: 'ios'}).then(function() {
-        expect(mockProject.project.targetIsCordova).to.equal(true);
         expect(mockProject.project.CORBER_PLATFORM).to.equal('ios')
         expect(mockProject.project.targetIsCordovaLivereload).to.equal(true);
       });
     });
 
-    it('sets process.env.CORBER_PLATFORM', function() {
+    it('sets process.env.CORBER_PLATFORM & CORBER_LIVERELOAD', function() {
       return start.run({build: false, platform: 'ios'}).then(function() {
         expect(process.env.CORBER_PLATFORM).to.equal('ios');
+        expect(process.env.CORBER_LIVERELOAD).to.equal('true');
       });
     });
   });
