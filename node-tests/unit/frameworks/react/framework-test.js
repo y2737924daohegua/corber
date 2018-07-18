@@ -45,7 +45,7 @@ describe('React Framework', function() {
 
     let framework = initFramework();
 
-    framework.serve({}, {}, 'ios');
+    framework.serve({platform: 'ios'});
     td.verify(new ServeTask({
       command: framework.serveCommand,
       platform: 'ios'

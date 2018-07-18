@@ -43,7 +43,7 @@ describe('Vue Framework', function() {
     let serveDouble = td.replace(ServeTask.prototype, 'run');
     let framework = initFramework();
 
-    framework.serve({}, {}, 'ios');
+    framework.serve({platform: 'ios'});
     td.verify(new ServeTask({
       command: framework.serveCommand,
       platform: 'ios'
