@@ -70,6 +70,12 @@ describe('Ember Framework', function() {
 
   it('validateServe calls _buildValidators then runs validators', function() {
     let runValidatorDouble = td.replace('../../../../lib/utils/run-validators');
+
+    let ValidateCorberEmber = td.replace('../../../../lib/frameworks/ember/validators/corber-ember');
+    td.replace(ValidateCorberEmber.prototype, 'run', function() {
+      return 'validate-corber-ember';
+    });
+
     let framework = initFramework();
 
     td.replace(framework, '_buildValidators', function() {
@@ -77,7 +83,19 @@ describe('Ember Framework', function() {
     });
 
     framework.validateServe({});
-    td.verify(runValidatorDouble(['validations']));
+    td.verify(runValidatorDouble(['validations', 'validate-corber-ember']));
+  });
+
+  it('validateServe adds a validator for corber-ember', function() {
+    td.replace('../../../../lib/utils/run-validators');
+    let ValidateCorberEmber = td.replace('../../../../lib/frameworks/ember/validators/corber-ember');
+    let framework = initFramework();
+
+    framework.validateServe({});
+
+    td.verify(new ValidateCorberEmber({
+      root: mockProject.project.root
+    }));
   });
 
   context('buildValidators', function() {
@@ -85,7 +103,6 @@ describe('Ember Framework', function() {
       let ValidateBrowserTargets = td.replace('../../../../lib/frameworks/ember/validators/browser-targets');
       let ValidateLocation = td.replace('../../../../lib/frameworks/ember/validators/location-type');
       let ValidateRoot = td.replace('../../../../lib/validators/root-url');
-      let ValidateCorberEmber = td.replace('../../../../lib/frameworks/ember/validators/corber-ember');
 
       let framework = initFramework();
       let validators = framework._buildValidators({});
@@ -107,11 +124,7 @@ describe('Ember Framework', function() {
         force: undefined
       }));
 
-      td.verify(new ValidateCorberEmber({
-        root: mockProject.project.root
-      }));
-
-      expect(validators.length).to.equal(4);
+      expect(validators.length).to.equal(3);
     });
 
     it('passes the force flag to ValidateRootURL', function() {
