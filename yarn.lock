@@ -4837,7 +4837,7 @@ pn@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.0.0.tgz#1cf5a30b0d806cd18f88fc41a6b5d4ad615b3ba9"
 
-portfinder@^1.0.5, portfinder@^1.0.7:
+portfinder@^1.0.7:
   version "1.0.13"
   resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.13.tgz#bb32ecd87c27104ae6ee44b5a3ccbf0ebb1aede9"
   dependencies:
@@ -5532,12 +5532,6 @@ sort-object-keys@^1.1.1:
 sort-package-json@^1.4.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/sort-package-json/-/sort-package-json-1.7.0.tgz#13b362ff6400c5b4eaa9ba220f9ea7c3d6644b5f"
-  dependencies:
-    sort-object-keys "^1.1.1"
-
-sort-package-json@^1.7.0:
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/sort-package-json/-/sort-package-json-1.7.1.tgz#f2e5fbffe8420cc1bb04485f4509f05e73b4c0f2"
   dependencies:
     sort-object-keys "^1.1.1"
 
