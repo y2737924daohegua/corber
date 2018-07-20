@@ -8,14 +8,22 @@ title:  "React / Webpack"
 The following changes to your React application are required:
 
 - In `package.json`, the `homepage` property must be defined and not have a leading slash.
-- If you want to use live reload (you probably do), you will have to run `yarn run eject`. Corber requires access to your webpack config.
-- If you want to enable `cordova.js` and plugins in live reload, you will need to run:
+
+### Livereload Plugin
+
+In order for `corber start` or `corber serve` to function, the `corber-webpack-plugin` addon must be installed. Once installed you will need to manually add the plugin to your vue configuration file. 
+
+The addon will be automatically installed on init. If the addon is missing, it can be installed with:
 
 ```bash
   yarn add corber-webpack-plugin --dev
 ```
 
-and then add the following to the `config/webpack.config.dev.js` plugins array:
+Failure to have the plugin installed and configured properl will mean cordova & cordova plugin objects will not be accessible during livereload. 
+
+### Add Livereload Plugin to Webpack Config
+
+Add the following to the `config/webpack.config.dev.js` plugins array:
 
 ```javascript
   const CorberWebpackPlugin = require('corber-webpack-plugin');

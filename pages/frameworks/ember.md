@@ -12,6 +12,14 @@ The following changes to your Ember application are required:
 
 The CLI will warn you if anything is missing.
 
+### Livereload Addon
+
+In order for `corber start` or `corber serve` to function, the `corber-ember-livereload` addon must be installed. No further configuration is required.
+
+The addon will be automatically installed on init. If the addon is missing, it can be installed with `ember install corber-ember-livereload`.
+
+Failure to have the plugin installed and configured properl will mean cordova & cordova plugin objects will not be accessible during livereload. 
+
 ### Configuring browser targets
 
 In `ember-cli` 2.13 and later, projects have a `config/targets.js` configuration file that optimized Babel transpilation for the specified target browsers. For corber builds, it is advantageous to target the single (mobile) browser that supports the webview used in the native build.
