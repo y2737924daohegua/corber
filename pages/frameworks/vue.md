@@ -3,23 +3,13 @@ layout: page
 title:  "Vue"
 ---
 
-Corber automatically detects and runs `vue-cli` projects with minimal configuration, but doesn't currently support non-`vue-cli` projects.
+Corber supports live reload and injection of cordova and cordova plugins during live reload but requires some setup.
 
-### Livereload Plugin
+In order to use `corber start` and `corber serve` with live reload and cordova injection, your Vue config must be updated to add the `corber-webpack-plugin` which has been automatically installed during `corber init`.
 
-In order for `corber start` or `corber serve` to function, the `corber-webpack-plugin` addon must be installed. Once installed you will need to manually add the plugin to your vue configuration file.
+##### Add Corber Webpack Plugin to Vue Config
 
-The addon will be automatically installed on init. If the addon is missing, it can be installed with:
-
-```bash
-  yarn add corber-webpack-plugin --dev
-```
-
-Failure to have the plugin installed and configured properl will mean cordova & cordova plugin objects will not be accessible during livereload. 
-
-### Add Livereload Plugin to Vue Config
-
-You'll need to add `corber-webpack-plugin` to your `vue.conf.js` file to enable live reloading. Below is a minimal `vue.conf.js` that you can use as a guide or to get the file started with. If your project does not have a vue.conf.js you can simply create an empty one.
+Vue.js projects created with Vue CLI 3 will need to ensure their `vue.config.js` file contains `new CorberWebpackPlugin()` within its plugins array. If `vue.config.js` does not exist, add it to the Vue project's root. Below is a minimal config file to get started:
 
 ```javascript
 const CorberWebpackPlugin = require('corber-webpack-plugin');
@@ -27,9 +17,38 @@ const CorberWebpackPlugin = require('corber-webpack-plugin');
 module.exports = {
   baseUrl: './',
   configureWebpack: {
-      plugins: [new CorberWebpackPlugin()]
+    plugins: [new CorberWebpackPlugin()]
   }
 }
 ```
 
-Now, you can run the [quickstart](/), and the CLI will warn you if your application requires any further configuration.
+###### Vue CLI 2 Projects
+
+Vue.js projects created with Vue CLI 2 will need to ensure `build/webpack.dev.conf` contains `new CorberWebpackPlugin()` within its plugins array. If `webpack.dev.conf` does not exist, add it to the `build` folder in the Vue project's root. Below is a minimal config file to get started:
+
+```javascript
+const CorberWebpackPlugin = require('corber-webpack-plugin');
+
+module.exports = {
+    baseUrl: './',
+    plugins: [new CorberWebpackPlugin()]
+  }));
+}
+```
+
+###### Non-Vue CLI Projects
+
+Corber does not currently support projects not created with Vue CLI.
+
+##### Troubleshooting
+
+If `corber-webpack-plugin` has not been installed, it can be installed with:
+
+```bash
+# Yarn
+yarn add corber-webpack-plugin --dev
+
+# NPM
+npm install corber-webpack-plugin --save-dev
+```
+

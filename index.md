@@ -9,30 +9,41 @@ Corber handles items such as framework + app build & validations with a single c
 
 Ember users also have access to a series of plugin bindings exposed as services. Corber is a continuation of the ember-cordova project; [read here for details](http://blog.isleofcode.com/announcing-corber-ember-cordova-vue).
 
-##### Quickstart
+##### Getting Started
+
+Install:
 
 ```bash
 yarn global add corber
-
-# create a mobile project; run from your existing Ember/Vue/React/Glimmer app
-corber init
-corber platform add ios
-
-# runs your JavaScript builder and creates a mobile application
-corber build
+# or
+npm install -g corber
 ```
 
-##### You may also want to
+Initialize Corber:
 
 ```bash
-# boots emulator and live reload for development
-# cordova plugins are supported /w live reload
+# Run from your Ember/Vue/React/Glimmer project root
+corber init
+```
+
+Setup Framework for Corber:
+
+See docs for setting up [Vue](/pages/frameworks/vue), [Ember](/pages/frameworks/ember), and [React/Webpack](/pages/frameworks/react) to use Corber.
+
+##### The Corber CLI
+
+```bash
+# Run your JavaScript builder and create a mobile application
+corber build
+
+# Boot an emulator with live reload for development
+# Cordova plugins are supported /w live reload
 corber start
 
-# set up hot reload for on-device usage
+# Set up hot reload for on-device usage
 corber serve
 
-# build icon & splash screens
+# Build icon & splash screens
 corber make-splashes
 corber make-icons
 ```
