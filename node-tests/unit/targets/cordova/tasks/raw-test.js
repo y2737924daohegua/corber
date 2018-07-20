@@ -1,107 +1,96 @@
-var RawTask         = require('../../../../../lib/targets/cordova/tasks/raw');
-var td              = require('testdouble');
-var expect          = require('../../../../helpers/expect');
-var cordovaPath     = require('../../../../../lib/targets/cordova/utils/get-path');
-var mockProject     = require('../../../../fixtures/corber-mock/project');
-var Promise         = require('rsvp');
-var cordovaLib      = require('cordova-lib');
-var cordovaProj     = cordovaLib.cordova;
-var events          = cordovaLib.events;
-var cordovaLogger   = require('cordova-common').CordovaLogger.get();
-var logger          = require('../../../../../lib/utils/logger');
+const td              = require('testdouble');
+const expect          = require('../../../../helpers/expect');
+const cordovaPath     = require('../../../../../lib/targets/cordova/utils/get-path');
+const mockProject     = require('../../../../fixtures/corber-mock/project');
+const RSVP            = require('rsvp');
+const path            = require('path');
+const Promise         = RSVP.Promise;
 
-describe('Cordova Raw Task', function() {
-  var setupTask = function() {
-    return new RawTask({
-      api: 'platform',
-      project: mockProject.project
+const cdvScriptPath = path.resolve(
+  __dirname, '..', '..', '..', '..', '..',
+  'bin',
+  'cordova-lib-runner'
+);
+
+describe('Cordova Raw Task', () => {
+  let rawTask;
+  let fork;
+  let onStdout;
+  let onStderr;
+  let chdir;
+
+  beforeEach(() => {
+    // temporary fix to allow promise-valued doubles; see:
+    // https://github.com/testdouble/testdouble.js/issues/390
+    td.config({ ignoreWarnings: true });
+
+    onStdout = td.function();
+    onStderr = td.function();
+
+    fork = td.replace('../../../../../lib/utils/fork');
+    td.when(fork(cdvScriptPath, ['cmd'], { onStdout, onStderr }))
+      .thenReturn(Promise.resolve());
+
+    chdir = td.replace(process, 'chdir');
+
+    let RawTask = require('../../../../../lib/targets/cordova/tasks/raw');
+    rawTask = new RawTask({
+      api: 'cmd',
+      project: mockProject.project,
+      onStdout,
+      onStderr
     });
-  };
+  });
 
-  afterEach(function() {
+  afterEach(() => {
     td.reset();
   });
 
-  it('attempts to run a raw cordova call', function(done) {
-    td.replace(cordovaProj, 'platform', function() {
-      done();
-    });
-
-    var raw = setupTask();
-    return raw.run();
-  });
-
-  describe('with a mock function', function() {
-    var chdirDouble;
-
-    beforeEach(function() {
-      chdirDouble = td.replace(process, 'chdir');
-
-      td.replace(RawTask.prototype, 'cordovaPromise', function() {
-        return Promise.resolve();
-      });
-    });
-
-    it('changes to cordova dir', function() {
-      var cdvPath = cordovaPath(mockProject.project);
-      var raw = setupTask();
-
-      return raw.run().then(function() {
-        td.verify(chdirDouble(cdvPath));
-      });
-    });
-
-    it('inits a callback which resolves', function() {
-      var raw = setupTask();
-
-      return expect(raw.run()).to.eventually.be.fulfilled;
-    });
-
-    it('changes back to ember dir on compvarion', function() {
-      var emberPath = process.cwd();
-      var raw = setupTask();
-
-      return expect(
-        raw.run().then(function() {
-          var args = td.explain(chdirDouble).calls[1].args[0];
-          return args
-        })
-      ).to.eventually.equal(emberPath);
-    });
-
-    it('sets up Cordova logging', function() {
-      td.replace(cordovaLogger, 'subscribe');
-      var raw = setupTask();
-
-      return raw.run().then(function() {
-        td.verify(cordovaLogger.subscribe(events));
-      });
-    });
-
-    it('passes log level to cordova logger', function() {
-      td.replace(cordovaLogger, 'setLevel');
-      td.when(td.replace(logger, 'getLogLevel')()).thenReturn('verbose');
-      var raw = setupTask();
-
-      return raw.run().then(function() {
-        td.verify(cordovaLogger.setLevel('verbose'));
-      });
+  it('forks the raw cordova runner script with arguments', () => {
+    return rawTask.run().then(() => {
+      td.verify(fork(cdvScriptPath, ['cmd'], { onStdout, onStderr }));
     });
   });
 
-  describe('when the raw task fails', function() {
-    beforeEach(function() {
-      td.replace(RawTask.prototype, 'cordovaPromise', function() {
-        return Promise.reject(new Error('fail'));
-      });
+  it('changes to cordova dir and back', () => {
+    let processPath = process.cwd();
+    let cdvPath = cordovaPath(mockProject.project);
+    let deferred = RSVP.defer();
+
+    // stub with a deferred promise we can resolve manually
+    td.when(fork(cdvScriptPath, ['cmd'], { onStdout, onStderr }))
+      .thenReturn(deferred.promise);
+
+    let taskPromise = rawTask.run().then(() => {
+      // this will be verified when fork is complete
+      td.verify(chdir(processPath));
     });
 
-    it('rejects run() with the failure', function() {
-      var raw = setupTask();
+    // this should be the case until we manually resolve
+    td.verify(chdir(cdvPath));
 
-      return expect(raw.run()).to.eventually.be.rejectedWith(
+    deferred.resolve();
+
+    return taskPromise;
+  });
+
+  describe('when the fork fails', () => {
+    beforeEach(() => {
+      td.when(fork(cdvScriptPath, ['cmd'], { onStdout, onStderr }))
+        .thenReturn(Promise.reject(new Error('fail')));
+    });
+
+    it('rejects run() with the failure', () => {
+      return expect(rawTask.run()).to.eventually.be.rejectedWith(
         /fail/
       );
+    });
+
+    it('still returns to the process dir', () => {
+      let processPath = process.cwd();
+      return rawTask.run().catch(() => {
+        td.verify(chdir(processPath));
+      });
     });
   });
 });
