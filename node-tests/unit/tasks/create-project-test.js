@@ -3,7 +3,7 @@ const expect         = require('../../helpers/expect');
 const mockProject    = require('../../fixtures/corber-mock/project');
 const Promise        = require('rsvp');
 const GitIgnore      = require('../../../lib/tasks/update-gitignore');
-const InstallPackage = require('../../../lib/tasks/install-package');
+const InstallCorber  = require('../../../lib/tasks/install-project-corber');
 
 
 const isAnything     = td.matchers.anything;
@@ -48,8 +48,8 @@ describe('Create Project', function() {
       return Promise.resolve();
     });
 
-    td.replace(InstallPackage.prototype, 'run', function() {
-      tasks.push('install-package');
+    td.replace(InstallCorber.prototype, 'run', function() {
+      tasks.push('install-corber');
       return Promise.resolve();
     });
 
@@ -83,7 +83,7 @@ describe('Create Project', function() {
         'create-dirs',
         'create-cordova-project',
         'update-gitignore',
-        'install-package',
+        'install-corber',
         'framework-after-install'
       ]);
     });

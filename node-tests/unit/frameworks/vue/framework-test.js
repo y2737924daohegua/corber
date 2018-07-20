@@ -2,6 +2,7 @@ const td             = require('testdouble');
 const expect         = require('../../../helpers/expect');
 const mockProject    = require('../../../fixtures/corber-mock/project');
 const path           = require('path');
+const InstallPackage = require('../../../../lib/tasks/install-package');
 
 const initFramework = function() {
   let Vue = require('../../../../lib/frameworks/vue/framework');
@@ -43,7 +44,7 @@ describe('Vue Framework', function() {
     let serveDouble = td.replace(ServeTask.prototype, 'run');
     let framework = initFramework();
 
-    framework.serve({}, {}, 'ios');
+    framework.serve({platform: 'ios'});
     td.verify(new ServeTask({
       command: framework.serveCommand,
       platform: 'ios'
@@ -189,6 +190,20 @@ describe('Vue Framework', function() {
           configPath: path.join(mockProject.project.root, 'build/webpack.dev.conf')
         }));
       });
+    });
+  });
+
+  it('afterInstall runs InstallPackage with livereload addon', function() {
+    let installedPackage;
+    td.replace(InstallPackage.prototype, 'run', function(name) {
+      installedPackage = name;
+      return Promise.resolve();
+    });
+
+    let framework = initFramework();
+
+    return framework.afterInstall().then(function() {
+      expect(installedPackage).to.equal('corber-webpack-plugin');
     });
   });
 });

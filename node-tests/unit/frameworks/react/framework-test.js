@@ -2,6 +2,7 @@ const td             = require('testdouble');
 const expect         = require('../../../helpers/expect');
 const mockProject    = require('../../../fixtures/corber-mock/project');
 const path           = require('path');
+const InstallPackage = require('../../../../lib/tasks/install-package');
 
 const initFramework = function() {
   let React = require('../../../../lib/frameworks/react/framework');
@@ -45,7 +46,7 @@ describe('React Framework', function() {
 
     let framework = initFramework();
 
-    framework.serve({}, {}, 'ios');
+    framework.serve({platform: 'ios'});
     td.verify(new ServeTask({
       command: framework.serveCommand,
       platform: 'ios'
@@ -104,5 +105,19 @@ describe('React Framework', function() {
       configPath: path.join(mockProject.project.root, 'config', 'webpack.config.dev.js'),
       framework: 'react'
     }));
+  });
+
+  it('afterInstall runs InstallPackage with livereload addon', function() {
+    let installedPackage;
+    td.replace(InstallPackage.prototype, 'run', function(name) {
+      installedPackage = name;
+      return Promise.resolve();
+    });
+
+    let framework = initFramework();
+
+    return framework.afterInstall().then(function() {
+      expect(installedPackage).to.equal('corber-webpack-plugin');
+    });
   });
 });
