@@ -8,7 +8,7 @@ const contains    = td.matchers.contains;
 const root        = mockProject.project.root;
 const packagePath = path.join(root, 'package.json');
 
-describe('Validate corber-ember', function() {
+describe('Validate corber-ember-livereload', function() {
   let validateCorberEmber;
   let getPackage, logger;
 
@@ -24,11 +24,11 @@ describe('Validate corber-ember', function() {
     td.reset();
   });
 
-  context('when corber-ember is listed in package.json devDependencies', () => {
+  context('when corber-ember-livereload is listed in package.json devDependencies', () => {
     beforeEach(() => {
       td.when(getPackage(packagePath)).thenReturn({
         devDependencies: {
-          'corber-ember': 1.0
+          'corber-ember-livereload': 1.0
         },
         dependencies: {}
       });
@@ -45,11 +45,11 @@ describe('Validate corber-ember', function() {
     });
   });
 
-  context('when corber-ember is listed in package.json dependencies', () => {
+  context('when corber-ember-livereload is listed in package.json dependencies', () => {
     beforeEach(() => {
       td.when(getPackage(packagePath)).thenReturn({
         dependencies: {
-          'corber-ember': 1.0
+          'corber-ember-livereload': 1.0
         },
         devDependencies: {}
       });
@@ -66,7 +66,7 @@ describe('Validate corber-ember', function() {
     });
   });
 
-  context('when corber-ember is missing from package.json', () => {
+  context('when corber-ember-livereload is missing from package.json', () => {
     beforeEach(() => {
       td.when(getPackage(packagePath)).thenReturn({
         dependencies: {},
@@ -80,7 +80,7 @@ describe('Validate corber-ember', function() {
 
     it('logs a warning', () => {
       return validateCorberEmber.run().then(() => {
-        td.verify(logger.warn(contains('Could not find corber-ember')));
+        td.verify(logger.warn(contains('Could not find corber-ember-livereload')));
       });
     });
   });
