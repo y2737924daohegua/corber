@@ -2,6 +2,7 @@ const td             = require('testdouble');
 const expect         = require('../../../helpers/expect');
 const mockProject    = require('../../../fixtures/corber-mock/project');
 const WatchmanCfg    = require('../../../../lib/frameworks/ember/tasks/update-watchman-config');
+const InstallPackage = require('../../../../lib/tasks/install-package');
 const Promise        = require('rsvp').Promise;
 
 const initFramework = function() {
@@ -152,7 +153,7 @@ describe('Ember Framework', function() {
   });
 
 
-  it('afterInstall runs UpdateWatchman task', function() {
+  it('afterInstall runs UpdateWatchman and InstallEmberAddon', function() {
     let tasks = [];
 
     td.replace(WatchmanCfg.prototype, 'run', function() {
@@ -160,12 +161,36 @@ describe('Ember Framework', function() {
       return Promise.resolve();
     });
 
+    td.replace(InstallPackage.prototype, 'run', function() {
+      tasks.push('install-package');
+      return Promise.resolve();
+    });
+
     let framework = initFramework();
 
     return framework.afterInstall().then(function() {
       expect(tasks).to.deep.equal([
-        'update-watchman-config'
+        'update-watchman-config',
+        'install-package'
       ]);
+    });
+  });
+
+  it('afterInstall runs InstallPackage with livereload addon', function() {
+    let installedPackage;
+    td.replace(InstallPackage.prototype, 'run', function(name) {
+      installedPackage = name;
+      return Promise.resolve();
+    });
+
+    td.replace(WatchmanCfg.prototype, 'run', function() {
+      return Promise.resolve();
+    });
+
+    let framework = initFramework();
+
+    return framework.afterInstall().then(function() {
+      expect(installedPackage).to.equal('corber-ember-livereload');
     });
   });
 });
