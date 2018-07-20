@@ -26,9 +26,10 @@ describe('Install project corber Task', function() {
 
     let installCorber = getTask();
 
+    let expectedVersion = require('../../../package.json').version;
     return installCorber.run().then(function() {
       expect(passedName).to.equal('corber');
-      expect(passedVersion).to.equal('1.2.10');
+      expect(passedVersion).to.equal(expectedVersion);
     });
   });
 });
