@@ -43,6 +43,25 @@ describe('Ember Framework', function() {
     td.verify(buildDouble());
   });
 
+  it('build passes the environment flag', function() {
+    let BuildTask = td.replace('../../../../lib/tasks/bash-build');
+    let buildDouble = td.replace(BuildTask.prototype, 'run');
+    let framework = initFramework();
+
+    framework.build({
+      cordovaOutputPath: 'fakePath',
+      environment: 'production'
+    });
+
+    td.verify(new BuildTask({
+      cordovaOutputPath: 'fakePath',
+      buildCommand: 'ember build --env=production',
+      buildPath: './dist'
+    }));
+
+    td.verify(buildDouble());
+  });
+
   it('serve intializes a new ServeTask', function() {
     let ServeTask = td.replace('../../../../lib/tasks/bash-serve');
     let serveDouble = td.replace(ServeTask.prototype, 'run');
