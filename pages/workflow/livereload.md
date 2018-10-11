@@ -36,7 +36,7 @@ support.
 
 ```
   corber serve
-  corber --environment=staging --platform=android
+  corber serve --environment=staging --platform=android
 ```
 
 `serve` compiles the special cordova application and boots
@@ -63,6 +63,6 @@ Corber will detect and automatically set these values for you.
 There are times you may need to run live reload with a specific remote host and port, or to customize a local url because we are not detecting it correctly.
 You can do so:
 
-- Via command line arg: `corber server --reload-url="<url>"`.
+- Via command line arg: `corber serve --reload-url="<url>"`.
 
 Where `<url>` above  refers to a fully qualified URL including protocol, host, and port (if applicable), e.g. http://localhost:4200
