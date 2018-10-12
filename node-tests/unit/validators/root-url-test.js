@@ -56,6 +56,11 @@ describe('Validate Root Url', function() {
     return expect(validateRoot.run()).to.eventually.be.fulfilled;
   });
 
+  it('rejects when the config is null', function() {
+    validateRoot.config = null;
+    return expect(validateRoot.run()).to.eventually.be.rejected;
+  });
+
   it('warns when the value is undefined', function() {
     validateRoot.config = {};
     var warnDouble = td.replace(logger, 'warn');

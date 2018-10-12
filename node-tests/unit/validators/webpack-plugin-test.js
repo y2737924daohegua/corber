@@ -26,14 +26,12 @@ describe('Validate Webpack Plugin', function() {
       validator = initValidator();
       validator.root = mockProject.project.root;
       validator.framework = 'vue';
-      validator.configPath = path.join(mockProject.project.root, 'vue.config.js');
+      validator.configPath = 'vue.config.js';
     });
 
     context('when configureWebpack property missing', function () {
       beforeEach(function() {
-        td.replace(validator, 'getConfig', () => new Object({
-          baseUrl: './'
-        }));
+        validator.config = { baseUrl: './' };
       });
 
       it('warns and resolves', function(done) {
@@ -46,10 +44,10 @@ describe('Validate Webpack Plugin', function() {
 
     context('when plugins property missing', function () {
       beforeEach(function() {
-        td.replace(validator, 'getConfig', () => new Object({
+        validator.config = {
           baseUrl: './',
           configureWebpack: {}
-        }));
+        };
       });
 
       it('warns and resolves', function(done) {
@@ -62,12 +60,12 @@ describe('Validate Webpack Plugin', function() {
 
     context('when plugins property missing webpack plugin', function () {
       beforeEach(function() {
-        td.replace(validator, 'getConfig', () => new Object({
+        validator.config = {
           baseUrl: './',
           configureWebpack: {
             plugins: []
           }
-        }));
+        };
       });
 
       it('warns and resolves', function(done) {
@@ -82,12 +80,12 @@ describe('Validate Webpack Plugin', function() {
       beforeEach(function() {
         function CorberWebpackPlugin() {}
 
-        td.replace(validator, 'getConfig', () => new Object({
+        validator.config = {
           baseUrl: './',
           configureWebpack: {
             plugins: [new CorberWebpackPlugin()]
           }
-        }));
+        };
       });
 
       it('resolves silently', function(done) {
@@ -105,7 +103,6 @@ describe('Validate Webpack Plugin', function() {
       validator.root = mockProject.project.root;
       validator.framework = 'vue';
       validator.configPath = path.join(
-        mockProject.project.root,
         'build',
         'webpack.dev.conf'
       );
@@ -113,9 +110,9 @@ describe('Validate Webpack Plugin', function() {
 
     context('when plugins property missing', function () {
       beforeEach(function() {
-        td.replace(validator, 'getConfig', () => new Object({
+        validator.config = {
           baseUrl: './',
-        }));
+        };
       });
 
       it('warns and resolves', function(done) {
@@ -128,10 +125,10 @@ describe('Validate Webpack Plugin', function() {
 
     context('when plugins property missing webpack plugin', function () {
       beforeEach(function() {
-        td.replace(validator, 'getConfig', () => new Object({
+        validator.config = {
           baseUrl: './',
           plugins: []
-        }));
+        };
       });
 
       it('warns and resolves', function(done) {
@@ -146,10 +143,10 @@ describe('Validate Webpack Plugin', function() {
       beforeEach(function() {
         function CorberWebpackPlugin() {}
 
-        td.replace(validator, 'getConfig', () => new Object({
+        validator.config = {
           baseUrl: './',
           plugins: [new CorberWebpackPlugin()]
-        }));
+        };
       });
 
       it('resolves silently', function(done) {
@@ -175,9 +172,9 @@ describe('Validate Webpack Plugin', function() {
 
     context('when plugins property missing', function () {
       beforeEach(function() {
-        td.replace(validator, 'getConfig', () => new Object({
+        validator.config = {
           baseUrl: './',
-        }));
+        };
       });
 
       it('warns and resolves', function(done) {
@@ -190,10 +187,10 @@ describe('Validate Webpack Plugin', function() {
 
     context('when plugins property missing webpack plugin', function () {
       beforeEach(function() {
-        td.replace(validator, 'getConfig', () => new Object({
+        validator.config = {
           baseUrl: './',
           plugins: []
-        }));
+        };
       });
 
       it('warns and resolves', function(done) {
@@ -208,10 +205,10 @@ describe('Validate Webpack Plugin', function() {
       beforeEach(function() {
         function CorberWebpackPlugin() {}
 
-        td.replace(validator, 'getConfig', () => new Object({
+        validator.config = {
           baseUrl: './',
           plugins: [new CorberWebpackPlugin()]
-        }));
+        };
       });
 
       it('resolves silently', function(done) {

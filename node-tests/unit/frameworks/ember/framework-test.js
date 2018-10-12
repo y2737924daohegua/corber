@@ -138,6 +138,7 @@ describe('Ember Framework', function() {
       }));
 
       td.verify(new ValidateRoot({
+        framework: 'ember',
         config: mockProject.project.config(),
         rootProps: ['baseURL', 'rootURL', 'baseUrl', 'rootUrl'],
         path: 'config/environment.js',
@@ -154,6 +155,7 @@ describe('Ember Framework', function() {
       framework._buildValidators({force: true});
 
       td.verify(new ValidateRoot({
+        framework: 'ember',
         config: mockProject.project.config(),
         rootProps: ['baseURL', 'rootURL', 'baseUrl', 'rootUrl'],
         path: 'config/environment.js',

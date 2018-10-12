@@ -1,7 +1,6 @@
 const td             = require('testdouble');
 const expect         = require('../../../helpers/expect');
 const mockProject    = require('../../../fixtures/corber-mock/project');
-const path           = require('path');
 const InstallPackage = require('../../../../lib/tasks/install-package');
 
 const initFramework = function() {
@@ -61,19 +60,48 @@ describe('Vue Framework', function() {
         });
       });
 
-      it('inits a root-url validator', function() {
-        let ValidateRoot = td.replace('../../../../lib/validators/root-url');
-        let framework = initFramework();
+      context('when config exists', function() {
+        let config = {configureWebpack: {plugins: []}};
 
-        framework._buildValidators('build', {});
+        it('inits a root-url validator with config', function() {
+          let ValidateRoot = td.replace('../../../../lib/validators/root-url');
+          let framework = initFramework();
 
-        td.verify(new ValidateRoot({
-          config: {configureWebpack: {plugins: []}},
-          rootProps: ['baseUrl'],
-          path: 'vue.config.js',
-          force: undefined,
-          env: 'build'
-        }));
+          td.replace(framework, '_getConfig', function () { return config; });
+
+          framework._buildValidators('build', {});
+
+          td.verify(new ValidateRoot({
+            framework: 'vue',
+            config: config,
+            rootProps: ['baseUrl'],
+            path: 'vue.config.js',
+            force: undefined,
+            env: 'build'
+          }));
+        });
+      });
+
+      context('when config does not exists', function() {
+        let config = null;
+
+        it('inits a root-url validator with null config', function() {
+          let ValidateRoot = td.replace('../../../../lib/validators/root-url');
+          let framework = initFramework();
+
+          td.replace(framework, '_getConfig', function () { return config; });
+
+          framework._buildValidators('build', {});
+
+          td.verify(new ValidateRoot({
+            framework: 'vue',
+            config: config,
+            rootProps: ['baseUrl'],
+            path: 'vue.config.js',
+            force: undefined,
+            env: 'build'
+          }));
+        });
       });
     });
 
@@ -88,19 +116,48 @@ describe('Vue Framework', function() {
         });
       });
 
-      it('inits a root-url validator', function() {
-        let ValidateRoot = td.replace('../../../../lib/validators/root-url');
-        let framework = initFramework();
+      context('when config exists', function() {
+        let config = {plugins: []};
 
-        framework._buildValidators('build', {});
+        it('inits a root-url validator with config', function() {
+          let ValidateRoot = td.replace('../../../../lib/validators/root-url');
+          let framework = initFramework();
 
-        td.verify(new ValidateRoot({
-          config: {plugins: []},
-          rootProps: ['baseUrl'],
-          path: 'build/webpack.dev.conf',
-          force: undefined,
-          env: 'build'
-        }));
+          td.replace(framework, '_getConfig', function () { return config; });
+
+          framework._buildValidators('build', {});
+
+          td.verify(new ValidateRoot({
+            framework: 'vue',
+            config: config,
+            rootProps: ['baseUrl'],
+            path: 'build/webpack.dev.conf',
+            force: undefined,
+            env: 'build'
+          }));
+        });
+      });
+
+      context('when config does not exists', function() {
+        let config = null;
+
+        it('inits a root-url validator with null config', function() {
+          let ValidateRoot = td.replace('../../../../lib/validators/root-url');
+          let framework = initFramework();
+
+          td.replace(framework, '_getConfig', function () { return config; });
+
+          framework._buildValidators('build', {});
+
+          td.verify(new ValidateRoot({
+            framework: 'vue',
+            config: config,
+            rootProps: ['baseUrl'],
+            path: 'build/webpack.dev.conf',
+            force: undefined,
+            env: 'build'
+          }));
+        });
       });
     });
   });
@@ -156,12 +213,16 @@ describe('Vue Framework', function() {
         let ValidateWebpack = td.replace('../../../../lib/validators/webpack-plugin');
         let framework = initFramework();
 
+        let config = {configureWebpack: {plugins: []}};
+        td.replace(framework, '_getConfig', function () { return config; });
+
         framework.validateServe({});
 
         td.verify(new ValidateWebpack({
           root: mockProject.project.root,
           framework: 'vue',
-          configPath: path.join(mockProject.project.root, 'vue.config.js')
+          config: config,
+          configPath: 'vue.config.js'
         }));
       });
     });
@@ -182,12 +243,16 @@ describe('Vue Framework', function() {
         let ValidateWebpack = td.replace('../../../../lib/validators/webpack-plugin');
         let framework = initFramework();
 
+        let config = {plugins: []};
+        td.replace(framework, '_getConfig', function () { return config; });
+
         framework.validateServe({});
 
         td.verify(new ValidateWebpack({
           root: mockProject.project.root,
           framework: 'vue',
-          configPath: path.join(mockProject.project.root, 'build/webpack.dev.conf')
+          config: config,
+          configPath: 'build/webpack.dev.conf'
         }));
       });
     });
