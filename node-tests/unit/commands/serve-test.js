@@ -9,7 +9,6 @@ var CdvBuildTask    = require('../../../lib/targets/cordova/tasks/build');
 var BashTask        = require('../../../lib/tasks/bash');
 var HookTask        = require('../../../lib/tasks/run-hook');
 var LRloadShellTask = require('../../../lib/tasks/create-livereload-shell');
-var editXml         = require('../../../lib/targets/cordova/utils/edit-xml');
 var parseXml        = require('../../../lib/utils/parse-xml');
 var cordovaPath     = require('../../../lib/targets/cordova/utils/get-path');
 
@@ -24,7 +23,6 @@ describe('Serve Command', function() {
   var tasks = [];
 
   afterEach(function() {
-    editXml.removeNavigation(mockProject.project);
     td.reset();
   });
 
@@ -64,6 +62,18 @@ describe('Serve Command', function() {
           return Promise.resolve();
         }
       };
+    });
+
+    td.replace('../../../lib/targets/cordova/utils/edit-xml', {
+      addNavigation: function() {
+        tasks.push('add-navigation');
+        return Promise.resolve();
+      },
+
+      removeNavigation: function() {
+        tasks.push('remove-navigation');
+        return Promise.resolve();
+      }
     });
 
     td.replace(HookTask.prototype, 'run', function(hookName, options) {
@@ -122,6 +132,7 @@ describe('Serve Command', function() {
   it('runs tasks in the correct order', function() {
     return serveCmd.run({}).then(function() {
       expect(tasks).to.deep.equal([
+        'add-navigation',
         'hook beforeBuild',
         'validate-allow-navigation',
         'validate-plugin',
@@ -129,21 +140,9 @@ describe('Serve Command', function() {
         'create-livereload-shell',
         'cordova-build',
         'hook afterBuild',
-        'framework-serve'
+        'framework-serve',
+        'remove-navigation'
       ]);
-    });
-  });
-
-  it('add reloadUrl to the xml file', function() {
-    return serveCmd.run({
-      reloadUrl: 'test-url'
-    }).then(function() {
-      var cdvPath = cordovaPath(mockProject.project);
-      var configPath = path.join(cdvPath, 'config.xml');
-      var xml = parseXml(configPath);
-      var node = xml._result.widget['allow-navigation'].pop().$.href;
-
-      expect(node).to.equal('test-url');
     });
   });
 
@@ -153,12 +152,14 @@ describe('Serve Command', function() {
       skipCordovaBuild: true
     }).then(function() {
       expect(tasks).to.deep.equal([
+        'add-navigation',
         'hook beforeBuild',
         'validate-allow-navigation',
         'validate-plugin',
         'framework-validate-serve',
         'create-livereload-shell',
-        'hook afterBuild'
+        'hook afterBuild',
+        'remove-navigation'
       ]);
     });
   });
