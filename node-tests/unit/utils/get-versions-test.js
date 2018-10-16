@@ -1,75 +1,117 @@
 const td                 = require('testdouble');
 const expect             = require('../../helpers/expect');
 const path               = require('path');
-const fsUtils            = require('../../../lib/utils/fs-utils');
 const mockProject        = require('../../fixtures/corber-mock/project');
+
 const root               = mockProject.project.root;
-const globalPackagePath  = path.join('..', '..', 'package.json');
 const projectPackagePath = path.join(root, 'package.json');
 
-let packages, fileExists, getVersions;
+const projectCorberPackagePath = path.join(
+  root,
+  'node_modules',
+  'corber',
+  'package.json'
+);
+
+const globalCorberPackagePath = path.resolve(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  'package.json'
+);
 
 describe('getVersions', () => {
+  let getPackage, fsUtils;
+  let getVersions;
+
   beforeEach(() => {
-    packages = {};
-    packages[globalPackagePath] = { version: '1.0.0' };
-    packages[projectPackagePath] = {
-      devDependencies: {
-        corber: '1.2.3'
-      }
-    };
-
-    td.replace('../../../lib/utils/get-package', (packagePath) => {
-      return packages[packagePath];
-    });
-
-    fileExists = {};
-    fileExists[projectPackagePath] = true;
-
-    td.replace(fsUtils, 'existsSync', (filePath) => {
-      return fileExists[filePath];
-    });
-
+    getPackage = td.replace('../../../lib/utils/get-package');
+    fsUtils = td.replace('../../../lib/utils/fs-utils');
     getVersions = require('../../../lib/utils/get-versions');
+
+    td.when(getPackage(globalCorberPackagePath)).thenReturn({
+      version: '1.0.0'
+    });
+
+    td.when(getPackage(projectPackagePath)).thenReturn({
+      devDependencies: {
+        corber: '~1.2.3'
+      }
+    });
+
+    td.when(getPackage(projectCorberPackagePath)).thenReturn({
+      version: '1.2.5'
+    })
+
+    td.when(fsUtils.existsSync(globalCorberPackagePath)).thenReturn(true);
+    td.when(fsUtils.existsSync(projectPackagePath)).thenReturn(true);
+    td.when(fsUtils.existsSync(projectCorberPackagePath)).thenReturn(true);
   });
 
   afterEach(() => {
     td.reset();
   });
 
-  it('reads the global corber version', () => {
+  it('reads global corber version', () => {
     let versions = getVersions(root);
     expect(versions.corber.global).to.equal('1.0.0');
   });
 
-  it('reads the project corber version', () => {
+  it('reads ./node_modules/corber/package.json version', () => {
     let versions = getVersions(root);
-    expect(versions.corber.project).to.equal('1.2.3');
+    expect(versions.corber.project.installed).to.equal('1.2.5');
   });
 
-  it('reads the node version', () => {
+  it('reads ./package.json corber version', () => {
+    let versions = getVersions(root);
+    expect(versions.corber.project.required).to.equal('~1.2.3');
+  });
+
+  it('reads node version', () => {
     let versions = getVersions(root);
     expect(versions.node).to.equal(process.versions.node);
   });
 
-  context('when corber is added as a full dependency', () => {
+  context('when project package.json does not exist', () => {
     beforeEach(() => {
-      delete packages[projectPackagePath].devDependencies;
+      td.when(fsUtils.existsSync(projectPackagePath)).thenReturn(false);
+    });
 
-      packages[projectPackagePath].dependencies = {
-        corber: '1.2.3'
-      };
+    it('does not contain a required version', () => {
+      let versions = getVersions(root);
+      expect(versions.corber.project.required).to.be.undefined;
+    });
+
+    it('does not contain an installed version', () => {
+      let versions = getVersions(root);
+      expect(versions.corber.project.installed).to.be.undefined;
     });
   });
 
-  context('when project package.json does not exist', () => {
+  context('when ./node_modules/corber/package.json does not exist', () => {
     beforeEach(() => {
-      fileExists[projectPackagePath] = false;
+      td.when(fsUtils.existsSync(projectCorberPackagePath)).thenReturn(false);
     });
 
-    it('does not contain a project version', () => {
+    it('does not contain an installed version', () => {
       let versions = getVersions(root);
-      expect(versions.corber.project).to.be.undefined;
+      expect(versions.corber.project.installed).to.be.undefined;
     });
+  });
+
+  context('when corber belongs to package.json dependencies', () => {
+    beforeEach(() => {
+      td.when(getPackage(projectPackagePath)).thenReturn({
+        dependencies: {
+          corber: '~1.2.3'
+        }
+      });
+    });
+
+    it('returns the correct required version', () => {
+      let versions = getVersions(root);
+      expect(versions.corber.project.required).to.equal('~1.2.3');
+    })
   });
 });

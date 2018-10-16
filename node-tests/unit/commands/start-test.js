@@ -80,6 +80,11 @@ describe('Start Command', function() {
         addNavigation: function() {
           tasks.push('add-navigation');
           return Promise.resolve();
+        },
+
+        removeNavigation: function() {
+          tasks.push('remove-navigation');
+          return Promise.resolve();
         }
       });
 
@@ -152,7 +157,8 @@ describe('Start Command', function() {
           'platform-target-build',
           'hook-afterBuild',
           'platform-target-run',
-          'framework-serve'
+          'framework-serve',
+          'remove-navigation'
         ]);
       });
     });
@@ -169,7 +175,8 @@ describe('Start Command', function() {
           'cordova-prepare',
           'hook-afterBuild',
           'platform-target-run',
-          'framework-serve'
+          'framework-serve',
+          'remove-navigation'
         ]);
       });
     });
@@ -186,16 +193,22 @@ describe('Start Command', function() {
           'cordova-prepare',
           'platform-target-build',
           'hook-afterBuild',
-          'platform-target-run'
+          'platform-target-run',
+          'remove-navigation'
         ]);
       });
     });
 
     it('sets vars for webpack livereload', function() {
       return start.run({build: false, platform: 'ios'}).then(function() {
-        expect(mockProject.project.targetIsCordova).to.equal(true);
         expect(mockProject.project.CORBER_PLATFORM).to.equal('ios')
-        expect(mockProject.project.targetIsCordovaLivereload).to.equal(true);
+      });
+    });
+
+    it('sets process.env.CORBER_PLATFORM & CORBER_LIVERELOAD', function() {
+      return start.run({build: false, platform: 'ios'}).then(function() {
+        expect(process.env.CORBER_PLATFORM).to.equal('ios');
+        expect(process.env.CORBER_LIVERELOAD).to.equal('true');
       });
     });
   });
