@@ -1,13 +1,9 @@
 const td              = require('testdouble');
 const Promise         = require('rsvp').Promise;
 const expect          = require('../../../../helpers/expect');
+const Device          = require('../../../../../lib/objects/device');
 
-const setupListTask = function() {
-  let ListTask = require('../../../../../lib/targets/ios/tasks/list-emulators');
-  return new ListTask();
-};
-
-describe('iOS Run Emulator Task', function() {
+describe('iOS List Emulator Task', function() {
   afterEach(function() {
     td.reset();
   });
@@ -34,36 +30,52 @@ describe('iOS Run Emulator Task', function() {
       return Promise.resolve(emList);
     });
 
-    let list = setupListTask();
+    let list = require('../../../../../lib/targets/ios/tasks/list-emulators');
 
-    return list.run().then(function(found) {
-      expect(found).to.deep.equal([{
-        iosVersion: '11.1',
+    return list().then(function(found) {
+      expect(found).to.deep.equal([new Device({
+        apiVersion: '11.1',
         name: 'iPad Pro',
-        id: 'uuid',
+        uuid: 'uuid',
+        platform: 'ios',
+        deviceType: 'emulator',
         state: 'Shutdown'
-      }, {
-        iosVersion: '11.1',
+      }), new Device({
+        apiVersion: '11.1',
         name: 'iPhone X',
-        id: '3B388D0A-01F2-4E68-B86B-55FDB6F96B37',
+        uuid: '3B388D0A-01F2-4E68-B86B-55FDB6F96B37',
+        platform: 'ios',
+        deviceType: 'emulator',
         state: 'Shutdown'
-      }, { iosVersion: '9.1',
+      }), new Device({
+        apiVersion: '9.1',
         name: 'iPhone 5',
-        id: 'uuid',
+        uuid: 'uuid',
+        platform: 'ios',
+        deviceType: 'emulator',
         state: 'Shutdown'
-      }, { iosVersion: '9.1',
+      }), new Device({
+        apiVersion: '9.1',
         name: 'iPhone 4s',
-        id: 'uuid',
+        uuid: 'uuid',
+        platform: 'ios',
+        deviceType: 'emulator',
         state: 'Shutdown'
-      }, { iosVersion: '8.4',
+      }), new Device({
+        apiVersion: '8.4',
         name: 'iPhone 5',
-        id: 'uuid',
+        uuid: 'uuid',
+        platform: 'ios',
+        deviceType: 'emulator',
         state: 'Shutdown'
-      }, { iosVersion: '8.4',
+      }), new Device({
+        apiVersion: '8.4',
         name: 'iPhone 4s',
-        id: 'uuid',
+        uuid: 'uuid',
+        platform: 'ios',
+        deviceType: 'emulator',
         state: 'Shutdown'
-      }]);
+      })]);
     });
   });
 });

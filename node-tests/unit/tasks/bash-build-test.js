@@ -31,6 +31,7 @@ describe('Vue Build Task', function() {
     return buildTask.run({cordovaOutputPath: 'fakePath'}).then(function() {
       expect(tasks).to.deep.equal([
         'bash-task',
+        'bash-task',
         'bash-task'
       ]);
     });
@@ -42,8 +43,9 @@ describe('Vue Build Task', function() {
 
     td.verify(new Bash(captor.capture()));
 
-    expect(captor.values[0].command).to.equal('fakeBuildCommand');
-    expect(captor.values[1].command).to.equal(
+    expect(captor.values[0].command).to.equal('rm -rf fakeCordovaPath/*');
+    expect(captor.values[1].command).to.equal('fakeBuildCommand');
+    expect(captor.values[2].command).to.equal(
       'cp -R fakePath/* fakeCordovaPath'
     );
   });

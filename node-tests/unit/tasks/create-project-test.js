@@ -3,14 +3,13 @@ const expect         = require('../../helpers/expect');
 const mockProject    = require('../../fixtures/corber-mock/project');
 const Promise        = require('rsvp');
 const GitIgnore      = require('../../../lib/tasks/update-gitignore');
-const InstallPackage = require('../../../lib/tasks/install-package');
+const InstallCorber  = require('../../../lib/tasks/install-project-corber');
 
 
 const isAnything     = td.matchers.anything;
 const fsUtils        = require('../../../lib/utils/fs-utils');
 const path           = require('path');
 const frameworkType  = require('../../../lib/utils/framework-type');
-const contains       = td.matchers.contains;
 
 let CreateCordova    = require('../../../lib/targets/cordova/tasks/create-project');
 
@@ -49,8 +48,8 @@ describe('Create Project', function() {
       return Promise.resolve();
     });
 
-    td.replace(InstallPackage.prototype, 'run', function() {
-      tasks.push('install-package');
+    td.replace(InstallCorber.prototype, 'run', function() {
+      tasks.push('install-corber');
       return Promise.resolve();
     });
 
@@ -61,6 +60,16 @@ describe('Create Project', function() {
       });
     }
   }
+
+  beforeEach(function() {
+    td.replace(fsUtils, 'mkdir', function() {
+      return Promise.resolve();
+    });
+
+    td.replace(fsUtils, 'copy', function() {
+      return Promise.resolve();
+    });
+  });
 
   afterEach(function() {
     td.reset();
@@ -74,7 +83,7 @@ describe('Create Project', function() {
         'create-dirs',
         'create-cordova-project',
         'update-gitignore',
-        'install-package',
+        'install-corber',
         'framework-after-install'
       ]);
     });
@@ -98,25 +107,12 @@ describe('Create Project', function() {
   });
 
   it('warns if framework type is custom', function() {
-    td.replace(frameworkType, 'get', function() {
-      return 'custom';
+    td.replace(frameworkType, 'detectAll', function() {
+      return ['custom'];
     });
 
     initTask(false);
     let warnDouble = td.replace(createTask, 'warnCustomFramework');
-
-    return createTask.run().then(function() {
-      td.verify(warnDouble());
-    });
-  });
-
-  it('warns vue users of npm engine troubles', function() {
-    td.replace(frameworkType, 'get', function() {
-      return 'vue';
-    });
-
-    initTask(false);
-    let warnDouble = td.replace(createTask, 'warnVueEngine');
 
     return createTask.run().then(function() {
       td.verify(warnDouble());
@@ -131,9 +127,11 @@ describe('Create Project', function() {
       'corber'
     );
 
+    let emberCdvConfigPath = path.resolve(emberCdvPath, 'config');
+
     beforeEach(function() {
-      td.replace(frameworkType, 'get', function() {
-        return 'ember';
+      td.replace(frameworkType, 'detectAll', function() {
+        return ['ember'];
       });
     });
 
@@ -142,24 +140,35 @@ describe('Create Project', function() {
     });
 
     it('inits corber && config directories', function() {
-      let mkDouble = td.replace(fsUtils, 'mkdir');
-      td.replace(fsUtils, 'copy');
+      let mkDirPaths = [];
+
+      td.replace(fsUtils, 'mkdir', function(corberPath) {
+        mkDirPaths.push(corberPath);
+        return Promise.resolve();
+      });
 
       initTask(false);
-      createTask.run();
-      td.verify(mkDouble(emberCdvPath));
+      return createTask.run().then(function() {
+        expect(mkDirPaths).to.include(emberCdvPath);
+        expect(mkDirPaths).to.include(emberCdvConfigPath);
+      });
     });
 
     it('attempts to copy the frameworks config', function() {
-      let copyDouble = td.replace(fsUtils, 'copy');
+      let sourcePath, destPath;
+
+      td.replace(fsUtils, 'copy', function(source, dest) {
+        sourcePath = source;
+        destPath = dest;
+        return Promise.resolve();
+      });
+
       initTask(false);
 
-      createTask.run();
-
-      td.verify(copyDouble(
-        contains('lib/templates/frameworks/ember.js'),
-        emberCdvPath + '/config/framework.js'
-      ));
+      return createTask.run().then(function() {
+        expect(sourcePath).to.include('lib/templates/frameworks/ember.js');
+        expect(destPath).to.equal(path.join(emberCdvPath, 'config', 'framework.js'));
+      });
     });
   });
 });

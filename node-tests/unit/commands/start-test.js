@@ -1,29 +1,56 @@
 const td              = require('testdouble');
-const path            = require('path');
 const expect          = require('../../helpers/expect');
 const Promise         = require('rsvp');
-const LRloadShellTask = require('../../../lib/tasks/create-livereload-shell');
-const ListEmulators   = require('../../../lib/targets/ios/tasks/list-emulators');
-const CordovaRaw      = require('../../../lib/targets/cordova/tasks/raw');
-const IOSRun          = require('../../../lib/targets/ios/tasks/run-emulator');
-const IOSBuild        = require('../../../lib/targets/ios/tasks/build-emulator');
+const LRloadShell     = require('../../../lib/tasks/create-livereload-shell');
+const CdvTarget       = require('../../../lib/targets/cordova/target');
+const CdvRaw          = require('../../../lib/targets/cordova/tasks/raw');
+const IOSTarget       = require('../../../lib/targets/ios/target');
 const Hook            = require('../../../lib/tasks/run-hook');
 const mockProject     = require('../../fixtures/corber-mock/project');
 const mockAnalytics   = require('../../fixtures/corber-mock/analytics');
 
-const dummyEmulators = [{
+const iosEmulators = [{
   id: 1,
-  name: 'Em 1',
-  state: 'Booted'
+  name: 'iOS Em 1',
+  label() {
+    return 'iOS Em 1 Label';
+  },
+  state: 'Booted',
+  platform: 'ios',
+  deviceType: 'device'
 }, {
   id: 2,
-  name: 'Em 2',
-  state: 'Shutdown'
+  name: 'iOS Em 2',
+  label() {
+    return 'iOS Em 2 Label';
+  },
+  state: 'Shutdown',
+  platform: 'ios',
+  deviceType: 'device'
+}];
+
+const androidEmulators = [{
+  id: 1,
+  name: 'Android Em 1',
+  label() {
+    return 'Android Em 1 Label';
+  },
+  platform: 'android',
+  deviceType: 'emulator'
+}];
+
+const androidDevices = [{
+  id: 1,
+  name: 'Android Device 1',
+  label() {
+    return 'Android Device 1 Label';
+  },
+  platform: 'android',
+  deviceType: 'device'
 }];
 
 const setupStart = function() {
   let StartCmd = require('../../../lib/commands/start');
-
   let start = new StartCmd({
     project: mockProject.project
   });
@@ -53,6 +80,11 @@ describe('Start Command', function() {
         addNavigation: function() {
           tasks.push('add-navigation');
           return Promise.resolve();
+        },
+
+        removeNavigation: function() {
+          tasks.push('remove-navigation');
+          return Promise.resolve();
         }
       });
 
@@ -70,21 +102,45 @@ describe('Start Command', function() {
         };
       });
 
-      td.replace(LRloadShellTask.prototype, 'run', function() {
+      td.replace(IOSTarget.prototype, 'build', function() {
+        tasks.push('platform-target-build');
+        return Promise.resolve();
+      });
+
+      td.replace(IOSTarget.prototype, 'run', function() {
+        tasks.push('platform-target-run');
+        return Promise.resolve();
+      });
+
+      td.replace(Hook.prototype, 'run', function(hookName, options) {
+        tasks.push(`hook-${hookName}`);
+        return Promise.resolve();
+      });
+
+      td.replace(CdvTarget.prototype, 'validateServe', function() {
+        tasks.push('cordova-validate-serve');
+        return Promise.resolve();
+      });
+
+      td.replace(CdvTarget.prototype, 'getInstalledPlatforms', function() {
+        return Promise.resolve(['ios']);
+      });
+
+      td.replace(LRloadShell.prototype, 'run', function() {
         tasks.push('create-livereload-shell');
+        return Promise.resolve();
+      });
+
+      td.replace(CdvRaw.prototype, 'run', function() {
+        tasks.push('cordova-prepare');
         return Promise.resolve();
       });
 
       start = setupStart();
 
-      td.replace(start, 'selectEmulator', function() {
+      td.replace(start, 'selectDevice', function() {
         tasks.push('select-emulator');
-        return Promise.resolve();
-      });
-
-      td.replace(start, 'buildAndRun', function() {
-        tasks.push('build-and-run');
-        return Promise.resolve();
+        return Promise.resolve({name: 'emulator', platform: 'ios'});
       });
     });
 
@@ -92,20 +148,67 @@ describe('Start Command', function() {
       return start.run({}).then(function() {
         expect(tasks).to.deep.equal([
           'select-emulator',
-          'framework-validate-serve',
+          'hook-beforeBuild',
           'add-navigation',
+          'cordova-validate-serve',
+          'framework-validate-serve',
           'create-livereload-shell',
-          'build-and-run',
-          'framework-serve'
+          'cordova-prepare',
+          'platform-target-build',
+          'hook-afterBuild',
+          'platform-target-run',
+          'framework-serve',
+          'remove-navigation'
         ]);
       });
     });
 
-    it('makes the required changes to project', function() {
+    it('skips platformTarget build with --scb', function() {
+      return start.run({skipCordovaBuild: true}).then(function() {
+        expect(tasks).to.deep.equal([
+          'select-emulator',
+          'hook-beforeBuild',
+          'add-navigation',
+          'cordova-validate-serve',
+          'framework-validate-serve',
+          'create-livereload-shell',
+          'cordova-prepare',
+          'hook-afterBuild',
+          'platform-target-run',
+          'framework-serve',
+          'remove-navigation'
+        ]);
+      });
+    });
+
+    it('skips framework serve with --sfb', function() {
+      return start.run({skipFrameworkBuild: true}).then(function() {
+        expect(tasks).to.deep.equal([
+          'select-emulator',
+          'hook-beforeBuild',
+          'add-navigation',
+          'cordova-validate-serve',
+          'framework-validate-serve',
+          'create-livereload-shell',
+          'cordova-prepare',
+          'platform-target-build',
+          'hook-afterBuild',
+          'platform-target-run',
+          'remove-navigation'
+        ]);
+      });
+    });
+
+    it('sets vars for webpack livereload', function() {
       return start.run({build: false, platform: 'ios'}).then(function() {
-        expect(mockProject.project.targetIsCordova).to.equal(true);
-        expect(mockProject.project.CORDOVA_PLATFORM).to.equal('ios')
-        expect(mockProject.project.targetIsCordovaLivereload).to.equal(true);
+        expect(mockProject.project.CORBER_PLATFORM).to.equal('ios')
+      });
+    });
+
+    it('sets process.env.CORBER_PLATFORM & CORBER_LIVERELOAD', function() {
+      return start.run({build: false, platform: 'ios'}).then(function() {
+        expect(process.env.CORBER_PLATFORM).to.equal('ios');
+        expect(process.env.CORBER_LIVERELOAD).to.equal('true');
       });
     });
   });
@@ -140,10 +243,18 @@ describe('Start Command', function() {
     });
   });
 
-  describe('selectEmulator', function() {
+  describe('selectDevice', function() {
     beforeEach(function() {
-      td.replace(ListEmulators.prototype, 'run', function() {
-        return Promise.resolve(dummyEmulators);
+      td.replace('../../../lib/targets/ios/tasks/list-emulators', function() {
+        return Promise.resolve(iosEmulators);
+      });
+
+      td.replace('../../../lib/targets/android/tasks/list-emulators', function() {
+        return Promise.resolve(androidEmulators);
+      });
+
+      td.replace('../../../lib/targets/android/tasks/list-devices', function() {
+        return Promise.resolve(androidDevices);
       });
     });
 
@@ -154,84 +265,80 @@ describe('Start Command', function() {
       start.ui = {
         prompt: function(opts) {
           promptArgs = opts;
-          return Promise.resolve({emulator: dummyEmulators[0]});
+          return Promise.resolve({emulator: iosEmulators[0]});
         }
       }
 
-      return start.selectEmulator({emulator: ''}).then(function() {
-        expect(promptArgs.message).to.equal('Select an emulator');
+      return start.selectDevice({emulator: '', platform: 'ios'}, ['ios']).then(function() {
+        expect(promptArgs.message).to.equal('Select a device/emulator');
         expect(promptArgs.type).to.equal('list');
-        expect(promptArgs.choices[0].value).to.deep.equal(dummyEmulators[0]);
-        expect(promptArgs.choices[1].value).to.deep.equal(dummyEmulators[1]);
+        expect(promptArgs.choices[0].value).to.deep.equal(iosEmulators[0]);
+        expect(promptArgs.choices[1].value).to.deep.equal(iosEmulators[1]);
       });
     });
 
     it('finds emulator by name', function() {
       let start = setupStart();
 
-      return start.selectEmulator({emulator: 'Em 1'}).then(function(selected) {
-        expect(selected).to.deep.equal(dummyEmulators[0]);
+      return start.selectDevice({emulator: 'iOS Em 1'}, ['ios']).then(function(selected) {
+        expect(selected).to.deep.equal(iosEmulators[0]);
       });
     });
 
-    it('finds emulator by id', function() {
+    it('only shows emulators for the selected platform', function() {
       let start = setupStart();
 
-      return start.selectEmulator({emulatorid: 2}).then(function(selected) {
-        expect(selected).to.deep.equal(dummyEmulators[1]);
+      let promptArgs;
+      start.ui = {
+        prompt: function(opts) {
+          promptArgs = opts;
+          return Promise.resolve({emulator: iosEmulators[0]});
+        }
+      }
+
+      return start.selectDevice({emulator: '', platform: 'android'}, ['android']).then(function() {
+        expect(promptArgs.choices.length).to.equal(2);
+      });
+    });
+
+    it('defaults to including emulators from both platforms', function() {
+      let start = setupStart();
+
+      let promptArgs;
+      start.ui = {
+        prompt: function(opts) {
+          promptArgs = opts;
+          return Promise.resolve({emulator: iosEmulators[0]});
+        }
+      }
+
+      return start.selectDevice({emulator: ''}, ['ios', 'android']).then(function() {
+        expect(promptArgs.choices.length).to.equal(4);
       });
     });
   });
 
-  describe('buildAndRun', function() {
-    it('runs tasks in the correct order', function() {
-      let tasks = [];
-      let emulator = {name: 'fakeEmulator', id: 'fakeUuid'};
-      let opts = {platform: 'ios'};
-      let corberRoot = path.join(mockProject.project.root, 'corber');
+  describe('validatePlatform', function() {
+    afterEach(function() {
+      td.reset();
+    });
 
-      td.replace(Hook.prototype, 'run', function(hookName, passedOpts) {
-        tasks.push(`hook-${hookName}`);
-        expect(passedOpts).to.deep.equal(opts);
-        return Promise.resolve();
-      });
+    it('throws an error when builds are for a platform that is not installed', function() {
+      let start = setupStart();
+      let fn = () => {
+        start.validatePlatform(['ios'], 'android');
+      };
 
-      td.replace(CordovaRaw.prototype, 'run', function(cdvOpts) {
-        tasks.push('prepare');
-        expect(cdvOpts).to.deep.equal({platforms: ['ios']});
-        return Promise.resolve();
-      });
+      expect(fn).to.throw();
+    });
 
-      td.replace(IOSBuild.prototype, 'run', function(passedEm, buildPath, scheme, iosPath) {
-        tasks.push('ios-build-em');
-        expect(passedEm).to.deep.equal(emulator);
-        expect(buildPath).to.equal(path.join(corberRoot, 'tmp', 'builds'));
-        expect(scheme).to.equal('emberCordovaDummyApp');
-        expect(iosPath).to.equal(path.join(corberRoot, 'cordova', 'platforms', 'ios'));
-        return Promise.resolve();
-      });
-
-      /* eslint-disable max-len */
-      td.replace(IOSRun.prototype, 'run', function(passedEm, appName, builtPath) {
-        tasks.push('ios-run-em');
-        expect(passedEm).to.deep.equal(emulator);
-        expect(appName).to.equal('emberCordovaDummyApp');
-        expect(builtPath).to.equal(path.join(corberRoot, 'tmp', 'builds', 'Build', 'Products', 'Debug-iphonesimulator', 'emberCordovaDummyApp.app'));
-        return Promise.resolve();
-      });
-      /* eslint-enable max-len */
+    it('passes when builds are for an installed platform', function() {
+      let logger = td.replace('../../../lib/utils/logger');
 
       let start = setupStart();
+      start.validatePlatform(['ios'], 'ios');
 
-      return start.buildAndRun(emulator, opts).then(function() {
-        expect(tasks).to.deep.equal([
-          'hook-beforeBuild',
-          'prepare',
-          'ios-build-em',
-          'hook-afterBuild',
-          'ios-run-em'
-        ]);
-      });
+      td.verify(logger.error(), { times: 0 });
     });
   });
 });

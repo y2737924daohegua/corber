@@ -33,18 +33,36 @@ describe('Platform Command', function() {
     });
   });
 
-  it('passes the save flag', function() {
-    let platform = setupTask();
-    var rawOpts;
-    var opts = { save: false };
+  describe('flags', function() {
+    let platform, rawOpts;
+    beforeEach(function() {
+      platform = setupTask();
+      rawOpts;
 
-    td.replace(CdvRawTask.prototype, 'run', function(cmd, plugins, options) {
-      rawOpts = options;
-      return Promise.resolve();
+      td.replace(CdvRawTask.prototype, 'run', function(cmd, plugins, options) {
+        rawOpts = options;
+        return Promise.resolve();
+      });
     });
 
-    return platform.run('add', 'ios', opts).then(function() {
-      expect(rawOpts).to.have.property('save').and.equal(false);
+    afterEach(function() {
+      platform = undefined;
+      rawOpts = undefined;
+      td.reset();
+    });
+
+    it('passes the save flag', function() {
+      let opts = { save: false };
+
+      return platform.run('add', 'ios', opts).then(function() {
+        expect(rawOpts).to.have.property('save').and.equal(false);
+      });
+    });
+
+    it('defaults the fetch flag', function() {
+      return platform.run('add', 'ios', {}).then(function() {
+        expect(rawOpts).to.have.property('fetch').and.equal(true);
+      });
     });
   });
 

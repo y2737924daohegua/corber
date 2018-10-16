@@ -3,7 +3,6 @@ const expect         = require('../../../helpers/expect');
 const Promise        = require('rsvp').Promise;
 const mockProject    = require('../../../fixtures/corber-mock/project');
 
-const ValidatePlatform        = require('../../../../lib/targets/cordova/validators/platform');
 const ValidatePlugin          = require('../../../../lib/targets/cordova/validators/plugin');
 const ValidateAllowNavigation = require('../../../../lib/targets/cordova/validators/allow-navigation');
 
@@ -22,10 +21,6 @@ describe('Cordova Target', function() {
       CordovaTarget = require('../../../../lib/targets/cordova/target');
 
       tasks = [];
-      td.replace(ValidatePlatform.prototype, 'run', function() {
-        tasks.push('validate-platform');
-        return Promise.resolve();
-      });
 
       td.replace(ValidatePlugin.prototype, 'run', function() {
         tasks.push('validate-plugin');
@@ -43,8 +38,7 @@ describe('Cordova Target', function() {
 
       return target.validateBuild().then(function() {
         expect(tasks).to.deep.equal([
-          'validate-allow-navigation',
-          'validate-platform',
+          'validate-allow-navigation'
         ]);
       });
     });
@@ -55,13 +49,64 @@ describe('Cordova Target', function() {
       return target.validateServe().then(function() {
         expect(tasks).to.deep.equal([
           'validate-allow-navigation',
-          'validate-platform',
           'validate-plugin'
         ]);
       });
     });
   });
 
+  context('getInstalledPlatforms', function() {
+    it('returns platforms in cordova package.json', function() {
+      let fsUtils = require('../../../../lib/utils/fs-utils');
+      td.replace(fsUtils, 'existsSync', function() {
+        return true;
+      });
+
+      td.replace('../../../../lib/utils/get-package', function() {
+        return {
+          cordova: {
+            platforms: ['ios', 'android']
+          }
+        };
+      });
+
+      let CordovaTarget = require('../../../../lib/targets/cordova/target');
+      let target = new CordovaTarget({
+        project: mockProject.project
+      });
+
+      return target.getInstalledPlatforms().then((platforms) => {
+        expect(platforms).to.deep.equal(['ios', 'android']);
+      });
+    });
+
+    it('falls back to config.xml if package.json is missing', function () {
+      let fsUtils = require('../../../../lib/utils/fs-utils');
+      td.replace(fsUtils, 'existsSync', function (path) {
+        return path.endsWith('config.xml');
+      });
+
+      td.replace('../../../../lib/utils/parse-xml', function () {
+        return Promise.resolve({
+          widget: {
+            engine: [
+              { $: { name: 'p' } },
+              { $: { name: 'q' } },
+            ]
+          }
+        });
+      });
+
+      let CordovaTarget = require('../../../../lib/targets/cordova/target');
+      let target = new CordovaTarget({
+        project: mockProject.project
+      });
+
+      return target.getInstalledPlatforms().then((platforms) => {
+        expect(platforms).to.deep.equal(['p', 'q']);
+      });
+    });
+  });
 
   context('build', function() {
     it('runs cordova build task', function() {

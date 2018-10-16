@@ -87,7 +87,7 @@ describe('Init Command', function() {
     });
   });
 
-  it('does not call installPlatforms if the selected platfor is none', function() {
+  it('does not call installPlatforms if the selected platform is none', function() {
     let init = setupCmd(true);
     let installDouble = td.replace(init, 'installPlatforms');
     opts.platform = undefined;
@@ -100,6 +100,36 @@ describe('Init Command', function() {
 
     return init.run(opts).then(() => {
       td.verify(installDouble(), {times: 0});
+    });
+  });
+
+  describe('validateAndRun', function() {
+    context('when corber is already initialized', function() {
+      it('throws an exception', function() {
+        td.replace('../../../lib/utils/get-versions', () => {
+          return {
+            corber: {
+              project: {
+                required: '1.0.0'
+              }
+            }
+          };
+        });
+
+        let init = setupCmd();
+        expect(() => init.validateAndRun()).to.throw();
+      });
+    });
+
+    context('when corber folder already exists in project', function() {
+      it('throws an exception', function () {
+        td.replace('../../../lib/utils/fs-utils', 'existsSync', (path) => {
+          return path !== './corber';
+        });
+
+        let init = setupCmd();
+        expect(() => init.validateAndRun()).to.throw();
+      });
     });
   });
 
@@ -117,6 +147,32 @@ describe('Init Command', function() {
     });
   });
 
+  describe('buildPromptOptions', function() {
+    context('is win32', function() {
+      it('does not includes an ios option', function() {
+        td.replace('../../../lib/utils/get-os', function() {
+          return 'win32';
+        });
+
+        let init = setupCmd();
+
+        expect(init.buildPromptOptions()['choices'].length).to.eq(2);
+      });
+    });
+
+    context('is darwin', function() {
+      it('includes an ios option', function() {
+        td.replace('../../../lib/utils/get-os', function() {
+          return 'darwin';
+        });
+
+        let init = setupCmd();
+
+        expect(init.buildPromptOptions()['choices'].length).to.eq(3);
+      });
+    });
+  });
+
   describe('installPlatforms', function() {
     it('installs each passed platform', function() {
       let calls = [];
@@ -129,6 +185,22 @@ describe('Init Command', function() {
 
       return init.installPlatforms(['ios', 'android']).then(() => {
         expect(calls).to.deep.equal(['ios', 'android']);
+      });
+    });
+
+    it('passes webview and save options to the platform task', function() {
+      let calls = [];
+
+      let PlatformTask = require('../../../lib/targets/cordova/tasks/platform');
+      td.replace(PlatformTask.prototype, 'run', function(action, platform, opts) {
+        calls.push(opts);
+        return Promise.resolve();
+      });
+
+      let init = setupCmd();
+
+      return init.installPlatforms(['ios', 'android'], {uiwebview: false, crosswalk: true}).then(function() {
+        expect(calls[0]).to.deep.equal({uiwebview: false, crosswalk: true, save: true});
       });
     });
   });

@@ -3,20 +3,15 @@
 var td              = require('testdouble');
 var expect          = require('../../helpers/expect');
 var Promise         = require('rsvp');
-var path            = require('path');
 
 var CdvBuildTask    = require('../../../lib/targets/cordova/tasks/build');
 var BashTask        = require('../../../lib/tasks/bash');
 var HookTask        = require('../../../lib/tasks/run-hook');
 var LRloadShellTask = require('../../../lib/tasks/create-livereload-shell');
-var editXml         = require('../../../lib/targets/cordova/utils/edit-xml');
-var parseXml        = require('../../../lib/utils/parse-xml');
-var cordovaPath     = require('../../../lib/targets/cordova/utils/get-path');
 
 var mockProject     = require('../../fixtures/corber-mock/project');
 var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
 
-var ValidatePlatform        = require('../../../lib/targets/cordova/validators/platform');
 var ValidatePlugin          = require('../../../lib/targets/cordova/validators/plugin');
 var ValidateAllowNavigation = require('../../../lib/targets/cordova/validators/allow-navigation');
 
@@ -25,7 +20,6 @@ describe('Serve Command', function() {
   var tasks = [];
 
   afterEach(function() {
-    editXml.removeNavigation(mockProject.project);
     td.reset();
   });
 
@@ -67,14 +61,21 @@ describe('Serve Command', function() {
       };
     });
 
+    td.replace('../../../lib/targets/cordova/utils/edit-xml', {
+      addNavigation: function() {
+        tasks.push('add-navigation');
+        return Promise.resolve();
+      },
+
+      removeNavigation: function() {
+        tasks.push('remove-navigation');
+        return Promise.resolve();
+      }
+    });
+
     td.replace(HookTask.prototype, 'run', function(hookName, options) {
       expect(options, `${hookName} options`).to.be.an('object');
       tasks.push('hook ' + hookName);
-      return Promise.resolve();
-    });
-
-    td.replace(ValidatePlatform.prototype, 'run', function() {
-      tasks.push('validate-platform');
       return Promise.resolve();
     });
 
@@ -111,32 +112,34 @@ describe('Serve Command', function() {
     }).not.to.throw(Error);
   });
 
+  it('sets vars for webpack livereload', function() {
+    return serveCmd.run({platform: 'ios'}).then(function() {
+      let project = mockProject.project;
+      expect(project.CORBER_PLATFORM).to.equal('ios');
+    });
+  });
+
+  it('sets process.env.CORBER_PLATFORM & CORBER_LIVERELOAD', function() {
+    return serveCmd.run({platform: 'ios'}).then(function() {
+      expect(process.env.CORBER_PLATFORM).to.equal('ios');
+      expect(process.env.CORBER_LIVERELOAD).to.equal('true');
+    });
+  });
+
   it('runs tasks in the correct order', function() {
     return serveCmd.run({}).then(function() {
       expect(tasks).to.deep.equal([
+        'add-navigation',
         'hook beforeBuild',
         'validate-allow-navigation',
-        'validate-platform',
         'validate-plugin',
         'framework-validate-serve',
         'create-livereload-shell',
         'cordova-build',
         'hook afterBuild',
-        'framework-serve'
+        'framework-serve',
+        'remove-navigation'
       ]);
-    });
-  });
-
-  it('add reloadUrl to the xml file', function() {
-    return serveCmd.run({
-      reloadUrl: 'test-url'
-    }).then(function() {
-      var cdvPath = cordovaPath(mockProject.project);
-      var configPath = path.join(cdvPath, 'config.xml');
-      var xml = parseXml(configPath);
-      var node = xml._result.widget['allow-navigation'].pop().$.href;
-
-      expect(node).to.equal('test-url');
     });
   });
 
@@ -146,13 +149,14 @@ describe('Serve Command', function() {
       skipCordovaBuild: true
     }).then(function() {
       expect(tasks).to.deep.equal([
+        'add-navigation',
         'hook beforeBuild',
         'validate-allow-navigation',
-        'validate-platform',
         'validate-plugin',
         'framework-validate-serve',
         'create-livereload-shell',
-        'hook afterBuild'
+        'hook afterBuild',
+        'remove-navigation'
       ]);
     });
   });

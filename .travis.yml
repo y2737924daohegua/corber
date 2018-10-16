@@ -3,6 +3,7 @@ node_js:
   - "7"
   - "6"
   - "8"
+  - "9"
 
 sudo: false
 
@@ -20,6 +21,3 @@ before_install:
 install:
   - npm install
   - bower install
-
-script:
-  - node_modules/.bin/ember try:each --skip-cleanup
