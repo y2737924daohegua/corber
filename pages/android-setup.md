@@ -31,7 +31,7 @@ export ANDROID_HOME=/Users/foo/Library/Android/sdk
 4. You will also need gradle installed. For Mac users, `brew install homebrew` is sufficient. Gradle can also be installed directly from the [gradle website](https://gradle.org/).
 
 5. Install Gradle -> [here](https://gradle.org/install/)
-- For Mac users, `brew install homebrew` is sufficient
+- For Mac users, `brew install gradle` is sufficient
 
 6. OPTIONAL: Create Android Emulators ->
 - For `corber start` to work with Android emulators they need to be created first
