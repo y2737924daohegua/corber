@@ -9,6 +9,8 @@ Following these instructions will make Mac + Windows machines capable of creatin
 
 1. Ensure JDK (Java Development Kit) is installed ->
   [here](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+  
+  Please note that JDK 11 is not yet supported by Cordova. It is advised you install JDK 8.x
 
 2. Install Android Studio ->
   [here](https://developer.android.com/studio/index.html)
