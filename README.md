@@ -38,6 +38,8 @@ PRs are very welcome. You can read our style guides [here](https://github.com/is
 If you are unsure about your contribution idea, please feel free to
 open an Issue for feedback.
 
+Find an issue with our docs? All docs are hosted on this repo under the gh-pages branch. 
+
 ## Credits
 
 corber is maintained by [Isle of Code](https://isleofcode.com).
