@@ -3,14 +3,11 @@
 var td              = require('testdouble');
 var expect          = require('../../helpers/expect');
 var Promise         = require('rsvp');
-var path            = require('path');
 
 var CdvBuildTask    = require('../../../lib/targets/cordova/tasks/build');
 var BashTask        = require('../../../lib/tasks/bash');
 var HookTask        = require('../../../lib/tasks/run-hook');
 var LRloadShellTask = require('../../../lib/tasks/create-livereload-shell');
-var parseXml        = require('../../../lib/utils/parse-xml');
-var cordovaPath     = require('../../../lib/targets/cordova/utils/get-path');
 
 var mockProject     = require('../../fixtures/corber-mock/project');
 var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
