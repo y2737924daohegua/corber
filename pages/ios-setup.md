@@ -3,7 +3,7 @@ layout: page
 title:  "iOS Setup:
 ---
 
-Only Apple devices can create Apple builds. 
+Only Apple/Mac devices can create Apple builds. There is no way to locally create an iOS build on a Windows/Linux machine.
 
 1. Download the latest Xcode from the App Store ->
 - It is important you keep Xcode up to date, so your builds work on the most recent devices
