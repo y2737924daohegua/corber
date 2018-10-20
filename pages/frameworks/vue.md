@@ -51,3 +51,8 @@ yarn add corber-webpack-plugin --dev
 npm install corber-webpack-plugin --save-dev
 ```
 
+If you are getting an issue during serve/starting stating `cordova is not defined`, you need to pass a browserify flag.
+
+`corber start --browserify`
+`corber serve --browserify`
+
