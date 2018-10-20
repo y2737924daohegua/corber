@@ -18,7 +18,7 @@ describe('Cordova Build Task', function() {
     build.platform = 'ios';
     build.run();
 
-    td.verify(cdvBuild({platforms: ['ios'], options: {}}));
+    td.verify(cdvBuild({platforms: ['ios'], options: {}, browserify: false}));
   });
 
   it('sets platform to android', function() {
@@ -27,6 +27,6 @@ describe('Cordova Build Task', function() {
     build.platform = 'android';
     build.run();
 
-    td.verify(cdvBuild({platforms: ['android'], options: {}}));
+    td.verify(cdvBuild({platforms: ['android'], options: {}, browserify: false}));
   });
 });
