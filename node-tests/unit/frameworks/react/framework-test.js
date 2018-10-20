@@ -99,10 +99,14 @@ describe('React Framework', function() {
     let ValidateWebpack = td.replace('../../../../lib/validators/webpack-plugin');
     let framework = initFramework();
 
+    let config = {configureWebpack: {plugins: []}};
+    td.replace(framework, '_getConfig', function () { return config; });
+
     framework.validateServe({});
 
     td.verify(new ValidateWebpack({
-      configPath: path.join(mockProject.project.root, 'config', 'webpack.config.dev.js'),
+      config: config,
+      configPath: path.join('config', 'webpack.config.dev.js'),
       framework: 'react'
     }));
   });
