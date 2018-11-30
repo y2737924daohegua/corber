@@ -7,15 +7,15 @@ All commands follow the pattern `corber {command}`.
 
 **Available Commands**
 
-* [corber open](#open)
-* [corber build](#build)
-* [corber lint-index](#lint-index)
-* [corber plaform](#platform)
-* [corber plugin](#plugin)
-* [corber prepare](#prepare)
-* [corber proxy](#proxy)
-* [corber serve](#serve)
-* [corber start](#start)
+* [corber open](#corber-open)
+* [corber build](#corber-build)
+* [corber lint-index](#corber-lint-index)
+* [corber plaform](#corber-platform)
+* [corber plugin](#corber-plugin)
+* [corber prepare](#corber-prepare)
+* [corber proxy](#corber-proxy)
+* [corber serve](#corber-serve)
+* [corber start](#corber-start)
 
 ## Defaults
 
