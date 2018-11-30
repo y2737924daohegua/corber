@@ -17,6 +17,8 @@ All commands follow the pattern `corber {command}`.
 * [corber serve](#serve)
 * [corber start](#start)
 
+## Defaults
+
 Override default CLI flags in `.ember-cli`, which lives in your project root. For example, to change the default platform from ios to android:
 
 ```
@@ -25,10 +27,7 @@ platform: 'android',
 reloadUrl: 'http://mycomputer:4200'
 ```
 
-### Command Reference
-
-{: .description}
-### Open
+## Open
 
 Opens the last built project from `corber build` in the native IDE.
 
@@ -41,9 +40,9 @@ Opens the last built project from `corber build` in the native IDE.
 + `corber open`
 + `corber open --platform=android --application=eclipse`
 
-****
+***
 
-### Build
+## Build
 
 Runs a Corber build by building your JavaScript application, copying assets to the Cordova web directory, and building the Cordova application. To learn more, [read here](/pages/workflow/building).
 
@@ -58,14 +57,14 @@ Runs a Corber build by building your JavaScript application, copying assets to t
 
 The build command also takes all of the non gradle-specific cordova build opts (e.g. provisioningProfile, codeSignIdentity).
 
-#### Examples
+### Examples
 + `corber build`
 + `corber build --environment=production --platform=ios`
 + `corber build --environment=production --platform=ios --release`
 
 ***
 
-### lint-index
+## lint-index
 
 Validates there are no leading `/` paths in your generated app. While Corber will validate your framework config pre build, sometimes items such as hardcoded CDN urls will slip through.
 
@@ -76,7 +75,7 @@ lint-index is automatically run on builds at WARN level.
 
 ***
 
-### Platform
+## Platform
 
 Add or remove cordova platforms.
 
@@ -86,18 +85,18 @@ Add or remove cordova platforms.
 | uiwebview | false | initialize ios with UIWebView vs WKWebView |
 | crosswalk | false | initialize android with Crosswalk vs Android WebView |
 
-#### Examples
+### Examples
 + `corber platform add ios`
 + `corber platform remove ios`
 + `corber platform add android --crosswalk`
 
-#### Aliases
+### Aliases
 + add/a
 + remove/rm/r
 
 ***
 
-### Plugin
+## Plugin
 
 Add or remove cordova plugins.
 
@@ -105,26 +104,26 @@ Add or remove cordova plugins.
 |---------|---------| ---- |
 | save    | true | store plugin info in `config.xml`. See [committing & cloning](/pages/workflow/committing) |
 
-#### Examples
+### Examples
 + `corber plugin add cordova-plugin-name`
 + `corber plugin rm cordova-plugin-name`
 
-#### Aliases
+### Aliases
 + add/a
 + remove/rm/r
 
 ***
 
-### Prepare
+## Prepare
 
 Installs all plugins and platforms in config.xml. Similar to `npm install`, but for your Cordova context.
 
-#### Examples
+### Examples
 + `corber prepare`
 
 ***
 
-### Proxy
+## Proxy
 
 Passes commands straight to cordova, without interference.
 
@@ -135,13 +134,13 @@ When running a proxy command, file paths are relative to your **corber/cordova**
 For example, running `corber proxy plugin add ../local-plugin-path` from your project root will likely fail, while `corber proxy plugin add ../../../local-plugin-path` would succeed.
 (hint: try using `corber plugin add ../local-plugin-path` instead)
 
-#### Examples
+### Examples
 + `corber proxy info`
 + `corber proxy run ios --nobuild`
 
 ***
 
-### Serve
+## Serve
 
 Live reload. To learn more, [read here](/pages/workflow/livereload).
 
@@ -156,13 +155,13 @@ more integrated experience for emulator usage.
 | skip-framework-build (alias: sfb) | false | only performs cordova build |
 | skip-cordova-build (alias: scb) | false | only performs framework build |
 
-#### Examples
+### Examples
 + `corber serve`
 + `corber serve --platform=android --reloadUrl=192.168.1.1`
 + `corber serve --platform=browser --env "development"`
 
 
-### Start (beta)
+## Start (beta)
 
 The start command supports iOS and Android. It boots an emulator,
 installs / launches an application to the emulator and starts your
@@ -177,13 +176,13 @@ To learn more, [read here](/pages/workflow/livereload)
 | skip-framework-build (alias: sfb) | false | only performs cordova build |
 | skip-cordova-build (alias: scb) | false | only performs framework build |
 
-#### Examples
+### Examples
 + `corber start`
 + `corber start --platform=android`
 
 ***
 
-### make-icons
+## make-icons
 
 Automatically generate platform icons from a single svg. For more information, see [icon & splash generation](/pages/generate_icon_splash).
 
@@ -197,7 +196,7 @@ Automatically generate platform icons from a single svg. For more information, s
 
 ***
 
-### make-splashes
+## make-splashes
 
 Automatically generate platform splashscreens from a single svg. For more information, see [icon & splash generation](/pages/generate_icon_splash).
 
@@ -207,5 +206,5 @@ Automatically generate platform splashscreens from a single svg. For more inform
 | platform | all | platform to build assets for |
 
 
-#### Examples
+### Examples
 + `corber make-splashes`
