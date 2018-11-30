@@ -61,4 +61,4 @@ Find an issue with our documentation? All docs are hosted on this repo under the
 
 ## Credits
 
-corber is maintained by [Isle of Code](https://isleofcode.com).
+Corber is maintained by [Isle of Code](https://isleofcode.com).
