@@ -36,7 +36,7 @@ Opens the last built project from `corber build` in the native IDE.
 | platform | ios |
 | application | Xcode for iOS, Android Studio for Android |
 
-#### Examples
+### Examples
 + `corber open`
 + `corber open --platform=android --application=eclipse`
 
