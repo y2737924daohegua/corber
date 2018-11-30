@@ -49,7 +49,7 @@ Corber comes with built-in support for Vue, Ember, and React, but can be extende
 5. In Xcode, select your connected device in the toolbar.
 6. Press the Play button to flash and run the app on your device.
 
-For Android builds see [Android Setup](http://corber.io/pages/android-setup) and for full documentation, please visit [corber.io](http://corber.io).
+For Android builds see [Android Setup](http://corber.io/pages/android-setup). For full documentation, please visit [corber.io](http://corber.io).
 
 ## Contributing
 
