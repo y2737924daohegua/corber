@@ -3,13 +3,6 @@ layout: page
 title:  "Installation / Quickstart"
 ---
 
-See [compatability](/pages/compatibility) to understand corber support on your machine.
-
-#### Requirements
-- Node 6/7/8 per [Ember Node LTS Support](http://emberjs.com/blog/2016/09/07/ember-node-lts-support.html).
-- An existing JavaScript application with one of the supported frameworks.
-- MacOS and Xcode are required for iOS builds.
-
 #### Installation
 
 ```cli

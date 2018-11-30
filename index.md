@@ -58,7 +58,13 @@ Corber comes with built-in support for Vue, Ember, and React, but can be extende
 
 For Android builds see [Android Setup](http://corber.io/pages/android-setup). For CLI reference, read [Corber CLI Reference](http://corber.io/pages/cli).
 
+# Requirements
+
+- Corber requires Node.js 6-8 per [Ember Node LTS Support](http://emberjs.com/blog/2016/09/07/ember-node-lts-support.html).
+- iOS builds require a Mac with Xcode.
+- Android builds require a Mac, Linux, or Windows computer.
+- The `corber start` command requires a Mac or Linux computer. Windows (Powershell and WSL/Bash) supports all other Corber commands.
+
 **Next**:
 
-- [Installation/Quickstart](pages/installation)
 - [Hybrid/Ember best practices from EmberConf 2016](https://www.youtube.com/embed/Ry639hvWKbM)
