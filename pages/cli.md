@@ -27,7 +27,7 @@ platform: 'android',
 reloadUrl: 'http://mycomputer:4200'
 ```
 
-## Open
+## `corber open`
 
 Opens the last built project from `corber build` in the native IDE.
 
@@ -42,7 +42,7 @@ Opens the last built project from `corber build` in the native IDE.
 
 ***
 
-## Build
+## `corber build`
 
 Runs a Corber build by building your JavaScript application, copying assets to the Cordova web directory, and building the Cordova application. To learn more, [read here](/pages/workflow/building).
 
@@ -64,7 +64,7 @@ The build command also takes all of the non gradle-specific cordova build opts (
 
 ***
 
-## lint-index
+## `corber lint-index`
 
 Validates there are no leading `/` paths in your generated app. While Corber will validate your framework config pre build, sometimes items such as hardcoded CDN urls will slip through.
 
@@ -75,7 +75,7 @@ lint-index is automatically run on builds at WARN level.
 
 ***
 
-## Platform
+## `corber platform`
 
 Add or remove cordova platforms.
 
@@ -96,7 +96,7 @@ Add or remove cordova platforms.
 
 ***
 
-## Plugin
+## `corber plugin`
 
 Add or remove cordova plugins.
 
@@ -114,7 +114,7 @@ Add or remove cordova plugins.
 
 ***
 
-## Prepare
+## `corber prepare`
 
 Installs all plugins and platforms in config.xml. Similar to `npm install`, but for your Cordova context.
 
@@ -123,7 +123,7 @@ Installs all plugins and platforms in config.xml. Similar to `npm install`, but 
 
 ***
 
-## Proxy
+## `corber proxy`
 
 Passes commands straight to cordova, without interference.
 
@@ -140,7 +140,7 @@ For example, running `corber proxy plugin add ../local-plugin-path` from your pr
 
 ***
 
-## Serve
+## `corber serve`
 
 Live reload. To learn more, [read here](/pages/workflow/livereload).
 
@@ -161,7 +161,7 @@ more integrated experience for emulator usage.
 + `corber serve --platform=browser --env "development"`
 
 
-## Start (beta)
+## `corber start` (beta)
 
 The start command supports iOS and Android. It boots an emulator,
 installs / launches an application to the emulator and starts your
@@ -182,7 +182,7 @@ To learn more, [read here](/pages/workflow/livereload)
 
 ***
 
-## make-icons
+## `corber make-icons`
 
 Automatically generate platform icons from a single svg. For more information, see [icon & splash generation](/pages/generate_icon_splash).
 
@@ -196,7 +196,7 @@ Automatically generate platform icons from a single svg. For more information, s
 
 ***
 
-## make-splashes
+## `corber make-splashes`
 
 Automatically generate platform splashscreens from a single svg. For more information, see [icon & splash generation](/pages/generate_icon_splash).
 
