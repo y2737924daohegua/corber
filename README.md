@@ -41,7 +41,7 @@ Corber comes with built-in support for Vue, Ember, and React, but can be extende
 1. Run `corber start`.
 2. Select an emulator.
 
-# Build, Flash, and Run App on Your Device
+## Build, Flash, and Run App on Your Device
 1. Run `corber build`. (Ignore error code 65 error, signing will be set in step 3.)
 2. Run `corber open` to open the Xcode project.
 3. *First Time Only*: In Xcode, select the Project Navigator, select your project, and under Signing, set your Team.
