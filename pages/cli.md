@@ -3,7 +3,7 @@ layout: page
 title:  "CLI Reference"
 ---
 
-All commands follow the pattern `corber {command}`. We recommend aliasing a shorthand, e.g. `co {command}`
+All commands follow the pattern `corber {command}`.
 
 **Available Commands**
 
