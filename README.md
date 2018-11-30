@@ -1,6 +1,5 @@
-# corber
+# Corber [![Build Status](https://travis-ci.org/isleofcode/corber.svg?branch=master)](https://travis-ci.org/isleofcode/corber)
 
-[![Build Status](https://travis-ci.org/isleofcode/corber.svg?branch=master)](https://travis-ci.org/isleofcode/corber)
 
 corber CLI improves the hybrid app build experience with JS Frameworks - currently for Ember, Vue & Glimmer apps using Cordova. It can be used with existing or new JS applications. 
 
