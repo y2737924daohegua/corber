@@ -3,50 +3,60 @@ layout: page
 title: "Corber"
 ---
 
-Corber CLI improves the hybrid app build experience with JavaScript frameworks&mdash;currently for Ember, Vue, React & Glimmer apps using Cordova. It can be used with existing or new JavaScript applications.
+Corber is a CLI that improves the hybrid app build experience for Vue, Ember, Glimmer, and React apps using Cordova.
 
-Corber handles items such as framework + app build & validations with a single command: `corber build`&mdash;without affecting existing web flows. The CLI also includes on-device livereload for development and utility functions for icons, plugins, etc. Where needed, it can [proxy](/pages/cli#proxy) to the Cordova CLI.
+Corber handles framework and app builds and validations with a single command: `corber build` &mdash; without affecting existing web flows. The CLI also includes on-device livereload for development and utility functions for icons, plugins, and more. And when needed, it can proxy to the Cordova CLI.
 
-Ember users also have access to a series of plugin bindings exposed as services. Corber is a continuation of the ember-cordova project; [read here for details](http://blog.isleofcode.com/announcing-corber-ember-cordova-vue).
+It is a continuation of the ember-cordova project. ember-cordova users can find details [here](http://blog.isleofcode.com/announcing-corber-ember-cordova-vue), and continue to access the existing [ember addon](https://github.com/isleofcode/ember-cordova) and [documentation](http://ember-cordova.com). For migration instructions, see [Migrating from Ember Cordova](http://corber.io/pages/ember-cordova-migration).
 
-##### Getting Started
+## Installation
 
-Install:
-
-```bash
+```
+# Yarn
 yarn global add corber
-# or
+
+# NPM
 npm install -g corber
 ```
 
-Initialize Corber:
+## Initialize Corber
+1. Change to your project directory.
+2. Run `corber init`.
+3. Select iOS and press space to select the platform.
 
-```bash
-# Run from your Ember/Vue/React/Glimmer project root
-corber init
-```
+## Configure Your Project for Corber
+### Vue CLI 3
+1. Open `vue.config.js`. (Create file in project root if it doesn't exist. See [Example Vue Config](http://corber.io/pages/frameworks/vue).)
+2. Require `corber-webpack-plugin` and assign it as `CorberWebpackPlugin`.
+3. Add `new CorberWebpackPlugin()` to the `configureWebpack.plugins` array.
 
-Setup Framework for Corber:
+For Vue CLI 2 or Non-Vue CLI, see [Configure Vue CLI 2 or Non-Vue CLI projects](http://corber.io/pages/frameworks/vue).
 
-See docs for setting up [Vue](/pages/frameworks/vue), [Ember](/pages/frameworks/ember), and [React/Webpack](/pages/frameworks/react) to use Corber.
+### Ember
+1. Open `config/environment.js`.
+2. Set `locationType` to `hash`.
+3. Update `rootURL` or `baseURL` to remove its leading slash, if it has one.
 
-##### The Corber CLI
+### React
 
-```bash
-# Run your JavaScript builder and create a mobile application
-corber build
+For React project configuration, see [Configure React Projects](http://corber.io/pages/frameworks/react).
 
-# Boot an emulator with live reload for development
-# Cordova plugins are supported /w live reload
-corber start
+### Extending Frameworks
+Corber comes with built-in support for Vue, Ember, and React, but can be extended to work with the framework of your choice. See [Extending Corber to Support Other Frameworks](http://corber.io/pages/frameworks/extending).
 
-# Set up hot reload for on-device usage
-corber serve
+## Run App on an Emulator with Live Reload
+1. Run `corber start`.
+2. Select an emulator.
 
-# Build icon & splash screens
-corber make-splashes
-corber make-icons
-```
+## Build, Flash, and Run App on Your Device
+1. Run `corber build`. (Ignore error code 65 error, signing will be set in step 3.)
+2. Run `corber open` to open the Xcode project.
+3. *First Time Only*: In Xcode, select the Project Navigator, select your project, and under Signing, set your Team.
+4. Connect your iPhone via its USB cable. (Accept the "Trust This Computer?" alert if prompted.)
+5. In Xcode, select your connected device in the toolbar.
+6. Press the Play button to flash and run the app on your device.
+
+For Android builds see [Android Setup](http://corber.io/pages/android-setup). For CLI reference, read [Corber CLI Reference](http://corber.io/pages/cli).
 
 **Next**:
 
