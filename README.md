@@ -53,12 +53,11 @@ For Android builds see [Android Setup](http://corber.io/pages/android-setup) and
 
 ## Contributing
 
-PRs are very welcome. You can read our style guides [here](https://github.com/isleofcode/style-guide).
+Pull requests are very welcome. You can read our style guides [here](https://github.com/isleofcode/style-guide).
 
-If you are unsure about your contribution idea, please feel free to
-open an Issue for feedback.
+If you are unsure about your contribution idea, please feel free to open an issue for feedback.
 
-Find an issue with our docs? All docs are hosted on this repo under the gh-pages branch. 
+Find an issue with our documentation? All docs are hosted on this repo under the `gh-pages` branch.
 
 ## Credits
 
