@@ -3,10 +3,9 @@ layout: page
 title:  "CLI Reference"
 ---
 
-All commands follow the pattern `corber {command}`.
-
 **Available Commands**
 
+* [corber init](#corber-init)
 * [corber open](#corber-open)
 * [corber build](#corber-build)
 * [corber lint-index](#corber-lint-index)
@@ -25,6 +24,35 @@ Override default CLI flags in `.ember-cli`, which lives in your project root. Fo
 #.ember-cli
 platform: 'android',
 reloadUrl: 'http://mycomputer:4200'
+```
+
+## `corber init`
+
+Identifies your project type, create a new folder at `corber` including Corber configuration, and initializes a Cordova project at `corber/cordova`.
+
+|             | type / desc                       |
+|------------ | ----------------------------------|
+| name        | String (defaults to com.embercordova.{{yourEmberAppName}}) |
+| cordovaid   | String (defaults to your app name) |
+| templatePath| String path to cordova template |
+
+### Examples
++ `corber init new-android-project --name=AppName --cordovaid=com.isleofcode.app --templatePath=../template`
+
+### cordovaid flag
+
+com.embercordova.yourAppName is the default cordovaid, which ultimately represents your iOS and Android project ids. Android projects _require_ reverse domain app ids.
+
+By release, you should update id to com.yourdomain.foo. This is achieved by setting the `id` property on the `widget` node in the `corber/cordova/config.xml`.
+
+```xml
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.myappdevcompany.phoneapp" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>phoneApp</name>
+    <description>
+        A sample Apache Cordova application that responds to the deviceready event.
+    </description>
+ ...
 ```
 
 ## `corber open`
