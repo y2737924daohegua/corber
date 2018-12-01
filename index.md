@@ -9,7 +9,7 @@ Corber handles framework and app builds and validations with a single command: `
 
 It is a continuation of the ember-cordova project. ember-cordova users can find details [here](http://blog.isleofcode.com/announcing-corber-ember-cordova-vue), and continue to access the existing [ember addon](https://github.com/isleofcode/ember-cordova) and [documentation](http://ember-cordova.com). For migration instructions, see [Migrating from Ember Cordova](http://corber.io/pages/ember-cordova-migration).
 
-## Installation
+#### Installation
 
 ```
 # Yarn
@@ -19,46 +19,50 @@ yarn global add corber
 npm install -g corber
 ```
 
-## Initialize Corber
+#### Initialize Corber
 1. Change to your project directory.
 2. Run `corber init`.
 3. Select iOS and press space to select the platform.
 
-## Configure Your Project for Corber
-### Vue CLI 3
+#### Configure Your Project for Corber
+
+**Vue CLI 3**
+
 1. Open `vue.config.js`. (Create file in project root if it doesn't exist. See [Example Vue Config](http://corber.io/pages/frameworks/vue).)
 2. Require `corber-webpack-plugin` and assign it as `CorberWebpackPlugin`.
 3. Add `new CorberWebpackPlugin()` to the `configureWebpack.plugins` array.
 
 For Vue CLI 2 or Non-Vue CLI, see [Configure Vue CLI 2 or Non-Vue CLI projects](http://corber.io/pages/frameworks/vue).
 
-### Ember
+**Ember**
+
 1. Open `config/environment.js`.
 2. Set `locationType` to `hash`.
 3. Update `rootURL` or `baseURL` to remove its leading slash, if it has one.
 
-### React
+**React**
 
 For React project configuration, see [Configure React Projects](http://corber.io/pages/frameworks/react).
 
-### Extending Frameworks
+**Extending Frameworks**
+
 Corber comes with built-in support for Vue, Ember, and React, but can be extended to work with the framework of your choice. See [Extending Corber to Support Other Frameworks](http://corber.io/pages/frameworks/extending).
 
-## Run App on an Emulator with Live Reload
+#### Run App on an Emulator with Live Reload
 1. Run `corber start`.
 2. Select an emulator.
 
-## Build, Flash, and Run App on Your Device
+#### Build, Flash, and Run App on Your Device
 1. Run `corber build`. (Ignore error code 65 error, signing will be set in step 3.)
 2. Run `corber open` to open the Xcode project.
-3. *First Time Only*: In Xcode, select the Project Navigator, select your project, and under Signing, set your Team.
+3. **First Time Only:** In Xcode, select the Project Navigator, select your project, and under Signing, set your Team.
 4. Connect your iPhone via its USB cable. (Accept the "Trust This Computer?" alert if prompted.)
 5. In Xcode, select your connected device in the toolbar.
 6. Press the Play button to flash and run the app on your device.
 
 For Android builds see [Android Setup](http://corber.io/pages/android-setup). For CLI reference, read [Corber CLI Reference](http://corber.io/pages/cli).
 
-# Requirements
+#### Requirements
 
 - Corber requires Node.js 6-8 per [Ember Node LTS Support](http://emberjs.com/blog/2016/09/07/ember-node-lts-support.html).
 - iOS builds require a Mac with Xcode.
