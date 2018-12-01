@@ -1,6 +1,6 @@
 ---
 layout: page
-title:  "iOS Setup"
+title:  "Xcode Setup"
 ---
 
 Only Apple/Mac devices can create Apple builds. There is no way to locally create an iOS build on a Windows/Linux machine.

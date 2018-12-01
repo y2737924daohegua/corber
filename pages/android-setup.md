@@ -1,6 +1,6 @@
 ---
 layout: page
-title:  "Android Setup"
+title:  "Android Studio Setup"
 ---
 
 The most beginner friendly way to achieve Android builds is via Android Studio. For more advanced users sdks can also be installed with homebrew or manually from the Android Studio Website.

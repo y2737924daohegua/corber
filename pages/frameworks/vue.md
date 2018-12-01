@@ -1,6 +1,6 @@
 ---
 layout: page
-title:  "Vue"
+title:  "Configuring Vue Projects"
 ---
 
 Corber supports live reload and injection of cordova and cordova plugins during live reload but requires some setup.
