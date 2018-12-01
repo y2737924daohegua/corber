@@ -3,18 +3,24 @@ layout: page
 title:  "CLI Reference"
 ---
 
-**Available Commands**
+**Init, Development, Building**
 
 * [corber init](#corber-init)
 * [corber open](#corber-open)
+* [corber start](#corber-start)
 * [corber build](#corber-build)
-* [corber lint-index](#corber-lint-index)
-* [corber plaform](#corber-platform)
+
+**Plugins and Platforms**
+
 * [corber plugin](#corber-plugin)
+* [corber plaform](#corber-platform)
 * [corber prepare](#corber-prepare)
+
+**Other Useful Commands**
+
 * [corber proxy](#corber-proxy)
 * [corber serve](#corber-serve)
-* [corber start](#corber-start)
+* [corber lint-index](#corber-lint-index)
 
 ## Defaults
 
