@@ -41,6 +41,16 @@ describe('Plugin Command', function() {
     });
   });
 
+  it('passes the link flag', function() {
+    let plugin = stubCommand();
+    let rawDouble = td.replace(CdvRawTask.prototype, 'run');
+
+    var opts = { link: true };
+    return plugin.run(opts, ['add', 'cordova-plugin']).then(function() {
+      td.verify(rawDouble('add', 'cordova-plugin', contains({ link: true })));
+    });
+  });
+
   it('defaults fetch to true', function() {
     let plugin = stubCommand();
     let rawDouble = td.replace(CdvRawTask.prototype, 'run');
