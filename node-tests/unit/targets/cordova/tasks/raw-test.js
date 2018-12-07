@@ -14,7 +14,7 @@ const cdvScriptPath = path.resolve(
 
 describe('Cordova Raw Task', () => {
   let rawTask;
-  let fork;
+  let spawn;
   let onStdout;
   let onStderr;
   let chdir;
@@ -27,15 +27,15 @@ describe('Cordova Raw Task', () => {
     onStdout = td.function();
     onStderr = td.function();
 
-    fork = td.replace('../../../../../lib/utils/fork');
-    td.when(fork(cdvScriptPath, ['cmd'], { onStdout, onStderr }))
+    spawn = td.replace('../../../../../lib/utils/spawn');
+    td.when(spawn(cdvScriptPath, ['["build"]'], { onStdout, onStderr }))
       .thenReturn(Promise.resolve());
 
     chdir = td.replace(process, 'chdir');
 
     let RawTask = require('../../../../../lib/targets/cordova/tasks/raw');
     rawTask = new RawTask({
-      api: 'cmd',
+      api: 'build',
       project: mockProject.project,
       onStdout,
       onStderr
@@ -46,9 +46,9 @@ describe('Cordova Raw Task', () => {
     td.reset();
   });
 
-  it('forks the raw cordova runner script with arguments', () => {
+  it('spawns the raw cordova runner script with arguments', () => {
     return rawTask.run().then(() => {
-      td.verify(fork(cdvScriptPath, ['cmd'], { onStdout, onStderr }));
+      td.verify(spawn(cdvScriptPath, ['["build"]'], { onStdout, onStderr }));
     });
   });
 
@@ -58,11 +58,11 @@ describe('Cordova Raw Task', () => {
     let deferred = RSVP.defer();
 
     // stub with a deferred promise we can resolve manually
-    td.when(fork(cdvScriptPath, ['cmd'], { onStdout, onStderr }))
+    td.when(spawn(cdvScriptPath, ['["build"]'], { onStdout, onStderr }))
       .thenReturn(deferred.promise);
 
     let taskPromise = rawTask.run().then(() => {
-      // this will be verified when fork is complete
+      // this will be verified when spawn is complete
       td.verify(chdir(processPath));
     });
 
@@ -74,16 +74,14 @@ describe('Cordova Raw Task', () => {
     return taskPromise;
   });
 
-  describe('when the fork fails', () => {
+  describe('when the spawn fails', () => {
     beforeEach(() => {
-      td.when(fork(cdvScriptPath, ['cmd'], { onStdout, onStderr }))
+      td.when(spawn(cdvScriptPath, ['["build"]'], { onStdout, onStderr }))
         .thenReturn(Promise.reject(new Error('fail')));
     });
 
     it('rejects run() with the failure', () => {
-      return expect(rawTask.run()).to.eventually.be.rejectedWith(
-        /fail/
-      );
+      return expect(rawTask.run()).to.eventually.be.rejectedWith(/fail/);
     });
 
     it('still returns to the process dir', () => {
