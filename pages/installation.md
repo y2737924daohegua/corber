@@ -3,6 +3,8 @@ layout: page
 title:  "Installation / Quickstart"
 ---
 
+See [compatability](/pages/compatibility) to understand corber support on your machine.
+
 #### Requirements
 - Node 6/7/8 per [Ember Node LTS Support](http://emberjs.com/blog/2016/09/07/ember-node-lts-support.html).
 - An existing JavaScript application with one of the supported frameworks.
@@ -11,21 +13,26 @@ title:  "Installation / Quickstart"
 #### Installation
 
 ```cli
-  yarn global add corber
-  npm install -g corber
+# Yarn
+yarn global add corber
+
+# NPM
+npm install -g corber
 ```
 
-#### Project Setup
+#### Initialize Corber
+1. Change to your project directory.
+2. Run `corber init`.
+3. Select iOS or Android as your target platform. You can add or remove platforms later with the `platform` command. 
 
-From a supported JavaScript projected, run `corber init`. For a list of supported projects, see [framework integrations](/pages/frameworks/index).
-
-This will:
+This process will:
 
 - Identify your project type.
 - Create a new folder at `corber`, including Corber configuration.
 - Initialize a Cordova project at `corber/cordova`.
+- Install your targeted platform (iOS or Android).
 
-###### Supported Flags
+###### corber init flags
 
 
 |             | type / desc                       |
@@ -55,4 +62,8 @@ By release, you should update id to com.yourdomain.foo. This is achieved by sett
 
 **Next**:
 
-- [Framework Setup](/pages/frameworks/index)
+- [Vue Setup](/pages/frameworks/vue)
+- [Ember Setup](/pages/frameworks/ember)
+- [React Setup](/pages/frameworks/react)
+- [Glimmer Setup](/pages/frameworks/glimmer)
+

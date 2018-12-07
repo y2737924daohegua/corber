@@ -3,41 +3,46 @@ layout: page
 title: "Corber"
 ---
 
-Corber CLI improves the hybrid app build experience with JavaScript frameworks&mdash;currently for Ember, Vue, React & Glimmer apps using Cordova. It can be used with existing or new JavaScript applications.
+Corber is a CLI designed to compile Ember/Vue/React PWA & Mobile applications to native applications. It is largely an extension of Cordova and ember-cordova.
 
-Corber handles items such as framework + app build & validations with a single command: `corber build`&mdash;without affecting existing web flows. The CLI also includes on-device livereload for development and utility functions for icons, plugins, etc. Where needed, it can [proxy](/pages/cli#proxy) to the Cordova CLI.
+For JS Framework developers, corber provides a unified build pipeline, a hotreloading dev environment that supports devices + emulators and patterns for abstracting config + plugin integrations to native-only builds.
 
-Ember users also have access to a series of plugin bindings exposed as services. Corber is a continuation of the ember-cordova project; [read here for details](http://blog.isleofcode.com/announcing-corber-ember-cordova-vue).
-
-##### Quickstart
-
-```bash
-yarn global add corber
-
-# create a mobile project; run from your existing Ember/Vue/React/Glimmer app
-corber init
-corber platform add ios
-
-# runs your JavaScript builder and creates a mobile application
-corber build
 ```
+yarn global add corber
+npm install -g corber
+```
+See [installation](pages/installation) to complete setup.
 
-##### You may also want to
+##### CLI Overview
 
 ```bash
-# boots emulator and live reload for development
-# cordova plugins are supported /w live reload
+# Livereload while developing on devices + emulators
+# Launches a dev environment, your standard devserver is injected with cordova assets + plugins
+# Detects installed platforms, emulators and devices 
+# Launches your selected device, then installs + boots your development app
+# Supports Android Devices/Emulators and iOS Emulators
 corber start
 
-# set up hot reload for on-device usage
+# Functions the same as start, but allows you to manuall flash to devices 
 corber serve
 
-# build icon & splash screens
+# Runs your JavaScript builder and creates a mobile application
+corber build
+corber build --platform=android
+
+# Builds icon & splash screens for all target devices with a single svg
 corber make-splashes
 corber make-icons
+
+# Support another platform
+corber platform add android
+
+#Installs a plugin
+corber plugin add cordova-plugin-camera
+corber plugin add phonegap-plugin-push
 ```
 
-**Next**:
+**Next**
 
-- [Installation/Quickstart](pages/installation)
+- [Installation](pages/installation) 
 - [Hybrid/Ember best practices from EmberConf 2016](https://www.youtube.com/embed/Ry639hvWKbM)

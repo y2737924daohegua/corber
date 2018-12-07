@@ -1,27 +1,40 @@
 ---
 layout: page
-title:  "Vue"
+title:  "Vue Mobile Projects"
 ---
 
-Corber automatically detects and runs `vue-cli` projects with minimal configuration, but doesn't currently support non-`vue-cli` projects.
+There is no custom behaviour required for building Vue projects.
 
-First, install `corber-webpack-plugin`:
+If you wish to use livereload - the `serve` and `start` commands - your vue config must be updated to include the `corber-webpack-plugin`. This plugin was installed for you when running `corber init`.
 
-```bash
-  npm install corber-webpack-plugin --save-dev
-```
-
-Then you'll need to add `corber-webpack-plugin` to your `vue.conf.js` file to enable live reloading. Below is a minimal `vue.conf.js` that you can use as a guide or to get the file started with:
+##### Vue CLI 3 Projects
 
 ```javascript
+#vue.config.js
+
 const CorberWebpackPlugin = require('corber-webpack-plugin');
 
 module.exports = {
   baseUrl: './',
   configureWebpack: {
-      plugins: [new CorberWebpackPlugin()]
+    plugins: [new CorberWebpackPlugin()]
   }
 }
 ```
+###### Vue CLI 2 Projects
 
-Now, you can run the [quickstart](/), and the CLI will warn you if your application requires any further configuration.
+```javascript
+#webpack.dev.conf
+
+const CorberWebpackPlugin = require('corber-webpack-plugin');
+
+module.exports = {
+    baseUrl: './',
+    plugins: [new CorberWebpackPlugin()]
+  }));
+}
+```
+
+###### Non-Vue CLI Projects
+
+Non-Vue CLI project should refer to the docs on extending frameworks.

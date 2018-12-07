@@ -14,4 +14,6 @@ Please use issues to report bugs, edge cases and faulty implementations
 
 #### Slack
 
-There is an #e-cordova channel on the [ember-slack](https://ember-community-slackin.herokuapp.com), which is more geared towards how-to & implementation questions.
+With the deprecation of the emberjs slack we no longer provide active support in that channel.
+
+In the interim we have created a new slack group where support is being offered: https://corber-slack.herokuapp.com

@@ -3,14 +3,14 @@ layout: page
 title:  "Live Reload"
 ---
 
-Live reload takes your framework's standard serve/live-reloading behaviour to Corber apps.
-
-Live reload apps can still access Cordova plugins and work on emulators and physical devices.
+Live reload takes your framework's standard serve/live-reloading behaviour to Corber apps. Live reload can access Cordova plugins and work on emulators and physical devices.
 
 Live reload is supported by `corber start` and `corber serve` - with
 long term plans to deprecate `serve` in favor of extending `start`.
 
-In both cases, live reload is achieved by building a containter application pointed towards a modified serve process from your configured framework. The changes to your serve process are automatic and done to achieve cordova plugin support. Some whitelisting may be required in config.xml to access the development server (allow-navigation tags). Corber will add these changes and remove them from non-live-reload builds. You will receive a warning on any build if these tags, for whatever reason, were not appropriately removed.
+The changes to your serve process are handled through a plugin/addon specific to your framework, which has a purpose of injecting cordova asssets/plugins to your serve instance. This addon is automatically installed on `corber init`, details on each addon can be found in the framework pages. 
+
+Some whitelisting may be required in config.xml to access the development server (allow-navigation tags). Corber will add these changes and remove them from non-live-reload builds. You will receive a warning on any build if these tags, for whatever reason, were not appropriately removed.
 
 **Caveats**
 
@@ -36,7 +36,7 @@ support.
 
 ```
   corber serve
-  corber --environment=staging --platform=android
+  corber serve --environment=staging --platform=android
 ```
 
 `serve` compiles the special cordova application and boots
@@ -63,6 +63,6 @@ Corber will detect and automatically set these values for you.
 There are times you may need to run live reload with a specific remote host and port, or to customize a local url because we are not detecting it correctly.
 You can do so:
 
-- Via command line arg: `corber server --reload-url="<url>"`.
+- Via command line arg: `corber serve --reload-url="<url>"`.
 
 Where `<url>` above  refers to a fully qualified URL including protocol, host, and port (if applicable), e.g. http://localhost:4200

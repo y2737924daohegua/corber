@@ -1,6 +1,6 @@
 ---
 layout: page
-title:  "Migrating from ember-cordova"
+title:  "Migrating from Ember Cordova"
 ---
 
 1: `yarn global add corber`;
