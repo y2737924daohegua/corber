@@ -18,7 +18,6 @@ describe('Android Eulator State', function() {
     let spawnProps = {};
 
     td.replace('../../../../../lib/utils/spawn', function(cmd, args) {
-      console.log('spawning');
       spawnProps.cmd = cmd;
       spawnProps.args = args;
       return Promise.resolve('1');
