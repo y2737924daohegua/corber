@@ -3,72 +3,46 @@ layout: page
 title: "Corber"
 ---
 
-Corber is a CLI that improves the hybrid app build experience for Vue, Ember, Glimmer, and React apps using Cordova.
+Corber is a CLI designed to compile Ember/Vue/React PWA & Mobile applications to native applications. It is largely an extension of Cordova and ember-cordova.
 
-Corber handles framework and app builds and validations with a single command: `corber build` &mdash; without affecting existing web flows. The CLI also includes on-device livereload for development and utility functions for icons, plugins, and more. And when needed, it can proxy to the Cordova CLI.
-
-It is a continuation of the ember-cordova project. ember-cordova users can find details [here](http://blog.isleofcode.com/announcing-corber-ember-cordova-vue), and continue to access the existing [ember addon](https://github.com/isleofcode/ember-cordova) and [documentation](http://ember-cordova.com). For migration instructions, see [Migrating from Ember Cordova](http://corber.io/pages/ember-cordova-migration).
-
-#### Installation
+For JS Framework developers, corber provides a unified build pipeline, a hotreloading dev environment that supports devices + emulators and patterns for abstracting config + plugin integrations to native-only builds.
 
 ```
-# Yarn
 yarn global add corber
-
-# NPM
 npm install -g corber
 ```
+See [installation](pages/installation) to complete setup.
 
-#### Initialize Corber
-1. Change to your project directory.
-2. Run `corber init`.
-3. Select iOS and press space to select the platform.
+##### CLI Overview
 
-#### Configure Your Project for Corber
+```bash
+# Livereload while developing on devices + emulators
+# Launches a dev environment, your standard devserver is injected with cordova assets + plugins
+# Detects installed platforms, emulators and devices 
+# Launches your selected device, then installs + boots your development app
+# Supports Android Devices/Emulators and iOS Emulators
+corber start
 
-**Vue CLI 3**
+# Functions the same as start, but allows you to manuall flash to devices 
+corber serve
 
-1. Open `vue.config.js`. (Create file in project root if it doesn't exist. See [Example Vue Config](http://corber.io/pages/frameworks/vue).)
-2. Require `corber-webpack-plugin` and assign it as `CorberWebpackPlugin`.
-3. Add `new CorberWebpackPlugin()` to the `configureWebpack.plugins` array.
+# Runs your JavaScript builder and creates a mobile application
+corber build
+corber build --platform=android
 
-For Vue CLI 2 or Non-Vue CLI, see [Configure Vue CLI 2 or Non-Vue CLI projects](http://corber.io/pages/frameworks/vue).
+# Builds icon & splash screens for all target devices with a single svg
+corber make-splashes
+corber make-icons
 
-**Ember**
+# Support another platform
+corber platform add android
 
-1. Open `config/environment.js`.
-2. Set `locationType` to `hash`.
-3. Update `rootURL` or `baseURL` to remove its leading slash, if it has one.
+#Installs a plugin
+corber plugin add cordova-plugin-camera
+corber plugin add phonegap-plugin-push
+```
 
-**React**
+**Next**
 
-For React project configuration, see [Configure React Projects](http://corber.io/pages/frameworks/react).
-
-**Extending Frameworks**
-
-Corber comes with built-in support for Vue, Ember, and React, but can be extended to work with the framework of your choice. See [Extending Corber to Support Other Frameworks](http://corber.io/pages/frameworks/extending).
-
-#### Run App on an Emulator with Live Reload
-1. Run `corber start`.
-2. Select an emulator.
-
-#### Build, Flash, and Run App on Your Device
-1. Run `corber build`. (Ignore error code 65 error, signing will be set in step 3.)
-2. Run `corber open` to open the Xcode project.
-3. **First Time Only:** In Xcode, select the Project Navigator, select your project, and under Signing, set your Team.
-4. Connect your iPhone via its USB cable. (Accept the "Trust This Computer?" alert if prompted.)
-5. In Xcode, select your connected device in the toolbar.
-6. Press the Play button to flash and run the app on your device.
-
-For Android builds see [Android Setup](http://corber.io/pages/android-setup). For CLI reference, read [Corber CLI Reference](http://corber.io/pages/cli).
-
-#### Requirements
-
-- Corber requires Node.js 6-8 per [Ember Node LTS Support](http://emberjs.com/blog/2016/09/07/ember-node-lts-support.html).
-- iOS builds require a Mac with Xcode.
-- Android builds require a Mac, Linux, or Windows computer.
-- The `corber start` command requires a Mac or Linux computer. Windows (Powershell and WSL/Bash) supports all other Corber commands.
-
-**Next**:
-
+- [Installation](pages/installation) 
 - [Hybrid/Ember best practices from EmberConf 2016](https://www.youtube.com/embed/Ry639hvWKbM)

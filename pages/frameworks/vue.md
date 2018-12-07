@@ -1,17 +1,17 @@
 ---
 layout: page
-title:  "Configuring Vue Projects"
+title:  "Vue Mobile Projects"
 ---
 
-Corber supports live reload and injection of cordova and cordova plugins during live reload but requires some setup.
+There is no custom behaviour required for building Vue projects.
 
-In order to use `corber start` and `corber serve` with cordova & cordova plugin objects, your Vue config must be updated to add the `corber-webpack-plugin` which has been automatically installed during `corber init`. Configuration must be also added to Vue config.
+If you wish to use livereload - the `serve` and `start` commands - your vue config must be updated to include the `corber-webpack-plugin`. This plugin was installed for you when running `corber init`.
 
 ##### Vue CLI 3 Projects
 
-Vue.js projects created with Vue CLI 3 will need to ensure their `vue.config.js` file contains `new CorberWebpackPlugin()` within its plugins array. If `vue.config.js` does not exist, add it to the Vue project's root. Below is a minimal config file to get started:
-
 ```javascript
+#vue.config.js
+
 const CorberWebpackPlugin = require('corber-webpack-plugin');
 
 module.exports = {
@@ -23,9 +23,9 @@ module.exports = {
 ```
 ###### Vue CLI 2 Projects
 
-Vue.js projects created with Vue CLI 2 will need to ensure `build/webpack.dev.conf` contains `new CorberWebpackPlugin()` within its plugins array. If `webpack.dev.conf` does not exist, add it to the `build` folder in the Vue project's root. Below is a minimal config file to get started:
-
 ```javascript
+#webpack.dev.conf
+
 const CorberWebpackPlugin = require('corber-webpack-plugin');
 
 module.exports = {

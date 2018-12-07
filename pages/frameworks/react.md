@@ -1,6 +1,6 @@
 ---
 layout: page
-title:  "React / Webpack"
+title:  "React Mobile Projects"
 ---
 
 [React](https://reactjs.org/) support has been tested with apps from [Create React App](https://github.com/facebookincubator/create-react-app), but these steps should apply to any [webpack](https://webpack.js.org/) application.

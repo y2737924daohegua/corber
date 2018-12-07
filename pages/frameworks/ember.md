@@ -1,6 +1,6 @@
 ---
 layout: page
-title:  "Ember"
+title:  "Ember Mobile Projects"
 ---
 
 Corber will detect Ember projects and run accordingly.
