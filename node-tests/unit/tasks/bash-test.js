@@ -1,31 +1,41 @@
 'use strict';
 
-var td              = require('testdouble');
-var childProcess    = require('child_process');
-var BashTask        = require('../../../lib/tasks/bash');
+const td      = require('testdouble');
+const expect  = require('../../helpers/expect');
+const path    = require('path');
+const RSVP    = require('RSVP');
 
-var mockProject     = require('../../fixtures/corber-mock/project');
-var defaults        = require('lodash').defaults;
-var isObject        = td.matchers.isA(Object);
+const workingPath = path.join('/', 'tmp');
 
 describe('Bash Task', function() {
-  var execDouble, bashCmd;
+  let BashTask, bashTask;
 
   beforeEach(function() {
-    execDouble = td.replace(childProcess, 'execSync');
+    let onStdout = td.function();
+    let onStderr = td.function();
 
-    bashCmd = new BashTask(defaults(mockProject, {
-      command: 'foo'
-    }));
+    let spawn = td.replace('../../../lib/utils/spawn');
+    td.when(spawn('ls -l', [], { shell: true }, {
+      onStdout,
+      onStderr,
+      cwd: workingPath
+    })).thenReturn(RSVP.Promise.resolve(0));
+
+    BashTask = require('../../../lib/tasks/bash');
+
+    bashTask = new BashTask({
+      command: 'ls -l',
+      onStdout,
+      onStderr,
+      cwd: workingPath
+    });
   });
 
   afterEach(function() {
     td.reset();
   });
 
-  it('attempts to exec cmd', function() {
-    bashCmd.run();
-
-    td.verify(execDouble('foo', isObject));
+  it('resolves on success with exit code 0', function() {
+    return expect(bashTask.run()).to.eventually.equal(0);
   });
 });
