@@ -1,10 +1,10 @@
 const td              = require('testdouble');
 const expect          = require('../../../../helpers/expect');
-const cordovaPath     = require('../../../../../lib/targets/cordova/utils/get-path');
-const mockProject     = require('../../../../fixtures/corber-mock/project');
-const RSVP            = require('rsvp');
 const path            = require('path');
-const Promise         = RSVP.Promise;
+const RSVP            = require('rsvp');
+
+const appPath = path.join('/', 'app');
+const cordovaPath = path.join(appPath, 'corber', 'cordova');
 
 const cdvScriptPath = path.resolve(
   __dirname, '..', '..', '..', '..', '..',
@@ -12,31 +12,39 @@ const cdvScriptPath = path.resolve(
   'cordova-lib-runner'
 );
 
+const project = {
+  root: appPath
+};
+
 describe('Cordova Raw Task', () => {
   let rawTask;
   let spawn;
   let onStdout;
   let onStderr;
-  let chdir;
 
   beforeEach(() => {
-    // temporary fix to allow promise-valued doubles; see:
-    // https://github.com/testdouble/testdouble.js/issues/390
-    td.config({ ignoreWarnings: true });
+    td.replace(process, 'cwd', td.function());
+    td.when(process.cwd()).thenReturn(appPath);
+
+    let getCordovaPath = td.replace('../../../../../lib/targets/cordova/utils/get-path');
+    td.when(getCordovaPath(project)).thenReturn(cordovaPath);
 
     onStdout = td.function();
     onStderr = td.function();
 
     spawn = td.replace('../../../../../lib/utils/spawn');
-    td.when(spawn(cdvScriptPath, ['["build"]'], { onStdout, onStderr }))
-      .thenReturn(Promise.resolve());
 
-    chdir = td.replace(process, 'chdir');
+    // RawTask serializes passes its arguments as a single stringified argument
+    td.when(spawn(cdvScriptPath, ['["build"]'], {}, {
+      onStdout,
+      onStderr,
+      cwd: cordovaPath
+    })).thenReturn(RSVP.Promise.resolve(0));
 
     let RawTask = require('../../../../../lib/targets/cordova/tasks/raw');
     rawTask = new RawTask({
       api: 'build',
-      project: mockProject.project,
+      project,
       onStdout,
       onStderr
     });
@@ -46,49 +54,21 @@ describe('Cordova Raw Task', () => {
     td.reset();
   });
 
-  it('spawns the raw cordova runner script with arguments', () => {
-    return rawTask.run().then(() => {
-      td.verify(spawn(cdvScriptPath, ['["build"]'], { onStdout, onStderr }));
-    });
-  });
-
-  it('changes to cordova dir and back', () => {
-    let processPath = process.cwd();
-    let cdvPath = cordovaPath(mockProject.project);
-    let deferred = RSVP.defer();
-
-    // stub with a deferred promise we can resolve manually
-    td.when(spawn(cdvScriptPath, ['["build"]'], { onStdout, onStderr }))
-      .thenReturn(deferred.promise);
-
-    let taskPromise = rawTask.run().then(() => {
-      // this will be verified when spawn is complete
-      td.verify(chdir(processPath));
-    });
-
-    // this should be the case until we manually resolve
-    td.verify(chdir(cdvPath));
-
-    deferred.resolve();
-
-    return taskPromise;
+  it('resolves on success with exit code 0', () => {
+    expect(rawTask.run()).to.eventually.equal(0);
   });
 
   describe('when the spawn fails', () => {
     beforeEach(() => {
-      td.when(spawn(cdvScriptPath, ['["build"]'], { onStdout, onStderr }))
-        .thenReturn(Promise.reject(new Error('fail')));
+      td.when(spawn(cdvScriptPath, ['["build"]'], {}, {
+        onStdout,
+        onStderr,
+        cwd: cordovaPath
+      })).thenReturn(RSVP.Promise.reject(new Error('fail')));
     });
 
     it('rejects run() with the failure', () => {
       return expect(rawTask.run()).to.eventually.be.rejectedWith(/fail/);
-    });
-
-    it('still returns to the process dir', () => {
-      let processPath = process.cwd();
-      return rawTask.run().catch(() => {
-        td.verify(chdir(processPath));
-      });
     });
   });
 });
