@@ -1,22 +1,22 @@
-var td              = require('testdouble');
-var path            = require('path');
-var BashTask        = require('../../../../../lib/tasks/bash');
-var fsUtils         = require('../../../../../lib/utils/fs-utils');
-var expect          = require('../../../../helpers/expect');
-var openCommand     = require('../../../../../lib/utils/open-app-command');
-var mockProject     = require('../../../../fixtures/corber-mock/project');
-var _merge          = require('lodash').merge;
-var isObject        = td.matchers.isA(Object);
+const td              = require('testdouble');
+const path            = require('path');
+const BashTask        = require('../../../../../lib/tasks/bash');
+const fsUtils         = require('../../../../../lib/utils/fs-utils');
+const expect          = require('../../../../helpers/expect');
+const openCommand     = require('../../../../../lib/utils/open-app-command');
+const mockProject     = require('../../../../fixtures/corber-mock/project');
+const _merge          = require('lodash').merge;
+const isObject        = td.matchers.isA(Object);
 
-var setupOpenTask = function() {
-  var OpenAppTask = require('../../../../../lib/targets/cordova/tasks/open-app');
+const setupOpenTask = () => {
+  let OpenAppTask = require('../../../../../lib/targets/cordova/tasks/open-app');
   return new OpenAppTask(_merge(mockProject, { platform: 'ios' }));
 };
 
-describe('Cordova Open App Task', function() {
-  var cdvPath;
+describe('Cordova Open App Task', () => {
+  let cdvPath;
 
-  beforeEach(function() {
+  beforeEach(() => {
     cdvPath = path.resolve(
       __dirname, '../../../../',
       'fixtures',
@@ -24,49 +24,49 @@ describe('Cordova Open App Task', function() {
     );
   });
 
-  afterEach(function() {
+  afterEach(() => {
     td.reset();
   });
 
-  it('runs openApp with the path from getProjectPath', function() {
-    var bashDouble = td.replace(BashTask.prototype, 'runCommand');
+  it('runs openApp with the path from getProjectPath', () => {
+    let bashDouble = td.replace(BashTask.prototype, 'runCommand');
 
-    var openApp = setupOpenTask();
-    return openApp.run().then(function() {
-      var expectedPath = cdvPath + '/platforms/ios/emberCordovaDummyApp.xcodeproj';
-      var expectedCmd  = openCommand(expectedPath);
+    let openApp = setupOpenTask();
+    return openApp.run().then(() => {
+      let expectedPath = cdvPath + '/platforms/ios/emberCordovaDummyApp.xcodeproj';
+      let expectedCmd  = openCommand(expectedPath);
       td.verify(bashDouble(expectedCmd, isObject));
     });
   });
 
 
-  context('getProjectPath', function() {
-    it('ios returns xcworkspace if it exists', function() {
-      td.replace(fsUtils, 'existsSync', function() {
+  context('getProjectPath', () => {
+    it('ios returns xcworkspace if it exists', () => {
+      td.replace(fsUtils, 'existsSync', () => {
         return true;
       });
 
-      var openApp = setupOpenTask();
-      return openApp.getProjectPath('ios', mockProject.project).then(function(projectPath) {
-        var expectedPath = cdvPath + '/platforms/ios/emberCordovaDummyApp.xcworkspace';
+      let openApp = setupOpenTask();
+      return openApp.getProjectPath('ios', mockProject.project).then((projectPath) => {
+        let expectedPath = cdvPath + '/platforms/ios/emberCordovaDummyApp.xcworkspace';
         expect(projectPath).to.equal(expectedPath);
       });
     });
 
-    it('ios returns xcodeproj if workspace does not exist', function() {
-      td.replace(fsUtils, 'existsSync', function() {
+    it('ios returns xcodeproj if workspace does not exist', () => {
+      td.replace(fsUtils, 'existsSync', () => {
         return false;
       });
 
-      var openApp = setupOpenTask();
-      return openApp.getProjectPath('ios', mockProject.project).then(function(projectPath) {
-        var expectedPath = cdvPath + '/platforms/ios/emberCordovaDummyApp.xcodeproj';
+      let openApp = setupOpenTask();
+      return openApp.getProjectPath('ios', mockProject.project).then((projectPath) => {
+        let expectedPath = cdvPath + '/platforms/ios/emberCordovaDummyApp.xcodeproj';
         expect(projectPath).to.equal(expectedPath);
       });
     });
 
-    it('rejects for android', function() {
-      var openApp = setupOpenTask();
+    it('rejects for android', () => {
+      let openApp = setupOpenTask();
       openApp.platform = 'android';
 
       return expect(openApp.run()).to.eventually.be.rejectedWith(
@@ -74,8 +74,8 @@ describe('Cordova Open App Task', function() {
       );
     });
 
-    it('rejects if an invalid platform is specified', function() {
-      var openApp = setupOpenTask();
+    it('rejects if an invalid platform is specified', () => {
+      let openApp = setupOpenTask();
       openApp.platform = 'invalidPlatform';
 
       return expect(openApp.run()).to.eventually.be.rejectedWith(
