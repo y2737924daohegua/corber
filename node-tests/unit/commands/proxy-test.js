@@ -1,69 +1,116 @@
-var BashTask        = require('../../../lib/tasks/bash');
-var VerifyInstall   = require('../../../lib/targets/cordova/validators/is-installed');
-var CordovaCmd      = require('../../../lib/commands/proxy');
-var logger          = require('../../../lib/utils/logger');
+'use strict';
 
-var td              = require('testdouble');
-var Promise         = require('rsvp');
+const td            = require('testdouble');
+const Promise       = require('rsvp').Promise;
+const path          = require('path');
 
-var mockProject     = require('../../fixtures/corber-mock/project');
-var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
-var isObject        = td.matchers.isA(Object);
-var contains        = td.matchers.contains;
+const mockProject   = require('../../fixtures/corber-mock/project');
+const mockAnalytics = require('../../fixtures/corber-mock/analytics');
+const expect        = require('../../helpers/expect');
+const contains      = td.matchers.contains;
 
-describe('Cordova Command', function() {
-  var setupCmd = function() {
-    td.replace(VerifyInstall.prototype, 'run', function() {
-      return Promise.resolve();
+const appPath     = mockProject.project.root;
+const cordovaPath = path.join(appPath, 'corber', 'cordova');
+
+describe('Proxy Command', () => {
+  let proxyCommand;
+  let logger;
+
+  let spawn;
+  let onStdout;
+  let onStderr;
+
+  let VerifyInstall;
+
+  beforeEach(() => {
+    logger = td.replace('../../../lib/utils/logger', td.object(['warn', 'error', 'success']));
+
+    let getCordovaPath = td.replace('../../../lib/targets/cordova/utils/get-path');
+    td.when(getCordovaPath(mockProject.project)).thenReturn(cordovaPath);
+
+    VerifyInstall = td.replace('../../../lib/targets/cordova/validators/is-installed');
+    td.when(VerifyInstall.prototype.run()).thenReturn(Promise.resolve());
+
+    onStdout = td.function();
+    onStderr = td.function();
+
+    spawn = td.replace('../../../lib/utils/spawn');
+
+    td.when(spawn('cordova build', [], { shell: true }, {
+      onStdout,
+      onStderr,
+      cwd: cordovaPath
+    })).thenReturn(Promise.resolve(0))
+
+    let ProxyCommand = require('../../../lib/commands/proxy');
+
+    proxyCommand = new ProxyCommand({
+      project: mockProject.project,
+      onStdout,
+      onStderr
     });
 
-    var cmd = new CordovaCmd({
-      project: mockProject.project
-    });
-    cmd.analytics = mockAnalytics;
+    proxyCommand.analytics = mockAnalytics;
+  });
 
-    return cmd;
-  };
-
-  afterEach(function() {
+  afterEach(() => {
     td.reset();
   });
 
-  it('warns if an corber  command is used', function() {
-    var logDouble = td.replace(logger, 'warn');
-    var cmd = setupCmd();
+  it('resolves when proxy spawn exits successfully', () => {
+    let promise = proxyCommand.validateAndRun(['build']);
+    return expect(promise).to.eventually.equal(0);
+  });
 
-    td.replace(cmd, 'run', function() {
-      return Promise.resolve();
-    });
+  it('rejects if install not verified', () => {
+    td.when(VerifyInstall.prototype.run())
+      .thenReturn(Promise.reject('install not verified'));
 
-    return cmd.validateAndRun(['build']).then(function() {
-      td.verify(logDouble(contains('bypassed corber command')));
+    return proxyCommand.validateAndRun(['build']).then(() => {
+      td.verify(logger.error(contains('install not verified')));
     });
   });
 
-  it('warns if cordova command is unknown', function() {
-    var logDouble = td.replace(logger, 'warn');
-    var cmd = setupCmd();
+  it('rejects with error code msg when proxy spawn exits in failure', () => {
+    td.when(spawn('cordova build', [], { shell: true }, {
+      onStdout,
+      onStderr,
+      cwd: cordovaPath
+    })).thenReturn(Promise.reject(-1));
 
-    td.replace(cmd, 'run', function() {
-      return Promise.resolve();
-    });
-
-    return cmd.validateAndRun(['foo']).then(function() {
-      td.verify(logDouble(contains('unknown Cordova command')));
+    return proxyCommand.validateAndRun(['build']).then(() => {
+      td.verify(logger.error(contains('\'cordova build\' failed with error code -1')));
     });
   });
 
-  it('proxies argument commands', function(done) {
-    var bashDouble = td.replace(BashTask.prototype, 'runCommand');
-    var cmd = setupCmd();
+  it('warns if a supported corber command is used', () => {
+    return proxyCommand.validateAndRun(['build']).then(() => {
+      td.verify(logger.warn(contains('bypassed corber command')));
+    });
+  });
 
-    cmd.validateAndRun(['plugin add foo']).then(function() {
-      td.verify(bashDouble('cordova plugin add foo', isObject));
-      done();
-    }).catch(function(err) {
-      done(err);
+  it('warns if cordova command is unknown', () => {
+    td.when(spawn('cordova foo', [], { shell: true }, {
+      onStdout,
+      onStderr,
+      cwd: cordovaPath
+    })).thenReturn(Promise.reject(-1));
+
+    return proxyCommand.validateAndRun(['foo']).then(() => {
+      td.verify(logger.warn(contains('unknown Cordova command')));
+    });
+  });
+
+  it('does not warn if known non-supported corber command is used', () => {
+    td.when(spawn('cordova emulate', [], { shell: true }, {
+      onStdout,
+      onStderr,
+      cwd: cordovaPath
+    })).thenReturn(Promise.resolve(0))
+
+    return proxyCommand.validateAndRun(['emulate']).then(() => {
+      td.verify(logger.warn(contains('bypassed corber command')), { times: 0 });
+      td.verify(logger.warn(contains('unknown Cordova command')), { times: 0 });
     });
   });
 });
