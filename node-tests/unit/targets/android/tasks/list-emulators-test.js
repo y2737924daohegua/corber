@@ -1,59 +1,46 @@
+'use strict';
+
 const td              = require('testdouble');
 const expect          = require('../../../../helpers/expect');
-const Promise         = require('rsvp').Promise;
 const Device          = require('../../../../../lib/objects/device');
+const Promise         = require('rsvp').Promise;
 
-const emList          = 'Nexus_5X_API_27\nPixel_2_API_27';
+const emulatorPath = 'emulatorPath';
+const spawnArgs    = [emulatorPath, ['-list-avds']];
+const emulatorList = 'Nexus_5X_API_27\nPixel_2_API_27';
 
-describe('Android List Emulators', function() {
-  beforeEach(function() {
-    td.replace('../../../../../lib/targets/android/utils/sdk-paths', function() {
-      return {
-        emulator: 'emulatorPath'
-      }
-    });
+describe('Android List Emulators', () => {
+  let sdkPaths;
+  let spawn;
+  let listEmulators;
+
+  beforeEach(() => {
+    sdkPaths = td.replace('../../../../../lib/targets/android/utils/sdk-paths');
+    td.when(sdkPaths()).thenReturn({ emulator: emulatorPath });
+
+    spawn = td.replace('../../../../../lib/utils/spawn');
+    td.when(spawn(...spawnArgs))
+      .thenReturn(Promise.resolve({ stdout: emulatorList }));
+
+    listEmulators = require('../../../../../lib/targets/android/tasks/list-emulators');
   });
 
-  afterEach(function() {
+  afterEach(() => {
     td.reset();
   });
 
-  it('spawns emulator', function() {
-    let spawnProps = {};
-
-    td.replace('../../../../../lib/utils/spawn', function(cmd, args) {
-      spawnProps.cmd = cmd;
-      spawnProps.args = args;
-      return Promise.resolve(emList);
-    });
-
-    let listEms = require('../../../../../lib/targets/android/tasks/list-emulators');
-
-    return listEms().then(function() {
-      expect(spawnProps.cmd).to.equal('emulatorPath');
-      expect(spawnProps.args).to.deep.equal(['-list-avds']);
-    });
-  });
-
-  it('parses emulator -list-avds to Emulator objects', function() {
-    td.replace('../../../../../lib/utils/spawn', function(cmd, args) {
-      return Promise.resolve(emList);
-    });
-
-    let listEms = require('../../../../../lib/targets/android/tasks/list-emulators');
-
-    return listEms().then(function(found) {
-      expect(found).to.deep.equal([
-        new Device({
-          name: 'Pixel_2_API_27',
-          platform: 'android',
-          deviceType: 'emulator'
-        }),
-        new Device({
-          name: 'Nexus_5X_API_27',
-          platform: 'android',
-          deviceType: 'emulator'
-        })]);
-    });
+  it('parses emulator -list-avds to Emulator objects', () => {
+    return expect(listEmulators()).to.eventually.deep.equal([
+      new Device({
+        name: 'Pixel_2_API_27',
+        platform: 'android',
+        deviceType: 'emulator'
+      }),
+      new Device({
+        name: 'Nexus_5X_API_27',
+        platform: 'android',
+        deviceType: 'emulator'
+      })
+    ]);
   });
 });

@@ -21,7 +21,7 @@ describe('Spawn', () => {
 
     chdir = td.replace(process, 'chdir');
 
-    let childProcess = td.replace('child_process', td.object(['spawn']));
+    let childProcess = td.replace('child_process');
     td.when(childProcess.spawn('ls', ['-l'], {})).thenReturn(mockProcess);
 
     spawn = require('../../../lib/utils/spawn');
@@ -43,16 +43,80 @@ describe('Spawn', () => {
     return expect(promise).to.eventually.be.fulfilled;
   });
 
-  it('rejects on exit with error code', () => {
+  it('resolves on exit with non-fatal error code', () => {
     let promise = spawn('ls', ['-l']);
 
     let captor = td.matchers.captor();
     td.verify(mockProcess.on('exit', captor.capture()));
 
-    // simulate non-zero error code
-    captor.value(1);
+    // simulate non-fatal error code
+    captor.value(-1);
 
-    return expect(promise).to.eventually.be.rejectedWith(1);
+    return expect(promise).to.eventually.be.fulfilled;
+  });
+
+  it('rejects on exit with error code 127', () => {
+    let promise = spawn('ls', ['-l']);
+
+    let captor = td.matchers.captor();
+    td.verify(mockProcess.on('exit', captor.capture()));
+
+    // simulate "command not found" error code
+    captor.value(127);
+
+    return expect(promise).to.eventually.be.rejectedWith(/'ls' not found/);
+  });
+
+  it('returns stdout buffer', () => {
+    let promise = spawn('ls', ['-l'], {}, { onStdout, onStderr });
+
+    let stdoutCaptor = td.matchers.captor();
+    td.verify(mockProcess.stdout.on('data', stdoutCaptor.capture()));
+
+    // simulate stdout data
+    stdoutCaptor.value('hello');
+    stdoutCaptor.value('world');
+
+    // exit process
+    let exitCaptor = td.matchers.captor();
+    td.verify(mockProcess.on('exit', exitCaptor.capture()));
+    exitCaptor.value(0);
+
+    return promise.then(({ stdout }) => {
+      expect(stdout).to.equal('hello\nworld');
+    });
+  });
+
+  it('returns stderr buffer', () => {
+    let promise = spawn('ls', ['-l'], {}, { onStdout, onStderr });
+
+    let stderrCaptor = td.matchers.captor();
+    td.verify(mockProcess.stderr.on('data', stderrCaptor.capture()));
+
+    // simulate stdout data
+    stderrCaptor.value('hello');
+    stderrCaptor.value('world');
+
+    // exit process
+    let exitCaptor = td.matchers.captor();
+    td.verify(mockProcess.on('exit', exitCaptor.capture()));
+    exitCaptor.value(0);
+
+    return promise.then(({ stderr }) => {
+      expect(stderr).to.equal('hello\nworld');
+    });
+  });
+
+  it('returns exit code', () => {
+    let promise = spawn('ls', ['-l'], {}, { onStdout, onStderr });
+
+    let exitCaptor = td.matchers.captor();
+    td.verify(mockProcess.on('exit', exitCaptor.capture()));
+    exitCaptor.value(-1);
+
+    return promise.then(({ code }) => {
+      expect(code).to.equal(-1);
+    });
   });
 
   it('pipes output from stdout to supplied handler', () => {

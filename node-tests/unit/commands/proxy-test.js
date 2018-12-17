@@ -1,56 +1,41 @@
-'use strict';
-
 const td            = require('testdouble');
 const Promise       = require('rsvp').Promise;
 const path          = require('path');
-
-const mockProject   = require('../../fixtures/corber-mock/project');
-const mockAnalytics = require('../../fixtures/corber-mock/analytics');
 const expect        = require('../../helpers/expect');
 const contains      = td.matchers.contains;
 
-const appPath     = mockProject.project.root;
-const cordovaPath = path.join(appPath, 'corber', 'cordova');
+const cordovaPath   = path.join('appPath', 'corber', 'cordova');
 
 describe('Proxy Command', () => {
   let proxyCommand;
   let logger;
-
   let spawn;
-  let onStdout;
-  let onStderr;
-
   let VerifyInstall;
 
   beforeEach(() => {
-    logger = td.replace('../../../lib/utils/logger', td.object(['warn', 'error', 'success']));
+    let project = {
+      root: 'appPath',
+      isEmberCLIProject: td.function()
+    };
+
+    logger = td.object(['warn', 'error', 'success']);
+    td.replace('../../../lib/utils/logger', logger);
 
     let getCordovaPath = td.replace('../../../lib/targets/cordova/utils/get-path');
-    td.when(getCordovaPath(mockProject.project)).thenReturn(cordovaPath);
+    td.when(getCordovaPath(project)).thenReturn(cordovaPath);
 
     VerifyInstall = td.replace('../../../lib/targets/cordova/validators/is-installed');
     td.when(VerifyInstall.prototype.run()).thenReturn(Promise.resolve());
 
-    onStdout = td.function();
-    onStderr = td.function();
-
     spawn = td.replace('../../../lib/utils/spawn');
-
-    td.when(spawn('cordova build', [], { shell: true }, {
-      onStdout,
-      onStderr,
-      cwd: cordovaPath
-    })).thenReturn(Promise.resolve(0))
+    td.when(spawn('cordova build', [], { shell: true }, contains({ cwd: cordovaPath })))
+      .thenReturn(Promise.resolve());
 
     let ProxyCommand = require('../../../lib/commands/proxy');
-
     proxyCommand = new ProxyCommand({
-      project: mockProject.project,
-      onStdout,
-      onStderr
+      project,
+      analytics: td.object(['track', 'trackTiming', 'trackError'])
     });
-
-    proxyCommand.analytics = mockAnalytics;
   });
 
   afterEach(() => {
@@ -59,7 +44,7 @@ describe('Proxy Command', () => {
 
   it('resolves when proxy spawn exits successfully', () => {
     let promise = proxyCommand.validateAndRun(['build']);
-    return expect(promise).to.eventually.equal(0);
+    return expect(promise).to.eventually.be.fulfilled;
   });
 
   it('rejects if install not verified', () => {
@@ -72,11 +57,8 @@ describe('Proxy Command', () => {
   });
 
   it('rejects with error code msg when proxy spawn exits in failure', () => {
-    td.when(spawn('cordova build', [], { shell: true }, {
-      onStdout,
-      onStderr,
-      cwd: cordovaPath
-    })).thenReturn(Promise.reject(-1));
+    td.when(spawn('cordova build', [], { shell: true }, contains({ cwd: cordovaPath })))
+      .thenReturn(Promise.resolve({ code: -1 }));
 
     return proxyCommand.validateAndRun(['build']).then(() => {
       td.verify(logger.error(contains('\'cordova build\' failed with error code -1')));
@@ -90,11 +72,8 @@ describe('Proxy Command', () => {
   });
 
   it('warns if cordova command is unknown', () => {
-    td.when(spawn('cordova foo', [], { shell: true }, {
-      onStdout,
-      onStderr,
-      cwd: cordovaPath
-    })).thenReturn(Promise.reject(-1));
+    td.when(spawn('cordova foo', [], { shell: true }, contains({ cwd: cordovaPath })))
+      .thenReturn(Promise.resolve());
 
     return proxyCommand.validateAndRun(['foo']).then(() => {
       td.verify(logger.warn(contains('unknown Cordova command')));
@@ -102,11 +81,8 @@ describe('Proxy Command', () => {
   });
 
   it('does not warn if known non-supported corber command is used', () => {
-    td.when(spawn('cordova emulate', [], { shell: true }, {
-      onStdout,
-      onStderr,
-      cwd: cordovaPath
-    })).thenReturn(Promise.resolve(0))
+    td.when(spawn('cordova emulate', [], { shell: true }, contains({ cwd: cordovaPath })))
+      .thenReturn(Promise.resolve())
 
     return proxyCommand.validateAndRun(['emulate']).then(() => {
       td.verify(logger.warn(contains('bypassed corber command')), { times: 0 });
