@@ -1,5 +1,3 @@
-'use strict';
-
 const td              = require('testdouble');
 const expect          = require('../../../../helpers/expect');
 const Device          = require('../../../../../lib/objects/device');
@@ -25,9 +23,10 @@ const emulatorList    = `== Devices ==
 
 describe('iOS List Emulator Task', () => {
   let listEmulators;
+  let spawn;
 
   beforeEach(() => {
-    let spawn = td.replace('../../../../../lib/utils/spawn');
+    spawn = td.replace('../../../../../lib/utils/spawn');
     td.when(spawn(...spawnArgs))
       .thenReturn(Promise.resolve({ stdout: emulatorList }));
 
@@ -36,6 +35,19 @@ describe('iOS List Emulator Task', () => {
 
   afterEach(() => {
     td.reset();
+  });
+
+  it('calls spawn with correct arguments', () => {
+    td.config({ ignoreWarnings: true });
+
+    td.when(spawn(), { ignoreExtraArgs: true })
+      .thenReturn(Promise.resolve({ stdout: '' }));
+
+    return listEmulators().then(() => {
+      td.verify(spawn(...spawnArgs));
+
+      td.config({ ignoreWarnings: false });
+    });
   });
 
   it('lints out emulators, ignoring non-iOS devices', () => {
@@ -84,5 +96,10 @@ describe('iOS List Emulator Task', () => {
         state: 'Shutdown'
       })
     ]);
+  });
+
+  it('bubbles up error message when spawn rejects', () => {
+    td.when(spawn(...spawnArgs)).thenReturn(Promise.reject('spawn error'));
+    return expect(listEmulators()).to.eventually.be.rejectedWith('spawn error');
   });
 });
