@@ -6,7 +6,7 @@ const RSVP        = require('rsvp');
 const Promise     = RSVP.Promise;
 const contains    = td.matchers.contains;
 
-const cwd         = '/tmp';
+const cwd         = 'tmp';
 const bashCommand = 'ls -al';
 
 describe('Bash Task', () => {
@@ -32,11 +32,24 @@ describe('Bash Task', () => {
     td.reset();
   });
 
+  it('calls spawn with correct arguments', () => {
+    td.config({ ignoreWarnings: true });
+
+    td.when(spawn(), { ignoreExtraArgs: true })
+      .thenReturn(Promise.resolve({ code: 0 }));
+
+    return bashTask.run().then(() => {
+      td.verify(spawn(bashCommand, [], { shell: true }, contains({ cwd })));
+
+      td.config({ ignoreWarnings: false });
+    });
+  });
+
   it('resolves with object containing exit code', () => {
     return expect(bashTask.run()).to.eventually.contain({ code: 0 });
   });
 
-  it('rejects with same error if spawn rejects', () => {
+  it('bubbles up error message when spawn rejects', () => {
     td.when(spawn(bashCommand, [], { shell: true }, contains({ cwd })))
       .thenReturn(Promise.reject('fatal error'));
 
