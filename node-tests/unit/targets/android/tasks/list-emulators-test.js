@@ -1,21 +1,18 @@
-'use strict';
-
-const td              = require('testdouble');
-const expect          = require('../../../../helpers/expect');
-const Device          = require('../../../../../lib/objects/device');
-const Promise         = require('rsvp').Promise;
+const td           = require('testdouble');
+const expect       = require('../../../../helpers/expect');
+const Device       = require('../../../../../lib/objects/device');
+const Promise      = require('rsvp').Promise;
 
 const emulatorPath = 'emulatorPath';
 const spawnArgs    = [emulatorPath, ['-list-avds']];
 const emulatorList = 'Nexus_5X_API_27\nPixel_2_API_27';
 
 describe('Android List Emulators', () => {
-  let sdkPaths;
-  let spawn;
   let listEmulators;
+  let spawn;
 
   beforeEach(() => {
-    sdkPaths = td.replace('../../../../../lib/targets/android/utils/sdk-paths');
+    let sdkPaths = td.replace('../../../../../lib/targets/android/utils/sdk-paths');
     td.when(sdkPaths()).thenReturn({ emulator: emulatorPath });
 
     spawn = td.replace('../../../../../lib/utils/spawn');
@@ -27,6 +24,19 @@ describe('Android List Emulators', () => {
 
   afterEach(() => {
     td.reset();
+  });
+
+  it('calls spawn with correct arguments', () => {
+    td.config({ ignoreWarnings: true });
+
+    td.when(spawn(), { ignoreExtraArgs: true })
+      .thenReturn(Promise.resolve({ stdout: '' }));
+
+    return listEmulators().then(() => {
+      td.verify(spawn(...spawnArgs));
+
+      td.config({ ignoreWarnings: false });
+    });
   });
 
   it('parses emulator -list-avds to Emulator objects', () => {
@@ -42,5 +52,10 @@ describe('Android List Emulators', () => {
         deviceType: 'emulator'
       })
     ]);
+  });
+
+  it('bubbles up error message when spawn rejects', () => {
+    td.when(spawn(...spawnArgs)).thenReturn(Promise.reject('spawn error'));
+    return expect(listEmulators()).to.eventually.be.rejectedWith('spawn error');
   });
 });

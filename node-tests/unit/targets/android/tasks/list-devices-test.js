@@ -26,6 +26,19 @@ describe('Android List Device Task', () => {
     td.reset();
   });
 
+  it('calls spawn with correct arguments', () => {
+    td.config({ ignoreWarnings: true });
+
+    td.when(spawn(), { ignoreExtraArgs: true })
+      .thenReturn(Promise.resolve({}));
+
+    return listDevices().then(() => {
+      td.verify(spawn(...spawnArgs));
+
+      td.config({ ignoreWarnings: false });
+    });
+  });
+
   it('lints out emulators, ignoring non iOS devices', () => {
     return listDevices().then((found) => {
       expect(found).to.deep.equal([new Device({
@@ -35,5 +48,10 @@ describe('Android List Device Task', () => {
         deviceType: 'device'
       })]);
     });
+  });
+
+  it('bubbles up error message when spawn rejects', () => {
+    td.when(spawn(...spawnArgs)).thenReturn(Promise.reject('spawn error'));
+    return expect(listDevices()).to.eventually.be.rejectedWith('spawn error');
   });
 });

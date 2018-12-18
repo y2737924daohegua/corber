@@ -1,5 +1,3 @@
-'use strict';
-
 const td              = require('testdouble');
 const expect          = require('../../../../helpers/expect');
 const Promise         = require('rsvp').Promise;
@@ -18,7 +16,7 @@ describe('Android Emulator State', function() {
     spawn = td.replace('../../../../../lib/utils/spawn');
     td.when(spawn(...spawnArgs))
       .thenReturn(Promise.resolve({
-        stdout: 'default',
+        stdout: '  default  \n',
         stderr: ''
       }));
 
@@ -29,21 +27,34 @@ describe('Android Emulator State', function() {
     td.reset();
   });
 
-  it('spawns adb shell and returns stdout', () => {
+  it('calls spawn with correct arguments', () => {
+    td.config({ ignoreWarnings: true });
+
+    td.when(spawn(), { ignoreExtraArgs: true })
+      .thenReturn(Promise.resolve({ stdout: '', stderr: '' }));
+
+    return getEmulatorState().then(() => {
+      td.verify(spawn(...spawnArgs));
+
+      td.config({ ignoreWarnings: false });
+    });
+  });
+
+  it('spawns adb shell and returns trimmed stdout', () => {
     return expect(getEmulatorState()).to.eventually.equal('default');
   });
 
-  it('returns stderr instead if present', () => {
+  it('returns trimmed stderr instead if present', () => {
     td.when(spawn(...spawnArgs))
-      .thenReturn(Promise.resolve({ stdout: 'default', stderr: 'error' }));
+      .thenReturn(Promise.resolve({ stdout: 'foo', stderr: '  error  \n' }));
 
     return expect(getEmulatorState()).to.eventually.equal('error');
   });
 
-  it('trims the output', () => {
-    td.when(spawn(...spawnArgs))
-      .thenReturn(Promise.resolve({ stdout: '  output  \n', stderr: '' }));
+  it('bubbles up error message when spawn rejects', () => {
+    td.when(spawn(...spawnArgs)).thenReturn(Promise.reject('spawn error'));
 
-    return expect(getEmulatorState()).to.eventually.equal('output');
-  })
+    return expect(getEmulatorState())
+      .to.eventually.be.rejectedWith('spawn error');
+  });
 });
