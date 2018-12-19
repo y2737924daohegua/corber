@@ -1,16 +1,14 @@
-'use strict';
+const td                = require('testdouble');
+const expect            = require('../../../../helpers/expect');
+const path              = require('path');
+const RSVP              = require('rsvp');
+const Promise           = RSVP.Promise;
+const contains          = td.matchers.contains;
 
-const td              = require('testdouble');
-const expect          = require('../../../../helpers/expect');
-const path            = require('path');
-const RSVP            = require('rsvp');
-const Promise         = RSVP.Promise;
-const contains        = td.matchers.contains;
+const appPath           = 'appPath';
+const cordovaPath       = 'cordovaPath';
 
-const appPath         = 'appPath';
-const cordovaPath     = path.join(appPath, 'corber', 'cordova');
-
-const cdvScriptPath = path.resolve(
+const cdvScriptPath     = path.resolve(
   __dirname, '..', '..', '..', '..', '..',
   'bin',
   'cordova-lib-runner'
@@ -20,12 +18,15 @@ const project = {
   root: appPath
 };
 
-const rawAPI = 'build';
+const rawAPI            = 'build';
+const rawArgs           = ['foo', 1, { foo: 'bar' }];
+const serializedRawArgs = JSON.stringify([rawAPI, ...rawArgs]);
+const spawnBaseArgs     = [cdvScriptPath, [serializedRawArgs], {}];
+const cwdMatcher        = contains({ cwd: cordovaPath });
 
 describe('Cordova Raw Task', () => {
   let rawTask;
   let spawn;
-  let serializedRawArgs;
   let logger;
 
   beforeEach(() => {
@@ -36,11 +37,7 @@ describe('Cordova Raw Task', () => {
     td.when(getCordovaPath(project)).thenReturn(cordovaPath);
 
     spawn = td.replace('../../../../../lib/utils/spawn');
-
-    // RawTask serializes passes its arguments as a single stringified argument
-    serializedRawArgs = JSON.stringify([rawAPI]);
-    td.when(spawn(cdvScriptPath, [serializedRawArgs], {}, contains({ cwd: cordovaPath })))
-      .thenReturn(Promise.resolve());
+    td.when(spawn(...spawnBaseArgs, cwdMatcher)).thenReturn(Promise.resolve());
 
     logger = td.replace('../../../../../lib/utils/logger');
 
@@ -55,34 +52,34 @@ describe('Cordova Raw Task', () => {
     td.reset();
   });
 
-  it('resolves on success', () => {
-    return expect(rawTask.run()).to.eventually.be.fulfilled;
+  it('calls spawn with correct arguments', () => {
+    td.config({ ignoreWarnings: true });
+
+    td.when(spawn(), { ignoreExtraArgs: true })
+      .thenReturn(Promise.resolve({ stdout: '', stderr: '' }));
+
+    return rawTask.run(...rawArgs).then(() => {
+      td.verify(spawn(...spawnBaseArgs, cwdMatcher));
+
+      td.config({ ignoreWarnings: false });
+    });
   });
 
-  it('passes args to spawn as a single stringified argument', () => {
-    let rawArgs = ['foo', 1, { foo: 'bar'}];
-    serializedRawArgs = JSON.stringify([rawAPI, ...rawArgs]);
-
-    td.when(spawn(cdvScriptPath, [serializedRawArgs], {}, contains({ cwd: cordovaPath })))
-      .thenReturn(Promise.resolve());
-
+  it('resolves on success', () => {
     return expect(rawTask.run(...rawArgs)).to.eventually.be.fulfilled;
   });
 
   it('logs stdout to verbose', () => {
     let deferred = RSVP.defer();
+    td.when(spawn(...spawnBaseArgs, cwdMatcher)).thenReturn(deferred.promise);
 
-    td.when(spawn(cdvScriptPath, [serializedRawArgs], {}, contains({ cwd: cordovaPath })))
-      .thenReturn(deferred.promise);
-
-    rawTask.run();
+    rawTask.run(...rawArgs);
 
     let captor = td.matchers.captor();
-    td.verify(spawn(cdvScriptPath, [serializedRawArgs], {}, captor.capture()));
-    let { onStdout } = captor.value;
+    td.verify(spawn(...spawnBaseArgs, captor.capture()));
 
     // simulate standard output from wrapping cordova process
-    onStdout('foo');
+    captor.value.onStdout('foo');
 
     td.verify(logger.verbose('foo'), { times: 1 });
     td.verify(logger.info('foo'), { times: 0 });
@@ -97,18 +94,15 @@ describe('Cordova Raw Task', () => {
 
   it('logs stderr to error', () => {
     let deferred = RSVP.defer();
+    td.when(spawn(...spawnBaseArgs, cwdMatcher)).thenReturn(deferred.promise);
 
-    td.when(spawn(cdvScriptPath, [serializedRawArgs], {}, contains({ cwd: cordovaPath })))
-      .thenReturn(deferred.promise);
-
-    rawTask.run();
+    rawTask.run(...rawArgs);
 
     let captor = td.matchers.captor();
-    td.verify(spawn(cdvScriptPath, [serializedRawArgs], {}, captor.capture()));
-    let { onStderr } = captor.value;
+    td.verify(spawn(...spawnBaseArgs, captor.capture()));
 
     // simulate standard output from wrapping cordova process
-    onStderr('foo');
+    captor.value.onStderr('foo');
 
     td.verify(logger.verbose('foo'), { times: 0 });
     td.verify(logger.info('foo'), { times: 0 });
@@ -122,9 +116,9 @@ describe('Cordova Raw Task', () => {
   });
 
   it('rejects run() with the error when spawn rejects', () => {
-    td.when(spawn(cdvScriptPath, [serializedRawArgs], {}, contains({ cwd: cordovaPath })))
-      .thenReturn(Promise.reject(new Error('fail')));
+    td.when(spawn(...spawnBaseArgs, cwdMatcher))
+      .thenReturn(Promise.reject(new Error('err')));
 
-    return expect(rawTask.run()).to.eventually.be.rejectedWith(/fail/);
+    return expect(rawTask.run(...rawArgs)).to.eventually.be.rejectedWith(/err/);
   });
 });
