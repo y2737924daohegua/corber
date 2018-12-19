@@ -1,5 +1,3 @@
-'use strict';
-
 const td          = require('testdouble');
 const path        = require('path');
 const expect      = require('../../../../helpers/expect');
@@ -62,6 +60,19 @@ describe('Cordova Open App Task', () => {
   });
 
   describe('run', () => {
+    it('calls spawn with correct arguments', () => {
+      td.config({ ignoreWarnings: true });
+
+      td.when(spawn(), { ignoreExtraArgs: true })
+        .thenReturn(Promise.resolve({ code: 0 }));
+
+      return openAppTask.run().then(() => {
+        td.verify(spawn(openCommand, [], { shell: true }, contains({ cwd: appPath })));
+
+        td.config({ ignoreWarnings: false });
+      });
+    });
+
     it('resolves on success', () => {
       return expect(openAppTask.run()).to.be.fulfilled;
     });
