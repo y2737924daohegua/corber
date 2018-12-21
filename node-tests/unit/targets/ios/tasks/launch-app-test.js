@@ -1,24 +1,57 @@
-const td              = require('testdouble');
+const td         = require('testdouble');
+const expect     = require('../../../../helpers/expect');
+const Promise    = require('rsvp').Promise;
 
-describe('IOS Launch App', function() {
-  afterEach(function() {
+const emulatorId = 'emulatorId';
+const appName    = 'appName';
+
+const spawnArgs = [
+  '/usr/bin/xcrun',
+  [
+    'simctl',
+    'launch',
+    emulatorId,
+    appName
+  ]
+];
+
+describe('IOS Launch App', () => {
+  let launchApp;
+  let spawn;
+
+  beforeEach(() => {
+    spawn = td.replace('../../../../../lib/utils/spawn');
+    td.when(spawn(...spawnArgs)).thenReturn(Promise.resolve({ code: 0 }));
+
+    launchApp = require('../../../../../lib/targets/ios/tasks/launch-app');
+  });
+
+  afterEach(() => {
     td.reset();
   });
 
-  it('spawns xcrun', function() {
-    let spawnDouble = td.replace('../../../../../lib/utils/spawn');
-    let launchApp = require('../../../../../lib/targets/ios/tasks/launch-app');
+  it('calls spawn with correct arguments', () => {
+    td.config({ ignoreWarnings: true });
 
-    launchApp('emulatorId', 'appName');
+    td.when(spawn(), { ignoreExtraArgs: true })
+      .thenReturn(Promise.resolve());
 
-    td.verify(spawnDouble(
-      '/usr/bin/xcrun',
-      [
-        'simctl',
-        'launch',
-        'emulatorId',
-        'appName'
-      ]
-    ));
+    return launchApp(emulatorId, appName).then(() => {
+      td.verify(spawn(...spawnArgs));
+
+      td.config({ ignoreWarnings: false });
+    });
+  });
+
+  it('spawns xcrun and resolves with exit code', () => {
+    return expect(launchApp(emulatorId, appName))
+      .to.eventually.deep.equal({ code: 0 });
+  });
+
+  it('bubbles up error message when spawn rejects', () => {
+    td.when(spawn(...spawnArgs)).thenReturn(Promise.reject('spawn error'));
+
+    return expect(launchApp(emulatorId, appName))
+      .to.eventually.be.rejectedWith('spawn error');
   });
 });

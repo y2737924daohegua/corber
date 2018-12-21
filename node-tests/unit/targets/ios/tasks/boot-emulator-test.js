@@ -11,7 +11,7 @@ describe('iOS Boot Emulator Task', () => {
 
   beforeEach(() => {
     spawn = td.replace('../../../../../lib/utils/spawn');
-    td.when(spawn(...spawnArgs)).thenReturn(Promise.resolve());
+    td.when(spawn(...spawnArgs)).thenReturn(Promise.resolve({ code: 0 }));
 
     bootEmulator = require('../../../../../lib/targets/ios/tasks/boot-emulator');
   });
@@ -39,8 +39,8 @@ describe('iOS Boot Emulator Task', () => {
     });
   });
 
-  it('spawns xcrun and resolves on exit', () => {
-    expect(bootEmulator({ uuid })).to.eventually.be.fulfilled;
+  it('spawns xcrun and resolves with exit code', () => {
+    return expect(bootEmulator({ uuid })).to.eventually.deep.equal({ code: 0 });
   });
 
   it('bubbles up error message when spawn rejects', () => {
