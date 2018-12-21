@@ -1,35 +1,52 @@
-const td              = require('testdouble');
-const Promise         = require('rsvp').Promise;
-const expect          = require('../../../../helpers/expect');
+const td        = require('testdouble');
+const Promise   = require('rsvp').Promise;
+const expect    = require('../../../../helpers/expect');
 
-describe('iOS Boot Emulator Task', function() {
-  afterEach(function() {
+const uuid      = 'uuid';
+const spawnArgs = ['/usr/bin/xcrun', ['simctl', 'boot', uuid]];
+
+describe('iOS Boot Emulator Task', () => {
+  let bootEmulator;
+  let spawn;
+
+  beforeEach(() => {
+    spawn = td.replace('../../../../../lib/utils/spawn');
+    td.when(spawn(...spawnArgs)).thenReturn(Promise.resolve());
+
+    bootEmulator = require('../../../../../lib/targets/ios/tasks/boot-emulator');
+  });
+
+  afterEach(() => {
     td.reset();
   });
 
-  it('spawns xcrun', function() {
-    let spawnDouble = td.replace('../../../../../lib/utils/spawn');
-    let bootEm = require('../../../../../lib/targets/ios/tasks/boot-emulator');
-
-    bootEm({uuid: 'id',});
-    td.verify(spawnDouble(
-      '/usr/bin/xcrun',
-      ['simctl', 'boot', 'id']
-    ));
+  it('does not spawn boot if the emulator state is Booted', () => {
+    return bootEmulator({ uuid, state: 'Booted' }).then(() => {
+      td.verify(spawn(), { ignoreExtraArgs: true, times: 0 });
+    });
   });
 
-  it('does not spawn boot if the emulator state is Booted', function() {
-    let invokes = [];
+  it('calls spawn with correct arguments', () => {
+    td.config({ ignoreWarnings: true });
 
-    td.replace('../../../../../lib/utils/spawn', function(cmd, args) {
-      invokes.push([...arguments]);
-      return Promise.resolve();
+    td.when(spawn(), { ignoreExtraArgs: true })
+      .thenReturn(Promise.resolve());
+
+    return bootEmulator({ uuid }).then(() => {
+      td.verify(spawn(...spawnArgs));
+
+      td.config({ ignoreWarnings: false });
     });
+  });
 
-    let bootEm = require('../../../../../lib/targets/ios/tasks/boot-emulator');
+  it('spawns xcrun and resolves on exit', () => {
+    expect(bootEmulator({ uuid })).to.eventually.be.fulfilled;
+  });
 
-    return bootEm({id: 'emulatorId', state: 'Booted'}, 'appName', 'builtPath').then(function() {
-      expect(invokes.length).to.equal(0);
-    });
+  it('bubbles up error message when spawn rejects', () => {
+    td.when(spawn(...spawnArgs)).thenReturn(Promise.reject('spawn error'));
+
+    return expect(bootEmulator({ uuid }))
+      .to.eventually.be.rejectedWith('spawn error');
   });
 });
