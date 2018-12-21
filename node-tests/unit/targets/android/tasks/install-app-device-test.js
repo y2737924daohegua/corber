@@ -40,7 +40,7 @@ describe('Android Install App - Device', () => {
   });
 
   it('resolves with object containing exit code from spawned process', () => {
-    expect(installAppDevice(deviceUUID, apkPath))
+    return expect(installAppDevice(deviceUUID, apkPath))
       .to.eventually.contain({ code: 0 });
   });
 

@@ -38,7 +38,8 @@ describe('Android Install App', () => {
   });
 
   it('spawns adb install and resolves with obj containing exit code', () => {
-    expect(installAppEmulator(apkPath)).to.eventually.contain({ code: 0 });
+    return expect(installAppEmulator(apkPath))
+      .to.eventually.contain({ code: 0 });
   });
 
   it('bubbles up error message when spawn rejects', () => {
