@@ -11,7 +11,7 @@ describe('Android apk paths util', function() {
     let calls = [];
     td.replace('../../../../../lib/utils/spawn', function() {
       calls.push([...arguments]);
-      return Promise.resolve('fake-debug.apk');
+      return Promise.resolve({ stdout: 'fake-debug.apk' });
     });
     let apkPath = require('../../../../../lib/targets/android/utils/apk-path');
 
@@ -23,7 +23,7 @@ describe('Android apk paths util', function() {
 
   it('returns a matched apk file', function() {
     td.replace('../../../../../lib/utils/spawn', function() {
-      return Promise.resolve('fake-debug.apk');
+      return Promise.resolve({ stdout: 'fake-debug.apk'});
     });
     let apkPath = require('../../../../../lib/targets/android/utils/apk-path');
 

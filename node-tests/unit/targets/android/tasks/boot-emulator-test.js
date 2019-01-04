@@ -1,70 +1,84 @@
 const td              = require('testdouble');
 const expect          = require('../../../../helpers/expect');
+const RSVP            = require('rsvp');
+const Promise         = RSVP.Promise;
 
-describe('Android Boot Emulator', function() {
-  beforeEach(function() {
-    td.replace('../../../../../lib/targets/android/utils/sdk-paths', function() {
-      return {
-        emulator: 'emulatorPath'
-      }
-    });
+const emulatorPath    = 'emulatorPath';
+const emulatorName    = 'fake-emulator';
+const emulator        = { name: emulatorName };
+const spawnArgs       = [emulatorPath, ['-avd', emulatorName]];
+const pollingInterval = 1;
+
+describe('Android Boot Emulator', () => {
+  let bootEmulator;
+  let getEmulatorState;
+  let deferred;
+  let spawn;
+
+  beforeEach(() => {
+    let sdkPaths = td.replace('../../../../../lib/targets/android/utils/sdk-paths');
+    td.when(sdkPaths()).thenReturn({ emulator: emulatorPath });
+
+    getEmulatorState = td.replace('../../../../../lib/targets/android/tasks/get-emulator-state');
+    td.when(getEmulatorState()).thenReturn(Promise.resolve('1'));
+
+    // simulate on-going process
+    deferred = RSVP.defer();
+    spawn = td.replace('../../../../../lib/utils/spawn');
+    td.when(spawn(...spawnArgs)).thenReturn(deferred.promise);
+
+    bootEmulator = require('../../../../../lib/targets/android/tasks/boot-emulator');
   });
 
-  afterEach(function() {
+  afterEach(() => {
     td.reset();
   });
 
-  it('spawns emulator -avd', function() {
-    let spawnProps = {};
+  it('calls spawn with correct arguments', () => {
+    td.config({ ignoreWarnings: true });
 
-    td.replace('../../../../../lib/utils/spawn', function(cmd, args) {
-      spawnProps.cmd = cmd;
-      spawnProps.args = args;
-      return Promise.resolve();
-    });
+    td.when(spawn(), { ignoreExtraArgs: true })
+      .thenReturn(deferred.promise);
 
-    td.replace('../../../../../lib/targets/android/tasks/get-emulator-state', function() {
-      return Promise.resolve('1');
-    });
+    return bootEmulator(emulator, pollingInterval).then(() => {
+      td.verify(spawn(...spawnArgs));
 
-    let bootEm = require('../../../../../lib/targets/android/tasks/boot-emulator');
-
-    return bootEm({name: 'fake-emulator'}).then(function() {
-      expect(spawnProps.cmd).to.equal('emulatorPath');
-      expect(spawnProps.args).to.deep.equal(['-avd', 'fake-emulator']);
+      td.config({ ignoreWarnings: false });
     });
   });
 
-  it('polls until the android emulator has booted', function() {
-    td.replace('../../../../../lib/utils/spawn', function() {
-      return Promise.resolve();
-    });
+  it('spawns emulator -avd and resolves when emulator changes state', () => {
+    td.when(getEmulatorState()).thenReturn(Promise.resolve('0'));
 
-    let called = false;
-    td.replace('../../../../../lib/targets/android/tasks/get-emulator-state', function() {
-      called = true;
-      return Promise.resolve('1');
-    });
+    let promise = bootEmulator(emulator, pollingInterval);
+    expect(promise).to.not.be.fulfilled;
 
-    let bootEm = require('../../../../../lib/targets/android/tasks/boot-emulator');
-    bootEm({name: 'fake-emulator'}).then(function(bootedEm) {
-      expect(called).to.equal(true);
-      expect(bootedEm).to.equal('foo');
-    });
+    td.when(getEmulatorState()).thenReturn(Promise.resolve('1'));
+    return expect(promise).to.eventually.be.fulfilled;
   });
 
-  it('once booted, sets uuid on the emulator', function() {
-    td.replace('../../../../../lib/utils/spawn', function() {
-      return Promise.resolve();
-    });
+  it('rejects when spawned emulator exits without rejecting', () => {
+    td.when(getEmulatorState()).thenReturn(Promise.resolve('0'));
 
-    td.replace('../../../../../lib/targets/android/tasks/get-emulator-state', function() {
-      return Promise.resolve('1');
-    });
+    // simulate early process exit
+    deferred.resolve();
 
-    let bootEm = require('../../../../../lib/targets/android/tasks/boot-emulator');
-    bootEm({name: 'fake-emulator'}).then(function(bootedEm) {
-      expect(bootedEm.uuid).to.equal
-    });
+    return expect(bootEmulator(emulator, pollingInterval))
+      .to.eventually.be.rejectedWith(/emulator failed to start/)
+  });
+
+  it('bubbles up error message when spawn rejects', () => {
+    td.when(spawn(...spawnArgs)).thenReturn(Promise.reject('spawn error'));
+
+    return expect(bootEmulator(emulator, pollingInterval))
+      .to.eventually.be.rejectedWith('spawn error');
+  });
+
+  it('bubbles up error message when getEmulatorState rejects', () => {
+    td.when(getEmulatorState())
+      .thenReturn(Promise.reject('getEmulatorState error'));
+
+    return expect(bootEmulator(emulator, pollingInterval))
+      .to.eventually.be.rejectedWith('getEmulatorState error');
   });
 });
