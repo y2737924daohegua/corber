@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+const cordovaLib = require('cordova-lib');
+
+// `lib/targets/cordova/tasks/raw.js` serializes all arguments into a single
+// string argument; this allow objects to be passed (e.g. options)
+let args = JSON.parse(process.argv[2]);
+let api = args.shift();
+
+cordovaLib.cordova[api](...args);

@@ -2,47 +2,51 @@ const td              = require('testdouble');
 const expect          = require('../../../../helpers/expect');
 const Promise         = require('rsvp').Promise;
 
-const emList          = 'emulator-5554          device product:sdk_gphone_x86 model:Android_SDK_built_for_x86 device:generic_x86 transport_id:26';
+const adbPath         = 'adbPath';
+const spawnArgs       = [adbPath, ['devices', '-l']];
+const emulatorList    = 'emulator-5554          device product:sdk_gphone_x86 model:Android_SDK_built_for_x86 device:generic_x86 transport_id:26';
 
-describe('Android List Running Emulators', function() {
-  beforeEach(function() {
-    td.replace('../../../../../lib/targets/android/utils/sdk-paths', function() {
-      return {
-        adb: 'adbPath'
-      }
-    });
+describe('Android List Running Emulators', () => {
+  let listRunningEmulators;
+  let spawn;
+
+  beforeEach(() => {
+    let sdkPaths = td.replace('../../../../../lib/targets/android/utils/sdk-paths');
+    td.when(sdkPaths()).thenReturn({ adb: adbPath });
+
+    spawn = td.replace('../../../../../lib/utils/spawn');
+    td.when(spawn(...spawnArgs))
+      .thenReturn(Promise.resolve({ stdout: emulatorList }));
+
+    listRunningEmulators = require('../../../../../lib/targets/android/tasks/list-running-emulators');
   });
 
-  afterEach(function() {
+  afterEach(() => {
     td.reset();
   });
 
-  it('spawns adb', function() {
-    let spawnProps = {};
+  it('calls spawn with correct arguments', () => {
+    td.config({ ignoreWarnings: true });
 
-    td.replace('../../../../../lib/utils/spawn', function(cmd, args) {
-      spawnProps.cmd = cmd;
-      spawnProps.args = args;
-      return Promise.resolve(emList);
-    });
+    td.when(spawn(), { ignoreExtraArgs: true })
+      .thenReturn(Promise.resolve({ stdout: '' }));
 
-    let listRunning = require('../../../../../lib/targets/android/tasks/list-running-emulators');
+    return listRunningEmulators().then(() => {
+      td.verify(spawn(...spawnArgs));
 
-    return listRunning().then(function() {
-      expect(spawnProps.cmd).to.equal('adbPath');
-      expect(spawnProps.args).to.deep.equal(['devices', '-l']);
+      td.config({ ignoreWarnings: false });
     });
   });
 
-  it('returns an array of active emulator ids', function() {
-    td.replace('../../../../../lib/utils/spawn', function(cmd, args) {
-      return Promise.resolve(emList);
-    });
+  it('returns an array of active emulator ids', () => {
+    return expect(listRunningEmulators())
+      .to.eventually.deep.equal(['emulator-5554']);
+  });
 
-    let listEms = require('../../../../../lib/targets/android/tasks/list-running-emulators');
+  it('bubbles up error message when spawn rejects', () => {
+    td.when(spawn(...spawnArgs)).thenReturn(Promise.reject('spawn error'));
 
-    return listEms().then(function(found) {
-      expect(found).to.deep.equal(['emulator-5554']);
-    });
+    return expect(listRunningEmulators())
+      .to.eventually.be.rejectedWith('spawn error');
   });
 });

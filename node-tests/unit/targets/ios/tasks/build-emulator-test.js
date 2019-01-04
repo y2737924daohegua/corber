@@ -1,48 +1,66 @@
-const td              = require('testdouble');
-const contains        = td.matchers.contains;
-const isAnything      = td.matchers.anything;
+const td          = require('testdouble');
+const expect      = require('../../../../helpers/expect');
+const Promise     = require('rsvp').Promise;
 
-describe('iOS Build Emulator Task', function() {
-  let spawnDouble, buildTask;
+const emulatorId  = 'emulatorId';
+const derivedPath = 'derivedPath';
+const scheme      = 'scheme';
+const iosPath     = 'iosPath';
 
-  beforeEach(function() {
+const spawnArgs = [
+  '/usr/bin/xcodebuild',
+  [
+    '-workspace', `${iosPath}/${scheme}.xcworkspace`,
+    '-configuration', 'Debug',
+    '-scheme', scheme,
+    '-destination', `id=${emulatorId}`,
+    '-derivedDataPath', derivedPath,
+    'CODE_SIGN_REQUIRED=NO',
+    'CODE_SIGN_IDENTITY='
+  ],
+  {
+    cwd: iosPath
+  }
+];
 
-    spawnDouble = td.replace('../../../../../lib/utils/spawn');
-    buildTask = require('../../../../../lib/targets/ios/tasks/build-emulator');
+describe('iOS Build Emulator Task', () => {
+  let buildEmulator;
+  let spawn;
+
+  beforeEach(() => {
+    spawn = td.replace('../../../../../lib/utils/spawn');
+    td.when(spawn(...spawnArgs)).thenReturn(Promise.resolve({ code: 0 }));
+
+    buildEmulator = require('../../../../../lib/targets/ios/tasks/build-emulator');
   });
 
-  afterEach(function() {
+  afterEach(() => {
     td.reset();
   });
 
-  it('spawns xcode build with expected flags', function() {
-    buildTask('emulatorId', 'buildPath', 'testScheme', 'iosPath');
+  it('calls spawn with correct arguments', () => {
+    td.config({ ignoreWarnings: true });
 
-    td.verify(spawnDouble(
-      '/usr/bin/xcodebuild',
-      [
-        '-workspace', 'iosPath/testScheme.xcworkspace',
-        '-configuration', 'Debug',
-        '-scheme', 'testScheme',
-        '-destination', 'id=emulatorId',
-        '-derivedDataPath', 'buildPath',
-        'CODE_SIGN_REQUIRED=NO',
-        'CODE_SIGN_IDENTITY='
-      ],
-      {
-        cwd: 'iosPath'
-      }
-    ));
+    td.when(spawn(), { ignoreExtraArgs: true })
+      .thenReturn(Promise.resolve());
+
+    return buildEmulator(emulatorId, derivedPath, scheme, iosPath)
+      .then(() => {
+        td.verify(spawn(...spawnArgs));
+
+        td.config({ ignoreWarnings: false });
+      });
   });
 
-  it('sets destination when building for emulator by id', function() {
-    buildTask('UUID', 'buildPath', 'testScheme', 'iosPath');
+  it('spawns xcodebuild and resolves with exit code', () => {
+    return expect(buildEmulator(emulatorId, derivedPath, scheme, iosPath))
+      .to.eventually.deep.equal({ code: 0 });
+  });
 
-    td.verify(spawnDouble(
-      isAnything(),
-      contains('-destination', 'id=UUID'),
-      isAnything()
-    ));
+  it('bubbles up error message when spawn rejects', () => {
+    td.when(spawn(...spawnArgs)).thenReturn(Promise.reject('spawn error'));
+
+    return expect(buildEmulator(emulatorId, derivedPath, scheme, iosPath))
+      .to.eventually.be.rejectedWith('spawn error');
   });
 });
-

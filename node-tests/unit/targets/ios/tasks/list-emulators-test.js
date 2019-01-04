@@ -1,39 +1,58 @@
 const td              = require('testdouble');
-const Promise         = require('rsvp').Promise;
 const expect          = require('../../../../helpers/expect');
 const Device          = require('../../../../../lib/objects/device');
+const Promise         = require('rsvp').Promise;
 
-describe('iOS List Emulator Task', function() {
-  afterEach(function() {
+const spawnArgs       = ['/usr/bin/xcrun', ['simctl', 'list', 'devices']];
+const emulatorList    = `== Devices ==
+  -- iOS 8.4 --
+      iPhone 4s (uuid) (Shutdown)
+      iPhone 5 (uuid) (Shutdown)
+  -- iOS 9.1 --
+      iPhone 4s (uuid) (Shutdown)
+      iPhone 5 (uuid) (Shutdown)
+  -- iOS 11.1 --
+      iPhone X (3B388D0A-01F2-4E68-B86B-55FDB6F96B37) (Shutdown)
+      iPad Pro (10.5-inch) (uuid) (Shutdown)
+  -- tvOS 11.1 --
+      Apple TV (uuid) (Shutdown)
+      Apple TV 4K (uuid) (Shutdown)
+      Apple TV 4K (at 1080p) (uuid) (Shutdown)
+  -- watchOS 4.1 --
+      Apple Watch - 38mm (uuid) (Shutdown)`;
+
+describe('iOS List Emulator Task', () => {
+  let listEmulators;
+  let spawn;
+
+  beforeEach(() => {
+    spawn = td.replace('../../../../../lib/utils/spawn');
+    td.when(spawn(...spawnArgs))
+      .thenReturn(Promise.resolve({ stdout: emulatorList }));
+
+    listEmulators = require('../../../../../lib/targets/ios/tasks/list-emulators');
+  });
+
+  afterEach(() => {
     td.reset();
   });
 
-  it('lints out emulators, ignoring non iOS devices', function() {
-    td.replace('../../../../../lib/utils/spawn', function(cmd, args) {
-      let emList = `== Devices ==
-        -- iOS 8.4 --
-            iPhone 4s (uuid) (Shutdown)
-            iPhone 5 (uuid) (Shutdown)
-        -- iOS 9.1 --
-            iPhone 4s (uuid) (Shutdown)
-            iPhone 5 (uuid) (Shutdown)
-        -- iOS 11.1 --
-            iPhone X (3B388D0A-01F2-4E68-B86B-55FDB6F96B37) (Shutdown)
-            iPad Pro (10.5-inch) (uuid) (Shutdown)
-        -- tvOS 11.1 --
-            Apple TV (uuid) (Shutdown)
-            Apple TV 4K (uuid) (Shutdown)
-            Apple TV 4K (at 1080p) (uuid) (Shutdown)
-        -- watchOS 4.1 --\n
-            Apple Watch - 38mm (uuid) (Shutdown)`;
+  it('calls spawn with correct arguments', () => {
+    td.config({ ignoreWarnings: true });
 
-      return Promise.resolve(emList);
+    td.when(spawn(), { ignoreExtraArgs: true })
+      .thenReturn(Promise.resolve({ stdout: '' }));
+
+    return listEmulators().then(() => {
+      td.verify(spawn(...spawnArgs));
+
+      td.config({ ignoreWarnings: false });
     });
+  });
 
-    let list = require('../../../../../lib/targets/ios/tasks/list-emulators');
-
-    return list().then(function(found) {
-      expect(found).to.deep.equal([new Device({
+  it('lints out emulators, ignoring non-iOS devices', () => {
+    return expect(listEmulators()).to.eventually.deep.equal([
+      new Device({
         apiVersion: '11.1',
         name: 'iPad Pro',
         uuid: 'uuid',
@@ -75,7 +94,12 @@ describe('iOS List Emulator Task', function() {
         platform: 'ios',
         deviceType: 'emulator',
         state: 'Shutdown'
-      })]);
-    });
+      })
+    ]);
+  });
+
+  it('bubbles up error message when spawn rejects', () => {
+    td.when(spawn(...spawnArgs)).thenReturn(Promise.reject('spawn error'));
+    return expect(listEmulators()).to.eventually.be.rejectedWith('spawn error');
   });
 });
