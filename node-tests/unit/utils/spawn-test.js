@@ -8,6 +8,7 @@ describe('Spawn', () => {
   let onStderr;
   let mockProcess;
   let chdir;
+  let childProcess;
 
   beforeEach(() => {
     onStdout = td.function();
@@ -21,8 +22,12 @@ describe('Spawn', () => {
 
     chdir = td.replace(process, 'chdir');
 
-    let childProcess = td.replace('child_process');
+    childProcess = td.replace('child_process');
     td.when(childProcess.spawn('ls', ['-l'], {})).thenReturn(mockProcess);
+
+    td.when(childProcess.fork('script.js', ['-foo'], {
+      silent: true
+    })).thenReturn(mockProcess);
 
     spawn = require('../../../lib/utils/spawn');
   });
@@ -200,5 +205,25 @@ describe('Spawn', () => {
     return promise.catch(() => {
       td.verify(chdir(appPath));
     });
-  })
+  }),
+
+  it('uses childProcess.fork with `silent: true` if fork bool is set', () => {
+    td.config({ ignoreWarnings: true });
+
+    td.when(childProcess.spawn(), { ignoreExtraArgs: true })
+      .thenReturn(mockProcess);
+
+    let promise = spawn('script.js', ['-foo'], {}, { fork: true });
+
+    let captor = td.matchers.captor();
+    td.verify(mockProcess.on('exit', captor.capture()));
+
+    // simulate exit
+    captor.value(0);
+
+    return promise.then(() => {
+      td.verify(childProcess.fork('script.js', ['-foo'], { silent: true }));
+      td.config({ ignoreWarnings: false });
+    });
+  });
 });
