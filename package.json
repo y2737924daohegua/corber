@@ -1,6 +1,6 @@
 {
   "name": "corber",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "description": "Tooling for cordova and crosswalk hybrid applications built with Ember",
   "homepage": "https://github.com/isleofcode/corber",
   "repository": {
