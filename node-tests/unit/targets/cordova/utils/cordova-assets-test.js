@@ -1,40 +1,41 @@
-var td              = require('testdouble');
-var cordovaAssets   = require('../../../../../lib/targets/cordova/utils/cordova-assets');
-var expect          = require('../../../../helpers/expect');
-var fsUtils         = require('../../../../../lib/utils/fs-utils');
-var logger          = require('../../../../../lib/utils/logger');
-var contains        = td.matchers.contains;
+const td              = require('testdouble');
+const cordovaAssets   = require('../../../../../lib/targets/cordova/utils/cordova-assets');
+const expect          = require('../../../../helpers/expect');
+const fsUtils         = require('../../../../../lib/utils/fs-utils');
+const logger          = require('../../../../../lib/utils/logger');
+const path            = require('path');
+const contains        = td.matchers.contains;
 
 describe('Get Platform Assets Util', function() {
   describe('getPaths', function() {
     it('is valid for ios', function() {
-      var assets = cordovaAssets.getPaths('ios', 'fakeProjectPath');
-      var expectedPath = 'platforms/ios/www';
+      let assets = cordovaAssets.getPaths('ios', 'fakeProjectPath');
+      let expectedPath = path.join('platforms', 'ios', 'www');
       expect(assets.assetsPath).to.equal(expectedPath);
     });
 
     it('pre cordova-android 7.0 is valid for android', function() {
       cordovaAssets._exists = () => { return true; }
-      var assets = cordovaAssets.getPaths('android', 'fakeProjectPath');
-      var expectedPath = 'platforms/android/assets/www';
+      let assets = cordovaAssets.getPaths('android', 'fakeProjectPath');
+      let expectedPath = path.join('platforms', 'android', 'assets', 'www');
       expect(assets.assetsPath).to.equal(expectedPath);
     });
 
     it('post cordova-android 7.0 is valid for android', function() {
       cordovaAssets._exists = () => { return false; }
-      var assets = cordovaAssets.getPaths('android', 'fakeProjectPath');
-      var expectedPath = 'platforms/android/platform_www';
+      let assets = cordovaAssets.getPaths('android', 'fakeProjectPath');
+      let expectedPath = path.join('platforms', 'android', 'platform_www');
       expect(assets.assetsPath).to.equal(expectedPath);
     });
 
     it('is valid for browser', function() {
-      var assets = cordovaAssets.getPaths('browser', 'fakeProjectPath');
-      var expectedPath = 'platforms/browser/www';
+      let assets = cordovaAssets.getPaths('browser', 'fakeProjectPath');
+      let expectedPath = path.join('platforms', 'browser', 'www');
       expect(assets.assetsPath).to.equal(expectedPath);
     });
 
     it('adds cordova_plugins.js to files', function() {
-      var assets = cordovaAssets.getPaths('ios', 'fakeProjectPath');
+      let assets = cordovaAssets.getPaths('ios', 'fakeProjectPath');
       expect(assets.files).to.deep.equal(
         ['cordova_plugins.js', 'cordova.js']
       );
@@ -55,7 +56,7 @@ describe('Get Platform Assets Util', function() {
         return path !== 'path/cordova.js'
       });
 
-      var warnDouble = td.replace(logger, 'warn');
+      let warnDouble = td.replace(logger, 'warn');
       cordovaAssets.validatePaths('fakeAssetPath', 'fakeProjectPath');
 
       td.verify(warnDouble(contains('Did not find')));
@@ -67,7 +68,7 @@ describe('Get Platform Assets Util', function() {
         return path !== 'path/cordova_plugins.js'
       });
 
-      var warnDouble = td.replace(logger, 'warn');
+      let warnDouble = td.replace(logger, 'warn');
       cordovaAssets.validatePaths('fakeAssetPath', 'fakeProjectPath');
 
       td.verify(warnDouble(contains('Did not find')));

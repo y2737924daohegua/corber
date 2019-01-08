@@ -1,29 +1,43 @@
-var td              = require('testdouble');
-var childProcess    = require('child_process');
+const td     = require('testdouble');
+const expect = require('../../../../helpers/expect');
 
-describe('Verify Cordova Installed Task', function() {
-  var execDouble, verifyCmd;
+describe('Verify Cordova Installed Task', () => {
+  let commandExists;
+  let isInstalled;
 
-  beforeEach(function() {
-    execDouble = td.replace(childProcess, 'execSync');
+  beforeEach(() => {
+    commandExists = td.replace('../../../../../lib/utils/command-exists');
+    td.when(commandExists('cordova')).thenReturn(true);
 
-    var VerifyTask = require('../../../../../lib/targets/cordova/validators/is-installed');
+    let IsInstalled = require('../../../../../lib/targets/cordova/validators/is-installed');
 
-    verifyCmd = new VerifyTask({
+    isInstalled = new IsInstalled({
       command: 'foo',
       options: {}
     });
   });
 
-  afterEach(function() {
+  afterEach(() => {
     td.reset();
   });
 
-  it('attempts to exec cmd', function() {
-    var expected = 'command -v cordova >/dev/null && ' +
-      '{ echo >&1 \'command found\'; }';
-
-    verifyCmd.run();
-    td.verify(execDouble(expected));
+  it('resolves when cordova command exists', () => {
+    expect(isInstalled.run()).to.eventually.be.fulfilled;
   });
+
+  describe('when cordova command does not exist', () => {
+    beforeEach(() => {
+      td.when(commandExists('cordova')).thenReturn(false);
+    });
+
+    it('rejects with message', () => {
+      expect(isInstalled.run())
+        .to.eventually.be.rejectedWith(/The command `cordova` was not found/);
+    });
+
+    it('resolves if cordova check is skipped', () => {
+      isInstalled.options.skipCordovaCheck = true
+      expect(isInstalled.run()).to.eventually.be.fulfilled;
+    });
+  })
 });

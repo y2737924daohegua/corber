@@ -1,18 +1,19 @@
 'use strict';
 
-var td              = require('testdouble');
-var Promise         = require('rsvp');
-var mockProject     = require('../../fixtures/corber-mock/project');
-var fsUtils         = require('../../../lib/utils/fs-utils');
+const td              = require('testdouble');
+const Promise         = require('rsvp');
+const mockProject     = require('../../fixtures/corber-mock/project');
+const fsUtils         = require('../../../lib/utils/fs-utils');
 
-var expect          = require('../../helpers/expect');
-var contains        = td.matchers.contains;
-var isObject        = td.matchers.isA(Object);
+const expect          = require('../../helpers/expect');
+const path            = require('path');
+const contains        = td.matchers.contains;
+const isObject        = td.matchers.isA(Object);
 
-var setupTask = function(shouldMockTemplate) {
-  var CreateShell = require('../../../lib/tasks/create-livereload-shell');
+const setupTask = function(shouldMockTemplate) {
+  let CreateShell = require('../../../lib/tasks/create-livereload-shell');
 
-  var shellTask = new CreateShell({
+  let shellTask = new CreateShell({
     project: mockProject.project
   });
 
@@ -38,20 +39,20 @@ describe('Create Cordova Shell Task', function() {
 
   describe('getShellTemplate', function() {
     it('reads the right path', function() {
-      var shellTask = setupTask();
-      var readDouble = td.replace(fsUtils, 'read');
+      let shellTask = setupTask();
+      let readDouble = td.replace(fsUtils, 'read');
 
       shellTask.getShellTemplate();
       td.verify(readDouble(
-        contains('templates/livereload-shell/index.html'),
+        contains(path.join('templates', 'livereload-shell', 'index.html')),
         isObject
       ));
     });
   });
 
   it('attempts to get shell template', function() {
-    var shellTask = setupTask();
-    var called = false;
+    let shellTask = setupTask();
+    let called = false;
 
     td.replace(shellTask, 'getShellTemplate', function() {
       called = true;
@@ -63,8 +64,8 @@ describe('Create Cordova Shell Task', function() {
   });
 
   it('createShell replaces {{liveReloadUrl}} and saves', function() {
-    var shellTask = setupTask(true);
-    var writeContent;
+    let shellTask = setupTask(true);
+    let writeContent;
 
     td.replace(fsUtils, 'write', function(path, content) {
       writeContent = content;
@@ -82,7 +83,7 @@ describe('Create Cordova Shell Task', function() {
       throw new Error();
     });
 
-    var shellTask = setupTask(true);
+    let shellTask = setupTask(true);
     return expect(shellTask.run()).to.eventually.be.rejectedWith(
       /Error moving index\.html/
     );
