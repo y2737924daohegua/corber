@@ -54,7 +54,7 @@
   "dependencies": {
     "chalk": "^2.0.0",
     "configstore": "4.0.0",
-    "console-ui": "^2.0.0",
+    "console-ui": "^3.0.0",
     "copy-dir": "^0.4.0",
     "cordova-common": "^2.0.0",
     "cordova-lib": "^8.0.0",
