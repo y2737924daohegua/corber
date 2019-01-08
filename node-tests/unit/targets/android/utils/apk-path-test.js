@@ -1,6 +1,7 @@
 const td              = require('testdouble');
 const Promise         = require('rsvp').Promise;
 const expect          = require('../../../../helpers/expect');
+const path            = require('path');
 
 describe('Android apk paths util', function() {
   afterEach(function() {
@@ -16,8 +17,30 @@ describe('Android apk paths util', function() {
     let apkPath = require('../../../../../lib/targets/android/utils/apk-path');
 
     return apkPath('fakePath', true).then(function() {
-      expect(calls[0]).to.deep.equal(['ls', ['-r', 'fakePath/platforms/android/build/outputs/apk/debug']]);
-      expect(calls[1]).to.deep.equal(['ls', ['-r', 'fakePath/platforms/android/app/build/outputs/apk/debug']]);
+      let localizedPaths = [
+        path.join(
+          'fakePath',
+          'platforms',
+          'android',
+          'build',
+          'outputs',
+          'apk',
+          'debug'
+        ),
+        path.join(
+          'fakePath',
+          'platforms',
+          'android',
+          'app',
+          'build',
+          'outputs',
+          'apk',
+          'debug'
+        )
+      ];
+
+      expect(calls[0]).to.deep.equal(['ls', ['-r', localizedPaths[0]]]);
+      expect(calls[1]).to.deep.equal(['ls', ['-r', localizedPaths[1]]]);
     });
   });
 
@@ -28,7 +51,18 @@ describe('Android apk paths util', function() {
     let apkPath = require('../../../../../lib/targets/android/utils/apk-path');
 
     return apkPath('fakePath', true).then(function(found) {
-      expect(found).to.equal('fakePath/platforms/android/build/outputs/apk/debug/fake-debug.apk');
+      let localizedPath = path.join(
+        'fakePath',
+        'platforms',
+        'android',
+        'build',
+        'outputs',
+        'apk',
+        'debug',
+        'fake-debug.apk'
+      );
+
+      expect(found).to.equal(localizedPath);
     });
   });
 

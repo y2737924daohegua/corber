@@ -166,7 +166,14 @@ describe('Create Project', function() {
       initTask(false);
 
       return createTask.run().then(function() {
-        expect(sourcePath).to.include('lib/templates/frameworks/ember.js');
+        let emberPath = path.join(
+          'lib',
+          'templates',
+          'frameworks',
+          'ember.js'
+        );
+
+        expect(sourcePath).to.include(emberPath);
         expect(destPath).to.equal(path.join(emberCdvPath, 'config', 'framework.js'));
       });
     });

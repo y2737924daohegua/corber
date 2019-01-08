@@ -117,7 +117,7 @@ describe('Validate Webpack Plugin', function() {
 
       it('warns and resolves', function(done) {
         validator.run().then(function() {
-          td.verify(warnDouble(contains('build/webpack.dev.conf')));
+          td.verify(warnDouble(contains(path.join('build', 'webpack.dev.conf'))));
           done();
         }).catch(done);
       });
@@ -133,7 +133,7 @@ describe('Validate Webpack Plugin', function() {
 
       it('warns and resolves', function(done) {
         validator.run().then(function() {
-          td.verify(warnDouble(contains('build/webpack.dev.conf')));
+          td.verify(warnDouble(contains(path.join('build', 'webpack.dev.conf'))));
           done();
         }).catch(done);
       });
@@ -179,7 +179,7 @@ describe('Validate Webpack Plugin', function() {
 
       it('warns and resolves', function(done) {
         validator.run().then(function() {
-          td.verify(warnDouble(contains('config/webpack.config.dev.js')));
+          td.verify(warnDouble(contains(path.join('config', 'webpack.config.dev.js'))));
           done();
         }).catch(done);
       });
@@ -195,7 +195,7 @@ describe('Validate Webpack Plugin', function() {
 
       it('warns and resolves', function(done) {
         validator.run().then(function() {
-          td.verify(warnDouble(contains('config/webpack.config.dev.js')));
+          td.verify(warnDouble(contains(path.join('config', 'webpack.config.dev.js'))));
           done();
         }).catch(done);
       });

@@ -3,6 +3,7 @@ const expect         = require('../../helpers/expect');
 const Promise        = require('rsvp');
 const mockProject    = require('../../fixtures/corber-mock/project');
 const mockAnalytics  = require('../../fixtures/corber-mock/analytics');
+const path           = require('path');
 
 describe('Build Command', function() {
   let baseOpts, tasks;
@@ -172,7 +173,7 @@ describe('Build Command', function() {
     let build = setupBuild();
     return build.run(baseOpts).then(function() {
       td.verify(new AddCordovaJS({
-        source: 'corber/cordova/www/index.html'
+        source: path.join('corber', 'cordova', 'www', 'index.html')
       }));
     });
   });
@@ -181,7 +182,7 @@ describe('Build Command', function() {
     let build = setupBuild();
     return build.run(baseOpts).then(function() {
       td.verify(new LintTask({
-        source: 'corber/cordova/www/index.html',
+        source: path.join('corber', 'cordova', 'www', 'index.html')
       }));
     });
   });
@@ -192,10 +193,10 @@ describe('Build Command', function() {
 
     return build.run(baseOpts).then(function() {
       td.verify(new AddCordovaJS({
-        source: 'foo/index.html'
+        source: path.join('foo', 'index.html')
       }));
       td.verify(new LintTask({
-        source: 'foo/index.html'
+        source: path.join('foo', 'index.html')
       }));
     });
   });
