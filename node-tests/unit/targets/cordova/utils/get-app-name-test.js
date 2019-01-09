@@ -15,6 +15,10 @@ describe('Get App Name Util', function() {
     });
   });
 
+  afterEach(() => {
+    td.reset();
+  });
+
   it('should return the correct app name', function() {
     let project = mockProject.project;
     expect(getAppName(project)).to.eventually.equal('fooApp');

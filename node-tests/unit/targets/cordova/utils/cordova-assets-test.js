@@ -7,6 +7,10 @@ const path            = require('path');
 const contains        = td.matchers.contains;
 
 describe('Get Platform Assets Util', function() {
+  afterEach(() => {
+    td.reset();
+  });
+
   describe('getPaths', function() {
     it('is valid for ios', function() {
       let assets = cordovaAssets.getPaths('ios', 'fakeProjectPath');
