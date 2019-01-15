@@ -63,6 +63,7 @@
     "ember-cli-babel": "^7.1.0",
     "fs-extra": "^5.0.0",
     "htmlparser2": "^3.9.2",
+    "ios-deploy": "^1.9.4",
     "leek": "0.0.24",
     "lodash": "^4.13.1",
     "pbxproj-dom": "^1.0.11",
