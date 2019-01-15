@@ -55,10 +55,10 @@ describe('IOS Target', function() {
   });
 
   context('build', function() {
-    it('runs buildEm passsing the right args', function() {
+    it('runs build passsing the right args', function() {
       let buildArgs = {};
-      td.replace(`${libPath}/targets/ios/tasks/build-emulator`, function(uuid, buildPath, scheme, iosPath) {
-        buildArgs.uuid = uuid;
+      td.replace(`${libPath}/targets/ios/tasks/build`, function(device, buildPath, scheme, iosPath) {
+        buildArgs.uuid = device.uuid;
         buildArgs.buildPath = buildPath;
         buildArgs.scheme = scheme;
         buildArgs.iosPath = iosPath;
@@ -81,8 +81,8 @@ describe('IOS Target', function() {
       });
     });
 
-    it('sets builtPath', function() {
-      td.replace(`${libPath}/targets/ios/tasks/build-emulator`, function() {
+    it('sets builtPath correctly for emulator', function() {
+      td.replace(`${libPath}/targets/ios/tasks/build`, function() {
         return Promise.resolve();
       });
 
@@ -93,41 +93,77 @@ describe('IOS Target', function() {
         expect(target.builtPath).to.equal(expectedPath);
       });
     });
-  });
 
-  context('run', function() {
-    it('runs tasks in the correct order', function() {
-      let tasks = [];
-
-      td.replace(`${libPath}/targets/ios/tasks/boot-emulator`, function() {
-        tasks.push('boot-emulator');
-        return Promise.resolve();
-      });
-
-      td.replace(`${libPath}/targets/ios/tasks/open-emulator`, function() {
-        tasks.push('open-emulator');
-        return Promise.resolve();
-      });
-
-      td.replace(`${libPath}/targets/ios/tasks/install-app-emulator`, function() {
-        tasks.push('install-app');
-        return Promise.resolve();
-      });
-
-      td.replace(`${libPath}/targets/ios/tasks/launch-app-emulator`, function() {
-        tasks.push('launch-app');
-        return Promise.resolve();
-      });
-
-      let target = setupTarget();
-      return target.run().then(function() {
-        expect(tasks).to.deep.equal([
-          'boot-emulator',
-          'open-emulator',
-          'install-app',
-          'launch-app'
-        ]);
-      });
+    xit('sets builtPath correctly for device', function() {
     });
   });
+
+  it('run calls runEmulator when deviceType is emulator', function() {
+    let target = setupTarget();
+    let runEmulator = td.replace(target, 'runEmulator');
+
+    target.run();
+    td.verify(runEmulator());
+  });
+
+  it('run calls runDevice when deviceType is device', function() {
+    let target = setupTarget();
+    let runDevice = td.replace(target, 'runDevice');
+
+    target.device.deviceType = 'device';
+
+    target.run();
+    td.verify(runDevice());
+  });
+
+  it('runEmulator runs tasks in the correct order', function() {
+    let tasks = [];
+
+    td.replace(`${libPath}/targets/ios/tasks/boot-emulator`, function() {
+      tasks.push('boot-emulator');
+      return Promise.resolve();
+    });
+
+    td.replace(`${libPath}/targets/ios/tasks/open-emulator`, function() {
+      tasks.push('open-emulator');
+      return Promise.resolve();
+    });
+
+    td.replace(`${libPath}/targets/ios/tasks/install-app-emulator`, function() {
+      tasks.push('install-app');
+      return Promise.resolve();
+    });
+
+    td.replace(`${libPath}/targets/ios/tasks/launch-app-emulator`, function() {
+      tasks.push('launch-app');
+      return Promise.resolve();
+    });
+
+    let target = setupTarget();
+    return target.runEmulator().then(function() {
+      expect(tasks).to.deep.equal([
+        'boot-emulator',
+        'open-emulator',
+        'install-app',
+        'launch-app'
+      ]);
+    });
+  });
+
+  it('runDevice runs tasks in the correct order', function() {
+    let tasks = [];
+
+    td.replace(`${libPath}/targets/ios/tasks/install-app-device`, function() {
+      tasks.push('install-app-device');
+      return Promise.resolve();
+    });
+
+    let target = setupTarget();
+    return target.runDevice().then(function() {
+      expect(tasks).to.deep.equal([
+        'install-app-device'
+      ]);
+    });
+  });
+
 });
