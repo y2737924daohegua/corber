@@ -81,7 +81,7 @@ describe('IOS Target', function() {
       });
     });
 
-    it('sets builtPath correctly for emulator', function() {
+    it('sets ipaPath correctly for emulator', function() {
       td.replace(`${libPath}/targets/ios/tasks/build`, function() {
         return Promise.resolve();
       });
@@ -90,11 +90,11 @@ describe('IOS Target', function() {
 
       return target.build().then(function() {
         let expectedPath = path.join(mockProject.project.root, 'corber', 'cordova', 'platforms', 'ios', 'tmp', 'builds', 'Build', 'Products', 'Debug-iphonesimulator', 'emberCordovaDummyApp.app');
-        expect(target.builtPath).to.equal(expectedPath);
+        expect(target.ipaPath).to.equal(expectedPath);
       });
     });
 
-    it('sets builtPath correctly for device', function() {
+    it('sets ipaPath correctly for device', function() {
       td.replace(`${libPath}/targets/ios/tasks/build`, function() {
         return Promise.resolve();
       });
@@ -107,7 +107,7 @@ describe('IOS Target', function() {
       target.device.deviceType = 'device';
 
       return target.build().then(function() {
-        expect(target.builtPath).to.equal('derived-path');
+        expect(target.ipaPath).to.equal('derived-path');
       });
     });
   });
