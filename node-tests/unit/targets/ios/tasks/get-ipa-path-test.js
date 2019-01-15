@@ -1,6 +1,5 @@
 const td              = require('testdouble');
 const expect          = require('../../../../helpers/expect');
-const Device          = require('../../../../../lib/objects/device');
 const Promise         = require('rsvp').Promise;
 
 const scheme          = 'corberApp';
