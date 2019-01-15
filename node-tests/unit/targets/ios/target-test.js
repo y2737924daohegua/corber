@@ -94,7 +94,21 @@ describe('IOS Target', function() {
       });
     });
 
-    xit('sets builtPath correctly for device', function() {
+    it('sets builtPath correctly for device', function() {
+      td.replace(`${libPath}/targets/ios/tasks/build`, function() {
+        return Promise.resolve();
+      });
+
+      td.replace(`${libPath}/targets/ios/tasks/get-ipa-path`, function() {
+        return Promise.resolve('derived-path');
+      });
+
+      let target = setupTarget();
+      target.device.deviceType = 'device';
+
+      return target.build().then(function() {
+        expect(target.builtPath).to.equal('derived-path');
+      });
     });
   });
 
