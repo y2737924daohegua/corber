@@ -3,27 +3,27 @@ const expect     = require('../../../../helpers/expect');
 const Promise    = require('rsvp').Promise;
 
 const emulatorId = 'emulatorId';
-const appName    = 'appName';
+const ipaPath    = 'ipa-path';
 
 const spawnArgs = [
   '/usr/bin/xcrun',
   [
     'simctl',
-    'launch',
+    'install',
     emulatorId,
-    appName
+    ipaPath
   ]
 ];
 
-describe('IOS Launch App', () => {
-  let launchApp;
+describe('IOS Install App Emulator', function() {
+  let installApp;
   let spawn;
 
   beforeEach(() => {
     spawn = td.replace('../../../../../lib/utils/spawn');
     td.when(spawn(...spawnArgs)).thenReturn(Promise.resolve({ code: 0 }));
 
-    launchApp = require('../../../../../lib/targets/ios/tasks/launch-app');
+    installApp = require('../../../../../lib/targets/ios/tasks/install-app-emulator');
   });
 
   afterEach(() => {
@@ -36,22 +36,22 @@ describe('IOS Launch App', () => {
     td.when(spawn(), { ignoreExtraArgs: true })
       .thenReturn(Promise.resolve());
 
-    return launchApp(emulatorId, appName).then(() => {
+    return installApp(emulatorId, ipaPath).then(() => {
       td.verify(spawn(...spawnArgs));
 
       td.config({ ignoreWarnings: false });
     });
   });
 
-  it('spawns xcrun and resolves with exit code', () => {
-    return expect(launchApp(emulatorId, appName))
+  it('spawns scrun and resolves with exit code', () => {
+    return expect(installApp(emulatorId, ipaPath))
       .to.eventually.deep.equal({ code: 0 });
   });
 
   it('bubbles up error message when spawn rejects', () => {
     td.when(spawn(...spawnArgs)).thenReturn(Promise.reject('spawn error'));
 
-    return expect(launchApp(emulatorId, appName))
+    return expect(installApp(emulatorId, ipaPath))
       .to.eventually.be.rejectedWith('spawn error');
   });
 });

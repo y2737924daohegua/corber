@@ -109,12 +109,12 @@ describe('IOS Target', function() {
         return Promise.resolve();
       });
 
-      td.replace(`${libPath}/targets/ios/tasks/install-app`, function() {
+      td.replace(`${libPath}/targets/ios/tasks/install-app-emulator`, function() {
         tasks.push('install-app');
         return Promise.resolve();
       });
 
-      td.replace(`${libPath}/targets/ios/tasks/launch-app`, function() {
+      td.replace(`${libPath}/targets/ios/tasks/launch-app-emulator`, function() {
         tasks.push('launch-app');
         return Promise.resolve();
       });
