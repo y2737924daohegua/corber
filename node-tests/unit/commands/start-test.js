@@ -23,6 +23,7 @@ describe('Start Command', () => {
 
   // getInstalledDevices()
   let iosListEmulators;
+  let iosListDevices;
   let androidListEmulators;
   let androidListDevices;
 
@@ -46,6 +47,7 @@ describe('Start Command', () => {
 
     // getInstalledDevices()
     iosListEmulators     = td.replace('../../../lib/targets/ios/tasks/list-emulators');
+    iosListDevices       = td.replace('../../../lib/targets/ios/tasks/list-devices');
     androidListEmulators = td.replace('../../../lib/targets/android/tasks/list-emulators');
     androidListDevices   = td.replace('../../../lib/targets/android/tasks/list-devices');
 
@@ -332,16 +334,21 @@ describe('Start Command', () => {
 
   describe('getInstalledDevices', () => {
     let iosEmulator;
+    let iosDevice;
     let androidDevice;
     let androidEmulator;
 
     beforeEach(() => {
       iosEmulator = { name: 'iOS Emulator' };
+      iosDevice = { name: 'iOS Device' };
       androidDevice = { name: 'Android Device' };
       androidEmulator = { name: 'Android Emulator' };
 
       td.when(iosListEmulators())
         .thenReturn(Promise.resolve([iosEmulator]));
+
+      td.when(iosListDevices())
+        .thenReturn(Promise.resolve([iosDevice]));
 
       td.when(androidListEmulators())
         .thenReturn(Promise.resolve([androidEmulator]));
@@ -353,6 +360,7 @@ describe('Start Command', () => {
     it('gets everything when `ios`, `android` are both platforms', () => {
       return start.getInstalledDevices(['ios', 'android']).then((devices) => {
         expect(devices).to.contain(iosEmulator);
+        expect(devices).to.contain(iosDevice);
         expect(devices).to.contain(androidDevice);
         expect(devices).to.contain(androidEmulator);
       });
@@ -361,6 +369,7 @@ describe('Start Command', () => {
     it('gets ios emulators when `ios` is only platform', () => {
       return start.getInstalledDevices(['ios']).then((devices) => {
         expect(devices).to.contain(iosEmulator);
+        expect(devices).to.contain(iosDevice);
         expect(devices).to.not.contain(androidEmulator);
         expect(devices).to.not.contain(androidDevice);
       });
@@ -369,6 +378,7 @@ describe('Start Command', () => {
     it('gets android devices/emulators when `android` is only platform', () => {
       return start.getInstalledDevices(['android']).then((devices) => {
         expect(devices).to.not.contain(iosEmulator);
+        expect(devices).to.not.contain(iosDevice);
         expect(devices).to.contain(androidEmulator);
         expect(devices).to.contain(androidDevice);
       });
