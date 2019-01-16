@@ -164,19 +164,48 @@ describe('IOS Target', function() {
     });
   });
 
-  it('runDevice runs tasks in the correct order', function() {
-    let tasks = [];
+  context('runDevice', function() {
+    it('runDevice runs tasks in the correct order', function() {
+      let tasks = [];
 
-    td.replace(`${libPath}/targets/ios/tasks/install-app-device`, function() {
-      tasks.push('install-app-device');
-      return Promise.resolve();
+      let ValidateSigning = td.replace(`${libPath}/targets/ios/validators/signing-identity`);
+      td.replace(ValidateSigning.prototype, 'run', function() {
+        tasks.push('validate-signing');
+        return Promise.resolve();
+      });
+
+      td.replace(`${libPath}/targets/ios/tasks/install-app-device`, function() {
+        tasks.push('install-app-device');
+        return Promise.resolve();
+      });
+
+      let target = setupTarget();
+      return target.runDevice().then(function() {
+        expect(tasks).to.deep.equal([
+          'validate-signing',
+          'install-app-device'
+        ]);
+      });
     });
 
-    let target = setupTarget();
-    return target.runDevice().then(function() {
-      expect(tasks).to.deep.equal([
-        'install-app-device'
-      ]);
+    it('runDevice logs error if signing fails', function() {
+      let logger = td.replace(`${libPath}/utils/logger`);
+      td.replace(logger, 'error');
+
+      let ValidateSigning = td.replace(`${libPath}/targets/ios/validators/signing-identity`);
+      td.replace(ValidateSigning.prototype, 'run', function() {
+        return Promise.reject();
+      });
+
+      td.replace(`${libPath}/targets/ios/tasks/install-app-device`, function() {
+        return Promise.resolve();
+      });
+
+      let target = setupTarget();
+
+      return target.runDevice().catch(function() {
+        td.verify(logger.error(td.matchers.contains('Could not run start on your iOS device')));
+      });
     });
   });
 
