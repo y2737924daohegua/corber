@@ -66,20 +66,9 @@ describe('Plugin Command', () => {
     return plugin.run(opts, rawArgs).then(() => {
       td.verify(new RawTask({
         project: mockProject.project,
-        api: 'plugins'
+        api: 'plugin'
       }));
     });
-  });
-
-  it('rejects with message if no plugins are specified', () => {
-    td.when(AddonArgs.prototype.run())
-      .thenReturn(Promise.resolve({
-        action: 'add',
-        name: []
-      }));
-
-    return expect(plugin.run(opts, ['add']))
-      .to.eventually.be.rejectedWith(/no plugin specified/);
   });
 
   it('logs an error if no plugins are specified', () => {
@@ -207,12 +196,6 @@ describe('Plugin Command', () => {
         .thenReturn(Promise.reject('plugin task error'));
     });
 
-    it('logs the error', () => {
-      return plugin.run(opts, rawArgs).catch(() => {
-        td.verify(logger.error('plugin task error'));
-      });
-    });
-
     it('rejects with same error', () => {
       return expect(plugin.run(opts, rawArgs))
         .to.eventually.be.rejectedWith(/plugin task error/);
@@ -222,13 +205,13 @@ describe('Plugin Command', () => {
   context('when adding a plugin', () => {
     it('logs action to info', () => {
       return plugin.run(opts, rawArgs).then(() => {
-        td.verify(logger.info('Adding plugin cordova-plugin'));
+        td.verify(logger.info(contains('add plugin \'cordova-plugin\'')));
       });
     });
 
     it('logs success on completion', () => {
       return plugin.run(opts, rawArgs).then(() => {
-        td.verify(logger.success('Added plugin cordova-plugin'));
+        td.verify(logger.success(contains('action complete')));
       });
     });
   });
@@ -244,13 +227,13 @@ describe('Plugin Command', () => {
 
     it('logs action to info', () => {
       return plugin.run(opts, rawArgs).then(() => {
-        td.verify(logger.info('Removing plugin cordova-plugin'));
+        td.verify(logger.info(contains('remove plugin \'cordova-plugin\'')));
       });
     });
 
     it('logs success on completion', () => {
       return plugin.run(opts, rawArgs).then(() => {
-        td.verify(logger.success('Removed plugin cordova-plugin'));
+        td.verify(logger.success(contains('action complete')));
       });
     });
   });
