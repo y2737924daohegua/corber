@@ -2,6 +2,7 @@
 'use strict';
 
 process.title               = 'corber';
+process.env.CORBER          = true;
 
 const CLI                   = require('ember-cli/lib/cli/cli.js');
 const Project               = require('ember-cli/lib/models/project.js');
