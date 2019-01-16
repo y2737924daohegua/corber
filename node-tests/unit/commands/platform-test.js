@@ -40,11 +40,29 @@ describe('Platform Command', () => {
     platform.analytics = mockAnalytics;
 
     opts = {};
-    tasks = [];
+    rawArgs = [];
   });
 
   afterEach(() => {
     td.reset();
+  });
+
+  it('logs error if validator returns unsupported platform', () => {
+    td.when(AddonArgsValidator.prototype.run())
+      .thenReturn(Promise.resolve({ action: 'add', name: 'foo' }))
+
+    return platform.run(opts, rawArgs).then(() => {
+      td.verify(logger.error('\'foo\' is not a supported platform'));
+    });
+  });
+
+  it('logs error if validator returns no platform', () => {
+    td.when(AddonArgsValidator.prototype.run())
+      .thenReturn(Promise.resolve({ action: 'add', name: undefined }))
+
+    return platform.run(opts, rawArgs).then(() => {
+      td.verify(logger.error('no platform specified'));
+    });
   });
 
   describe('add platform action', () => {
@@ -55,24 +73,15 @@ describe('Platform Command', () => {
       rawArgs = ['platform', 'add', 'ios'];
     });
 
-    it('instantiates argument sanitizer with correct args and api', () => {
-      return platform.run(opts, rawArgs).then(() => {
-        td.verify(new AddonArgsValidator({
-          api: 'platform',
-          rawArgs
-        }));
-      });
-    });
-
     it('logs action to info', () => {
       return platform.run(opts, rawArgs).then(() => {
-        td.verify(logger.info('Adding platform ios'));
+        td.verify(logger.info('adding platform \'ios\'...'));
       });
     });
 
     it('logs success on completion', () => {
       return platform.run(opts, rawArgs).then(() => {
-        td.verify(logger.success('Added platform ios'));
+        td.verify(logger.success('added platform \'ios\''));
       });
     });
 
@@ -86,6 +95,8 @@ describe('Platform Command', () => {
       td.replace(AddonArgsValidator.prototype, 'run', stubTask('validate args', { action: 'add', name: 'ios' }));
       td.replace(PlatformTask.prototype, 'run', stubTask('add platform ios'));
       td.replace(HookTask.prototype, 'run', stubTask((name) => `hook ${name}`));
+
+      tasks = [];
 
       return platform.run(opts, rawArgs).then(() => {
         expect(tasks).to.deep.equal([
@@ -108,13 +119,13 @@ describe('Platform Command', () => {
 
     it('logs action to info', () => {
       return platform.run(opts, rawArgs).then(() => {
-        td.verify(logger.info('Removing platform android'));
+        td.verify(logger.info('removing platform \'android\'...'));
       });
     });
 
     it('logs success on completion', () => {
       return platform.run(opts, rawArgs).then(() => {
-        td.verify(logger.success('Removed platform android'));
+        td.verify(logger.success('removed platform \'android\''));
       });
     });
 
@@ -128,6 +139,8 @@ describe('Platform Command', () => {
       td.replace(AddonArgsValidator.prototype, 'run', stubTask('validate args', { action: 'remove', name: 'android' }));
       td.replace(PlatformTask.prototype, 'run', stubTask('remove platform android'));
       td.replace(HookTask.prototype, 'run', stubTask((name) => `hook ${name}`));
+
+      tasks = [];
 
       return platform.run(opts, rawArgs).then(() => {
         expect(tasks).to.deep.equal([
