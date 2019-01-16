@@ -1,46 +1,58 @@
-'use strict';
+const td              = require('testdouble');
+const expect          = require('../../helpers/expect');
+const Promise         = require('rsvp').Promise;
 
-var td              = require('testdouble');
-var expect          = require('../../helpers/expect');
-var Promise         = require('rsvp');
+const mockProject     = require('../../fixtures/corber-mock/project');
+const mockAnalytics   = require('../../fixtures/corber-mock/analytics');
 
-var PrepareCmd      = require('../../../lib/commands/prepare');
-var PrepareTask     = require('../../../lib/targets/cordova/tasks/prepare');
-var HookTask        = require('../../../lib/tasks/run-hook');
+describe('Prepare Command', () => {
+  let HookTask;
+  let PrepareTask;
 
-var mockProject     = require('../../fixtures/corber-mock/project');
-var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
+  let prepare;
+  let opts;
 
-describe('Prepare Command', function() {
-  var tasks, prepare;
+  let setupTaskTracking = (tasks) => {
+    let stubTask = (id, returnValue) => {
+      return (...args) => {
+        let label = typeof (id) === 'function' ? id(...args) : id;
+        tasks.push(label);
+        return Promise.resolve(returnValue);
+      }
+    };
 
-  beforeEach(function() {
-    tasks = [];
+    td.replace(HookTask.prototype, 'run', stubTask((name) => `hook ${name}`));
+    td.replace(PrepareTask.prototype, 'run', stubTask('prepare'));
+  };
 
-    prepare = new PrepareCmd({
+  beforeEach(() => {
+    HookTask    = td.replace('../../../lib/tasks/run-hook');
+    PrepareTask = td.replace('../../../lib/targets/cordova/tasks/prepare');
+
+    td.when(HookTask.prototype.run(), { ignoreExtraArgs: true })
+      .thenReturn(Promise.resolve());
+
+    let PrepareCommand = require('../../../lib/commands/prepare');
+
+    prepare = new PrepareCommand({
       project: mockProject.project
     });
+
     prepare.analytics = mockAnalytics;
 
-    td.replace(PrepareTask.prototype, 'run', function(hookName) {
-      tasks.push('prepare');
-    });
-
-    td.replace(HookTask.prototype, 'run', function(hookName, options) {
-      expect(options, `${hookName} options`).to.be.an('object');
-      tasks.push('hook ' + hookName);
-      return Promise.resolve();
-    });
+    opts = {};
   });
 
-  afterEach(function() {
-    PrepareTask.prototype.project = undefined;
-
+  afterEach(() => {
     td.reset();
   });
 
-  it('runs tasks in the correct order', function() {
-    return prepare.run({}).then(function() {
+  it('runs tasks in the correct order', () => {
+    let tasks = [];
+
+    setupTaskTracking(tasks);
+
+    return prepare.run(opts).then(() => {
       ////h-t ember-electron for the pattern
       expect(tasks).to.deep.equal([
         'hook beforePrepare',
