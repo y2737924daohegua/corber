@@ -4,8 +4,12 @@ node_js:
   - "6"
   - "8"
   - "9"
+  - "10"
 
 sudo: false
+
+os:
+  - osx
 
 cache:
   directories:
