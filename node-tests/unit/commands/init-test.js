@@ -3,6 +3,7 @@ const expect           = require('../../helpers/expect');
 const Promise          = require('rsvp').Promise;
 const mockProject      = require('../../fixtures/corber-mock/project');
 const isAnything       = td.matchers.anything();
+const contains         = td.matchers.contains;
 
 describe('Init Command', () => {
   let CreateProject;
@@ -10,6 +11,7 @@ describe('Init Command', () => {
   let fsUtils;
   let getOS;
   let getVersions;
+  let logger;
 
   let initCommand;
   let opts;
@@ -36,7 +38,7 @@ describe('Init Command', () => {
       }
     });
 
-    td.replace('../../../lib/utils/logger');
+    logger = td.replace('../../../lib/utils/logger');
 
     ui = td.object(['prompt']);
     td.when(ui.prompt(), { ignoreExtraArgs: true })
@@ -127,7 +129,7 @@ describe('Init Command', () => {
   });
 
   describe('validateAndRun', () => {
-    it('throws exception when corber initialized', () => {
+    it('logs error when corber initialized', () => {
       td.when(getVersions(mockProject.project.root)).thenReturn({
         corber: {
           project: {
@@ -136,12 +138,19 @@ describe('Init Command', () => {
         }
       });
 
-      return expect(() => initCommand.validateAndRun()).to.throw();
+      return initCommand.validateAndRun().then(() => {
+        let matcher = contains('corber is already present in your project\'s package.json');
+        td.verify(logger.error(matcher));
+      });
     });
 
-    it('throws exception when project corber folder exists', () => {
+    it('logs error when project corber folder exists', () => {
       td.when(fsUtils.existsSync('corber')).thenReturn(true);
-      return expect(() => initCommand.validateAndRun()).to.throw();
+
+      return initCommand.validateAndRun().then(() => {
+        let matcher = contains('project already contains a corber folder');
+        td.verify(logger.error(matcher));
+      });
     });
   });
 
