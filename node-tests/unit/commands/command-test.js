@@ -104,6 +104,11 @@ describe('Command', () => {
   });
 
   describe('run()', () => {
+    it('returns a resolved promise', () => {
+      let cmd = new Command(options);
+      expect(cmd.run()).to.eventually.be.fulfilled;
+    });
+
     it('sets log level with `options.quiet`', () => {
       let cmd = new Command(options);
       cmd.run({ quiet: true });

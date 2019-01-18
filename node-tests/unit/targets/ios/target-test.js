@@ -15,7 +15,7 @@ const stubEmulator = new Device({
   platform: 'ios',
   deviceType: 'emulator',
   state: 'Booted'
-}); 
+});
 
 const stubDevice = new Device({
   apiVersion: '11.1',

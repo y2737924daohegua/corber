@@ -1,74 +1,155 @@
 const td              = require('testdouble');
-const Promise         = require('rsvp');
+const expect          = require('../../helpers/expect');
+const Promise         = require('rsvp').Promise;
+
 const mockProject     = require('../../fixtures/corber-mock/project');
 const mockAnalytics   = require('../../fixtures/corber-mock/analytics');
-const expect          = require('../../helpers/expect');
 
-describe('Platform Command', function() {
+describe('Platform Command', () => {
+  let AddonArgsValidator;
+  let PlatformTask;
+  let HookTask;
+  let logger;
+
+  let platform;
+  let opts;
+  let rawArgs;
+
   let tasks;
 
-  afterEach(function() {
+  let stubTask = (id, returnValue) => {
+    return (...args) => {
+      let label = typeof (id) === 'function' ? id(...args) : id;
+      tasks.push(label);
+      return Promise.resolve(returnValue);
+    }
+  };
+
+  beforeEach(() => {
+    AddonArgsValidator = td.replace('../../../lib/targets/cordova/validators/addon-args');
+    PlatformTask       = td.replace('../../../lib/targets/cordova/tasks/platform');
+    HookTask           = td.replace('../../../lib/tasks/run-hook');
+    logger             = td.replace('../../../lib/utils/logger');
+
+    let PlatformCmd    = require('../../../lib/commands/platform');
+
+    platform = new PlatformCmd({
+      project: mockProject.project
+    });
+
+    platform.analytics = mockAnalytics;
+
+    opts = {};
+    rawArgs = [];
+  });
+
+  afterEach(() => {
     td.reset();
   });
 
-  const setupCommand = function() {
-    let HookTask        = td.replace('../../../lib/tasks/run-hook');
-    let PlatformCmd     = require('../../../lib/commands/platform');
+  it('logs error if validator returns unsupported platform', () => {
+    td.when(AddonArgsValidator.prototype.run())
+      .thenReturn(Promise.resolve({ action: 'add', name: 'foo' }))
 
-    tasks = [];
-
-    td.replace(HookTask.prototype, 'run', function(hookName, options) {
-      expect(options, `${hookName} options`).to.be.an('object');
-      tasks.push(`hook ${hookName}`);
-      return Promise.resolve();
-    });
-
-    let platform = new PlatformCmd({
-      project: mockProject.project,
-      analytics: mockAnalytics
-    });
-    return platform;
-  };
-
-  it('validates and calls Platform.run', function() {
-    let PlatformTask = td.replace('../../../lib/targets/cordova/tasks/platform');
-
-    td.replace(PlatformTask.prototype, 'run', function(action, name) {
-      tasks.push(`${action} ${name}`);
-      return Promise.resolve();
-    });
-
-    let command = setupCommand();
-
-    return command.run({}, ['platform', 'add', 'ios']).then(function() {
-      expect(tasks).to.deep.equal([
-        'hook beforePlatformAdd',
-        'add platform',
-        'hook afterPlatformAdd'
-      ]);
-
-      td.verify(new PlatformTask({
-        project: mockProject.project
-      }));
+    return platform.run(opts, rawArgs).then(() => {
+      td.verify(logger.error('\'foo\' is not a supported platform'));
     });
   });
 
-  it('runs before/after hooks for Platform.run remove', function() {
-    let PlatformTask = td.replace('../../../lib/targets/cordova/tasks/platform');
+  it('logs error if validator returns no platform', () => {
+    td.when(AddonArgsValidator.prototype.run())
+      .thenReturn(Promise.resolve({ action: 'add', name: undefined }))
 
-    td.replace(PlatformTask.prototype, 'run', (action, name) => {
-      tasks.push(`${action} ${name}`);
-      return Promise.resolve();
+    return platform.run(opts, rawArgs).then(() => {
+      td.verify(logger.error('no platform specified'));
+    });
+  });
+
+  describe('add platform action', () => {
+    beforeEach(() => {
+      td.when(AddonArgsValidator.prototype.run())
+        .thenReturn(Promise.resolve({ action: 'add', name: 'ios' }));
+
+      rawArgs = ['platform', 'add', 'ios'];
     });
 
-    let command = setupCommand();
+    it('logs action to info', () => {
+      return platform.run(opts, rawArgs).then(() => {
+        td.verify(logger.info('adding platform \'ios\'...'));
+      });
+    });
 
-    return command.run({}, ['platform', 'remove', 'ios']).then(() => {
-      expect(tasks).to.deep.equal([
-        'hook beforePlatformRemove',
-        'remove platform',
-        'hook afterPlatformRemove'
-      ]);
+    it('logs success on completion', () => {
+      return platform.run(opts, rawArgs).then(() => {
+        td.verify(logger.success('added platform \'ios\''));
+      });
+    });
+
+    it('calls platformTask.run()', () => {
+      return platform.run(opts, rawArgs).then(() => {
+        td.verify(PlatformTask.prototype.run('add', 'ios', opts));
+      });
+    });
+
+    it('performs tasks in correct order', () => {
+      td.replace(AddonArgsValidator.prototype, 'run', stubTask('validate args', { action: 'add', name: 'ios' }));
+      td.replace(PlatformTask.prototype, 'run', stubTask('add platform ios'));
+      td.replace(HookTask.prototype, 'run', stubTask((name) => `hook ${name}`));
+
+      tasks = [];
+
+      return platform.run(opts, rawArgs).then(() => {
+        expect(tasks).to.deep.equal([
+          'validate args',
+          'hook beforePlatformAdd',
+          'add platform ios',
+          'hook afterPlatformAdd'
+        ]);
+      });
+    })
+  });
+
+  describe('remove platform action', () => {
+    beforeEach(() => {
+      td.when(AddonArgsValidator.prototype.run())
+        .thenReturn(Promise.resolve({ action: 'remove', name: 'android' }));
+
+      rawArgs = ['platform', 'remove', 'android'];
+    });
+
+    it('logs action to info', () => {
+      return platform.run(opts, rawArgs).then(() => {
+        td.verify(logger.info('removing platform \'android\'...'));
+      });
+    });
+
+    it('logs success on completion', () => {
+      return platform.run(opts, rawArgs).then(() => {
+        td.verify(logger.success('removed platform \'android\''));
+      });
+    });
+
+    it('calls platformTask.run()', () => {
+      return platform.run(opts, rawArgs).then(() => {
+        td.verify(PlatformTask.prototype.run('remove', 'android', opts));
+      });
+    });
+
+    it('performs tasks in correct order', () => {
+      td.replace(AddonArgsValidator.prototype, 'run', stubTask('validate args', { action: 'remove', name: 'android' }));
+      td.replace(PlatformTask.prototype, 'run', stubTask('remove platform android'));
+      td.replace(HookTask.prototype, 'run', stubTask((name) => `hook ${name}`));
+
+      tasks = [];
+
+      return platform.run(opts, rawArgs).then(() => {
+        expect(tasks).to.deep.equal([
+          'validate args',
+          'hook beforePlatformRemove',
+          'remove platform android',
+          'hook afterPlatformRemove'
+        ]);
+      });
     });
   });
 });

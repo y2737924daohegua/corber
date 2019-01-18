@@ -1,44 +1,42 @@
-'use strict';
+const td            = require('testdouble');
+const Promise       = require('rsvp').Promise;
+const mockProject   = require('../../fixtures/corber-mock/project');
+const mockAnalytics = require('../../fixtures/corber-mock/analytics');
 
-var td              = require('testdouble');
-var expect          = require('../../helpers/expect');
-var Promise         = require('rsvp').Promise;
-var LintTask        = require('../../../lib/tasks/lint-index');
-var mockProject     = require('../../fixtures/corber-mock/project');
-var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
+describe('Lint Index Command', () => {
+  let LintTask;
 
-var LintCommand     = require('../../../lib/commands/lint-index');
+  let lint;
+  let opts;
 
-describe('Lint Index Command', function() {
-  var command;
+  beforeEach(() => {
+    LintTask = td.replace('../../../lib/tasks/lint-index');
 
-  afterEach(td.reset);
+    td.when(LintTask.prototype.run()).thenReturn(Promise.resolve());
 
-  beforeEach(function() {
-    command = new LintCommand({
+    let LintCommand = require('../../../lib/commands/lint-index');
+
+    lint = new LintCommand({
       project: mockProject.project
     });
-    command.analytics = mockAnalytics;
+
+    lint.analytics = mockAnalytics;
+
+    opts = {};
   });
 
-  context('when options contains source', function() {
-    var options = { source: 'www/index.html' };
-    var subject, lintTaskRunCount;
+  afterEach(() => {
+    td.reset();
+  });
 
-    beforeEach(function() {
-      lintTaskRunCount = 0;
+  context('when options contains source', () => {
+    it('calls Lint Index Task', () => {
+      opts.source = 'www/index.html';
 
-      td.replace(LintTask.prototype, 'run', function() {
-        lintTaskRunCount++;
-        return Promise.resolve();
-      });
-
-      subject = command.run(options);
-    });
-
-    it('calls Lint Index Task', function() {
-      return subject.then(function() {
-        expect(lintTaskRunCount).to.eql(1);
+      return lint.run(opts).then(() => {
+        td.config({ ignoreWarnings: true });
+        td.verify(LintTask.prototype.run());
+        td.config({ ignoreWarnings: false });
       });
     });
   });
