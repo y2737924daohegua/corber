@@ -8,9 +8,6 @@ node_js:
 
 sudo: false
 
-os:
-  - osx
-
 cache:
   directories:
     - node_modules
