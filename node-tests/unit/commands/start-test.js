@@ -1,344 +1,432 @@
 const td              = require('testdouble');
 const expect          = require('../../helpers/expect');
 const Promise         = require('rsvp');
-const LRloadShell     = require('../../../lib/tasks/create-livereload-shell');
-const CdvTarget       = require('../../../lib/targets/cordova/target');
-const CdvRaw          = require('../../../lib/targets/cordova/tasks/raw');
-const IOSTarget       = require('../../../lib/targets/ios/target');
-const Hook            = require('../../../lib/tasks/run-hook');
 const mockProject     = require('../../fixtures/corber-mock/project');
 const mockAnalytics   = require('../../fixtures/corber-mock/analytics');
+const lodash          = require('lodash');
+const RSVP            = require('rsvp');
 
-const iosEmulators = [{
-  id: 1,
-  name: 'iOS Em 1',
-  label() {
-    return 'iOS Em 1 Label';
-  },
-  state: 'Booted',
-  platform: 'ios',
-  deviceType: 'device'
-}, {
-  id: 2,
-  name: 'iOS Em 2',
-  label() {
-    return 'iOS Em 2 Label';
-  },
-  state: 'Shutdown',
-  platform: 'ios',
-  deviceType: 'device'
-}];
+describe('Start Command', () => {
+  // run()
+  let Hook;
+  let CreateLRShell;
+  let CordovaTarget;
+  let CordovaRawTask;
+  let editXml;
+  let IOSTarget;
+  let AndroidTarget;
+  let logger;
+  let requireFramework;
 
-const androidEmulators = [{
-  id: 1,
-  name: 'Android Em 1',
-  label() {
-    return 'Android Em 1 Label';
-  },
-  platform: 'android',
-  deviceType: 'emulator'
-}];
+  // buildReloadUrl()
+  let getNetworkIp;
 
-const androidDevices = [{
-  id: 1,
-  name: 'Android Device 1',
-  label() {
-    return 'Android Device 1 Label';
-  },
-  platform: 'android',
-  deviceType: 'device'
-}];
+  // getInstalledDevices()
+  let iosListEmulators;
+  let iosListDevices;
+  let androidListEmulators;
+  let androidListDevices;
 
-const setupStart = function() {
-  let StartCmd = require('../../../lib/commands/start');
-  let start = new StartCmd({
-    project: mockProject.project
+  let project;
+  let start;
+
+  beforeEach(() => {
+    // run()
+    Hook                 = td.replace('../../../lib/tasks/run-hook');
+    CreateLRShell        = td.replace('../../../lib/tasks/create-livereload-shell');
+    CordovaTarget        = td.replace('../../../lib/targets/cordova/target');
+    CordovaRawTask       = td.replace('../../../lib/targets/cordova/tasks/raw');
+    editXml              = td.replace('../../../lib/targets/cordova/utils/edit-xml');
+    IOSTarget            = td.replace('../../../lib/targets/ios/target');
+    AndroidTarget        = td.replace('../../../lib/targets/android/target');
+    logger               = td.replace('../../../lib/utils/logger');
+    requireFramework     = td.replace('../../../lib/utils/require-framework');
+
+    // buildReloadUrl()
+    getNetworkIp         = td.replace('../../../lib/utils/get-network-ip');
+
+    // getInstalledDevices()
+    iosListEmulators     = td.replace('../../../lib/targets/ios/tasks/list-emulators');
+    iosListDevices       = td.replace('../../../lib/targets/ios/tasks/list-devices');
+    androidListEmulators = td.replace('../../../lib/targets/android/tasks/list-emulators');
+    androidListDevices   = td.replace('../../../lib/targets/android/tasks/list-devices');
+
+    project = lodash.cloneDeep(mockProject.project);
+    project.config = () => {
+      return {
+        locationType: 'hash',
+      };
+    };
+
+    let StartCmd = require('../../../lib/commands/start');
+    start = new StartCmd({
+      project
+    });
+
+    start.analytics = mockAnalytics;
   });
 
-  start.analytics = mockAnalytics;
-  start.project.config = function() {
-    return {
-      locationType: 'hash',
-
-    };
-  };
-
-  return start;
-};
-
-describe('Start Command', function() {
-  afterEach(function() {
+  afterEach(() => {
     td.reset();
   });
 
-  context('run', function() {
-    let start, tasks;
-    beforeEach(function() {
+  context('run', () => {
+    let tasks;
+    let iosDevice, androidDevice;
+
+    let stubTask = (id, returnValue) => {
+      return (...args) => {
+        let label = typeof (id) === 'function' ? id(...args) : id;
+        tasks.push(label);
+        return Promise.resolve(returnValue);
+      }
+    };
+
+    beforeEach(() => {
       tasks = [];
 
-      td.replace('../../../lib/targets/cordova/utils/edit-xml', {
-        addNavigation: function() {
-          tasks.push('add-navigation');
-          return Promise.resolve();
-        },
+      iosDevice = {
+        id: '1',
+        name: 'iOS Device',
+        platform: 'ios'
+      };
 
-        removeNavigation: function() {
-          tasks.push('remove-navigation');
-          return Promise.resolve();
-        }
+      androidDevice = {
+        id: '2',
+        name: 'Android Device',
+        platform: 'android'
+      };
+
+      td.replace(start, 'buildReloadUrl');
+      td.when(start.buildReloadUrl(), { ignoreExtraArgs: true })
+        .thenReturn('http://192.168.0.1');
+
+      td.replace(start, 'selectPlatforms', stubTask('select-platforms', ['ios', 'android']));
+      td.replace(start, 'selectDevice', stubTask('select-device', iosDevice));
+
+      td.when(requireFramework(project)).thenReturn({
+        validateServe: stubTask('framework-validate-serve'),
+        serve: stubTask('framework-serve')
       });
 
-      td.replace('../../../lib/utils/require-framework', function() {
-        return {
-          validateServe() {
-            tasks.push('framework-validate-serve');
-            return Promise.resolve();
-          },
+      Hook.prototype.run = stubTask((hookName) => `hook-${hookName}`);
+      CreateLRShell.prototype.run = stubTask('create-livereload-shell');
+      CordovaTarget.prototype.validateServe = stubTask('cordova-validate-serve');
+      CordovaRawTask.prototype.run = stubTask('cordova-prepare');
+      editXml.addNavigation = stubTask('add-navigation');
+      editXml.removeNavigation = stubTask('remove-navigation');
+      IOSTarget.prototype.build = stubTask('ios-platform-build');
+      IOSTarget.prototype.run = stubTask('ios-platform-run');
+      AndroidTarget.prototype.build = stubTask('android-platform-build');
+      AndroidTarget.prototype.run = stubTask('android-platform-run');
+    });
 
-          serve() {
-            tasks.push('framework-serve');
-            return Promise.resolve();
-          }
-        };
-      });
-
-      td.replace(IOSTarget.prototype, 'build', function() {
-        tasks.push('platform-target-build');
-        return Promise.resolve();
-      });
-
-      td.replace(IOSTarget.prototype, 'run', function() {
-        tasks.push('platform-target-run');
-        return Promise.resolve();
-      });
-
-      td.replace(Hook.prototype, 'run', function(hookName, options) {
-        tasks.push(`hook-${hookName}`);
-        return Promise.resolve();
-      });
-
-      td.replace(CdvTarget.prototype, 'validateServe', function() {
-        tasks.push('cordova-validate-serve');
-        return Promise.resolve();
-      });
-
-      td.replace(CdvTarget.prototype, 'getInstalledPlatforms', function() {
-        return Promise.resolve(['ios']);
-      });
-
-      td.replace(LRloadShell.prototype, 'run', function() {
-        tasks.push('create-livereload-shell');
-        return Promise.resolve();
-      });
-
-      td.replace(CdvRaw.prototype, 'run', function() {
-        tasks.push('cordova-prepare');
-        return Promise.resolve();
-      });
-
-      start = setupStart();
-
-      td.replace(start, 'selectDevice', function() {
-        tasks.push('select-emulator');
-        return Promise.resolve({name: 'emulator', platform: 'ios'});
+    it('logs starting message to info', () => {
+      return start.run().then(() => {
+        td.verify(logger.info('Corber Starting'));
       });
     });
 
-    it('run runs tasks in the correct order', function() {
-      return start.run({}).then(function() {
+    it('runs tasks in the correct order for ios device', () => {
+      return start.run().then(() => {
         expect(tasks).to.deep.equal([
-          'select-emulator',
+          'select-platforms',
+          'select-device',
           'hook-beforeBuild',
           'add-navigation',
           'cordova-validate-serve',
           'framework-validate-serve',
           'create-livereload-shell',
           'cordova-prepare',
-          'platform-target-build',
+          'ios-platform-build',
           'hook-afterBuild',
-          'platform-target-run',
+          'ios-platform-run',
           'framework-serve',
           'remove-navigation'
         ]);
       });
     });
 
-    it('skips platformTarget build with --scb', function() {
-      return start.run({skipCordovaBuild: true}).then(function() {
+    it('runs tasks in the correct order for android device', () => {
+      td.replace(start, 'selectDevice', stubTask('select-device', androidDevice));
+
+      return start.run().then(() => {
         expect(tasks).to.deep.equal([
-          'select-emulator',
+          'select-platforms',
+          'select-device',
           'hook-beforeBuild',
           'add-navigation',
           'cordova-validate-serve',
           'framework-validate-serve',
           'create-livereload-shell',
           'cordova-prepare',
+          'android-platform-build',
           'hook-afterBuild',
-          'platform-target-run',
+          'android-platform-run',
           'framework-serve',
           'remove-navigation'
         ]);
       });
     });
 
-    it('skips framework serve with --sfb', function() {
-      return start.run({skipFrameworkBuild: true}).then(function() {
-        expect(tasks).to.deep.equal([
-          'select-emulator',
-          'hook-beforeBuild',
-          'add-navigation',
-          'cordova-validate-serve',
-          'framework-validate-serve',
-          'create-livereload-shell',
-          'cordova-prepare',
-          'platform-target-build',
-          'hook-afterBuild',
-          'platform-target-run',
-          'remove-navigation'
-        ]);
+    it('sets vars for webpack livereload', () => {
+      return start.run({ build: false, platform: 'ios' }).then(() => {
+        expect(project.CORBER_PLATFORM).to.equal('ios')
       });
     });
 
-    it('sets vars for webpack livereload', function() {
-      return start.run({build: false, platform: 'ios'}).then(function() {
-        expect(mockProject.project.CORBER_PLATFORM).to.equal('ios')
-      });
-    });
+    it('sets process.env.CORBER_PLATFORM & CORBER_LIVERELOAD', () => {
+      process.env.CORBER_PLATFORM = undefined;
+      process.env.CORBER_LIVERELOAD = undefined;
 
-    it('sets process.env.CORBER_PLATFORM & CORBER_LIVERELOAD', function() {
-      return start.run({build: false, platform: 'ios'}).then(function() {
+      return start.run({ build: false, platform: 'ios' }).then(() => {
         expect(process.env.CORBER_PLATFORM).to.equal('ios');
         expect(process.env.CORBER_LIVERELOAD).to.equal('true');
       });
     });
   });
 
-  describe('getReloadURL', function() {
-    it('defaults to reloadUrl when provided', function() {
-      let start = setupStart();
-      let reloadUrl = start.getReloadUrl(1000, 'reloadUrl');
-      expect(reloadUrl).to.equal('reloadUrl');
+  describe('buildReloadUrl', () => {
+    beforeEach(() => {
+      td.when(getNetworkIp()).thenReturn('192.168.0.1');
     });
 
-    it('generates with options.port and networkAddress', function() {
-      td.replace('../../../lib/utils/get-network-ip', function() {
-        return 'networkAddress';
-      });
-
-      let start = setupStart();
-
-      let reloadUrl = start.getReloadUrl(1000);
-      expect(reloadUrl).to.equal('http://networkAddress:1000');
+    it('generates url with port argument', () => {
+      expect(start.buildReloadUrl(1000)).to.equal('http://192.168.0.1:1000');
     });
 
-    it('generates with framework.port when options is not passed', function() {
-      td.replace('../../../lib/utils/get-network-ip', function() {
-        return 'networkAddress';
-      });
+    it('generates url with framework.port when port argument omitted', () => {
+      let framework = { port: 3000 };
+      let reloadUrl = start.buildReloadUrl(undefined, undefined, framework);
+      expect(reloadUrl).to.equal('http://192.168.0.1:3000');
+    });
 
-      let start = setupStart();
-
-      let reloadUrl = start.getReloadUrl(undefined, undefined, { port: 'frameworkPort' });
-      expect(reloadUrl).to.equal('http://networkAddress:frameworkPort');
+    it('omits port if port argument and framework port are omitted', () => {
+      td.when(getNetworkIp()).thenReturn('192.168.0.1');
+      expect(start.buildReloadUrl()).to.equal('http://192.168.0.1');
     });
   });
 
-  describe('selectDevice', function() {
-    beforeEach(function() {
-      td.replace('../../../lib/targets/ios/tasks/list-emulators', function() {
-        return Promise.resolve(iosEmulators);
-      });
+  describe('selectPlatforms', () => {
+    let target;
 
-      td.replace('../../../lib/targets/android/tasks/list-emulators', function() {
-        return Promise.resolve(androidEmulators);
-      });
+    beforeEach(() => {
+      target = new CordovaTarget();
 
-      td.replace('../../../lib/targets/android/tasks/list-devices', function() {
-        return Promise.resolve(androidDevices);
-      });
+      td.when(target.getInstalledPlatforms())
+        .thenReturn(Promise.resolve(['ios', 'android']));
     });
 
-    it('prompts for an emulator if one is not passed', function() {
-      let start = setupStart();
-
-      let promptArgs;
-      start.ui = {
-        prompt: function(opts) {
-          promptArgs = opts;
-          return Promise.resolve({emulator: iosEmulators[0]});
-        }
-      }
-
-      return start.selectDevice({emulator: '', platform: 'ios'}, ['ios']).then(function() {
-        expect(promptArgs.message).to.equal('Select a device/emulator');
-        expect(promptArgs.type).to.equal('list');
-        expect(promptArgs.choices[0].value).to.deep.equal(iosEmulators[0]);
-        expect(promptArgs.choices[1].value).to.deep.equal(iosEmulators[1]);
-      });
+    it('returns all installed platforms by default', () => {
+      return expect(start.selectPlatforms(target))
+        .to.eventually.deep.equal(['ios', 'android']);
     });
 
-    it('finds emulator by name', function() {
-      let start = setupStart();
+    it('rejects with instructions if no platforms are installed', () => {
+      td.when(target.getInstalledPlatforms()).thenReturn(Promise.resolve([]));
 
-      return start.selectDevice({emulator: 'iOS Em 1'}, ['ios']).then(function(selected) {
-        expect(selected).to.deep.equal(iosEmulators[0]);
-      });
+      let promise = start.selectPlatforms(target);
+
+      return RSVP.all([
+        expect(promise).to.eventually.be.rejectedWith(/No platforms installed/),
+        expect(promise).to.eventually.be.rejectedWith(/corber platform add/)
+      ]);
     });
 
-    it('only shows emulators for the selected platform', function() {
-      let start = setupStart();
-
-      let promptArgs;
-      start.ui = {
-        prompt: function(opts) {
-          promptArgs = opts;
-          return Promise.resolve({emulator: iosEmulators[0]});
-        }
-      }
-
-      return start.selectDevice({emulator: '', platform: 'android'}, ['android']).then(function() {
-        expect(promptArgs.choices.length).to.equal(2);
+    context('when a platform is specified', () => {
+      it('returns only that platform', () => {
+        return expect(start.selectPlatforms(target, { platform: 'ios' }))
+          .to.eventually.deep.equal(['ios']);
       });
-    });
 
-    it('defaults to including emulators from both platforms', function() {
-      let start = setupStart();
+      it('rejects if platform is unsupported', () => {
+        return expect(start.selectPlatforms(target, { platform: 'foo' }))
+          .to.eventually.be.rejectedWith(/not a supported platform/);
+      });
 
-      let promptArgs;
-      start.ui = {
-        prompt: function(opts) {
-          promptArgs = opts;
-          return Promise.resolve({emulator: iosEmulators[0]});
-        }
-      }
+      it('rejects if platform is not installed', () => {
+        td.when(target.getInstalledPlatforms())
+          .thenReturn(Promise.resolve(['android']));
 
-      return start.selectDevice({emulator: ''}, ['ios', 'android']).then(function() {
-        expect(promptArgs.choices.length).to.equal(4);
+        return expect(start.selectPlatforms(target, { platform: 'ios' }))
+          .to.eventually.be.rejectedWith(/not installed/);
       });
     });
   });
 
-  describe('validatePlatform', function() {
-    afterEach(function() {
-      td.reset();
-    });
+  describe('selectDevice', () => {
+    let device;
 
-    it('throws an error when builds are for a platform that is not installed', function() {
-      let start = setupStart();
-      let fn = () => {
-        start.validatePlatform(['ios'], 'android');
+    beforeEach(() => {
+      device = {
+        id: '1',
+        name: 'iPhone X',
+        platform: 'ios',
+        label() { return 'Apple iPhone X'; }
       };
 
-      expect(fn).to.throw();
+      td.replace(start, 'promptForDevice');
+      td.when(start.promptForDevice(), { ignoreExtraArgs: true })
+        .thenReturn(Promise.resolve(device));
+
+      td.replace(start, 'getInstalledDevices');
+      td.when(start.getInstalledDevices(), { ignoreExtraArgs: true })
+        .thenReturn(Promise.resolve([device]));
     });
 
-    it('passes when builds are for an installed platform', function() {
-      let logger = td.replace('../../../lib/utils/logger');
+    it('prompts for a device by default', () => {
+      return start.selectDevice(['ios']).then(() => {
+        td.config({ ignoreWarnings: true });
+        td.verify(start.promptForDevice([device]))
+        td.config({ ignoreWarnings: false });
+      });
+    });
 
-      let start = setupStart();
-      start.validatePlatform(['ios'], 'ios');
+    context('when no devices are found', () => {
+      beforeEach(() => {
+        td.when(start.getInstalledDevices(), { ignoreExtraArgs: true })
+          .thenReturn(Promise.resolve([]));
+      });
 
-      td.verify(logger.error(), { times: 0 });
+      it('rejects with ios instructions if ios was selected', () => {
+        let promise = start.selectDevice(['ios']);
+
+        return RSVP.all([
+          expect(promise).to.eventually.be.rejectedWith(/No emulators or devices found/),
+          expect(promise).to.eventually.be.rejectedWith(/sudo xcode-select/)
+        ]);
+      });
+
+      it('rejects without ios instructions if ios not selected', () => {
+        let promise = start.selectDevice(['android']);
+
+        return RSVP.all([
+          expect(promise).to.eventually.be.rejectedWith(/No emulators or devices found/),
+          expect(promise).to.not.eventually.be.rejectedWith(/sudo xcode-select/)
+        ]);
+      })
+    });
+
+    context('when emulator [name] is specified', () => {
+      it('resolves with emulator if it exists', () => {
+        return expect(start.selectDevice(['ios'], { emulator: 'iPhone X' }))
+          .to.eventually.deep.equal(device);
+      });
+
+      it('rejects if no emulator matches', () => {
+        return expect(start.selectDevice(['ios'], { emulator: 'iPhone 6' }))
+          .to.eventually.be.rejectedWith(/no device/);
+      });
+    });
+
+    context('when emulator id is specified', () => {
+      it('resolves with emulator if it exists', () => {
+        return expect(start.selectDevice(['ios'], { emulatorId: '1' }))
+          .to.eventually.deep.equal(device);
+      });
+
+      it('rejects if no emulator matches', () => {
+        return expect(start.selectDevice(['ios'], { emulatorId: '2' }))
+          .to.eventually.be.rejectedWith(/no device/);
+      });
+    });
+  });
+
+  describe('getInstalledDevices', () => {
+    let iosEmulator;
+    let iosDevice;
+    let androidDevice;
+    let androidEmulator;
+
+    beforeEach(() => {
+      iosEmulator = { name: 'iOS Emulator' };
+      iosDevice = { name: 'iOS Device' };
+      androidDevice = { name: 'Android Device' };
+      androidEmulator = { name: 'Android Emulator' };
+
+      td.when(iosListEmulators())
+        .thenReturn(Promise.resolve([iosEmulator]));
+
+      td.when(iosListDevices())
+        .thenReturn(Promise.resolve([iosDevice]));
+
+      td.when(androidListEmulators())
+        .thenReturn(Promise.resolve([androidEmulator]));
+
+      td.when(androidListDevices())
+        .thenReturn(Promise.resolve([androidDevice]));
+    });
+
+    it('gets everything when `ios`, `android` are both platforms', () => {
+      return start.getInstalledDevices(['ios', 'android']).then((devices) => {
+        expect(devices).to.contain(iosEmulator);
+        expect(devices).to.contain(iosDevice);
+        expect(devices).to.contain(androidDevice);
+        expect(devices).to.contain(androidEmulator);
+      });
+    });
+
+    it('gets ios emulators when `ios` is only platform', () => {
+      return start.getInstalledDevices(['ios']).then((devices) => {
+        expect(devices).to.contain(iosEmulator);
+        expect(devices).to.contain(iosDevice);
+        expect(devices).to.not.contain(androidEmulator);
+        expect(devices).to.not.contain(androidDevice);
+      });
+    });
+
+    it('gets android devices/emulators when `android` is only platform', () => {
+      return start.getInstalledDevices(['android']).then((devices) => {
+        expect(devices).to.not.contain(iosEmulator);
+        expect(devices).to.not.contain(iosDevice);
+        expect(devices).to.contain(androidEmulator);
+        expect(devices).to.contain(androidDevice);
+      });
+    });
+  });
+
+  describe('promptForDevice', () => {
+    let devices;
+
+    beforeEach(() => {
+      devices = [{
+        id: '1',
+        label() { return 'iPhone X' }
+      }, {
+        id: '2',
+        label() { return 'Galaxy Note' }
+      }];
+
+      start.ui = td.object(['prompt']);
+      td.when(start.ui.prompt(), { ignoreExtraArgs: true })
+        .thenReturn(Promise.resolve({ device: devices[1] }));
+    });
+
+    it('opens UI prompt with correct options', () => {
+      return start.promptForDevice(devices).then(() => {
+        td.config({ ignoreWarnings: true });
+        td.verify(start.ui.prompt({
+          type: 'list',
+          name: 'device',
+          message: 'Select a device/emulator',
+          pageSize: 30,
+          choices: [{
+            key: 0,
+            name: 'iPhone X',
+            value: devices[0]
+          }, {
+            key: 1,
+            name: 'Galaxy Note',
+            value: devices[1]
+          }]
+        }));
+        td.config({ ignoreWarnings: false });
+      });
+    });
+
+    it('returns the device selected by prompt', () => {
+      return expect(start.promptForDevice(devices))
+        .to.eventually.deep.equal(devices[1]);
     });
   });
 });

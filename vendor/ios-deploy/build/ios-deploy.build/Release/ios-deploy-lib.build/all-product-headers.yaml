@@ -1,0 +1,17 @@
+{
+  'version': 0,
+  'case-sensitive': 'false',
+  'roots': [
+    {
+      'type': 'directory',
+      'name': "/Users/alexblom/Desktop/dev/corber/node_modules/ios-deploy/build/Release",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "libios_deploy.h",
+          'external-contents': "/Users/alexblom/Desktop/dev/corber/node_modules/ios-deploy/src/ios-deploy-lib/libios_deploy.h"
+        }
+      ]
+    }
+  ]
+}

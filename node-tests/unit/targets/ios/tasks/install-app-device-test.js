@@ -2,28 +2,30 @@ const td         = require('testdouble');
 const expect     = require('../../../../helpers/expect');
 const Promise    = require('rsvp').Promise;
 
-const emulatorId = 'emulatorId';
-const appName    = 'appName';
+const deviceId   = 'deviceId';
+const bundlePath = 'bundlePath';
+const rootPath   = 'rootPath';
 
 const spawnArgs = [
-  '/usr/bin/xcrun',
+  'rootPath/node_modules/corber/vendor/ios-deploy/build/Release/ios-deploy',
   [
-    'simctl',
-    'launch',
-    emulatorId,
-    appName
+    '--id',
+    deviceId,
+    '--bundle',
+    bundlePath,
+    '--justlaunch'
   ]
 ];
 
-describe('IOS Launch App', () => {
-  let launchApp;
+describe('IOS Install App Device', function() {
+  let installApp;
   let spawn;
 
   beforeEach(() => {
     spawn = td.replace('../../../../../lib/utils/spawn');
     td.when(spawn(...spawnArgs)).thenReturn(Promise.resolve({ code: 0 }));
 
-    launchApp = require('../../../../../lib/targets/ios/tasks/launch-app');
+    installApp = require('../../../../../lib/targets/ios/tasks/install-app-device');
   });
 
   afterEach(() => {
@@ -36,22 +38,16 @@ describe('IOS Launch App', () => {
     td.when(spawn(), { ignoreExtraArgs: true })
       .thenReturn(Promise.resolve());
 
-    return launchApp(emulatorId, appName).then(() => {
+    return installApp(deviceId, bundlePath, rootPath).then(() => {
       td.verify(spawn(...spawnArgs));
 
       td.config({ ignoreWarnings: false });
     });
   });
 
-  it('spawns xcrun and resolves with exit code', () => {
-    return expect(launchApp(emulatorId, appName))
+  it('spawns task and resolves with exit code', () => {
+    return expect(installApp(deviceId, bundlePath, rootPath))
       .to.eventually.deep.equal({ code: 0 });
   });
-
-  it('bubbles up error message when spawn rejects', () => {
-    td.when(spawn(...spawnArgs)).thenReturn(Promise.reject('spawn error'));
-
-    return expect(launchApp(emulatorId, appName))
-      .to.eventually.be.rejectedWith('spawn error');
-  });
 });
+
