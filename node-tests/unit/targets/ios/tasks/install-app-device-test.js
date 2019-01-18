@@ -7,7 +7,7 @@ const bundlePath = 'bundlePath';
 const rootPath   = 'rootPath';
 
 const spawnArgs = [
-  'rootPath/node_modules/corber/node_modules/ios-deploy/build/Release/ios-deploy',
+  'rootPath/node_modules/corber/vendor/ios-deploy/build/Release/ios-deploy',
   [
     '--id',
     deviceId,
