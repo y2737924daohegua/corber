@@ -8,11 +8,11 @@ const lodash         = require('lodash');
 
 describe('Build Command', () => {
   let HookTask;
-  let LintTask;
 
-  let addCordovaJS;
-  let requireTarget;
   let requireFramework;
+  let requireTarget;
+  let addCordovaJS;
+  let lintIndex;
 
   let project;
   let build;
@@ -37,9 +37,9 @@ describe('Build Command', () => {
     };
 
     HookTask.prototype.run = stubTask((name) => `hook ${name}`);
-    LintTask.prototype.run = stubTask('lint-index');
 
     td.replace('../../../lib/tasks/add-cordova-js', stubTask('add-cordova-js'));
+    td.replace('../../../lib/tasks/lint-index', stubTask('lint-index'));
 
     td.when(requireTarget(project), { ignoreExtraArgs: true }).thenReturn({
       validateBuild: stubTask('cordova-target-validate-build'),
@@ -54,11 +54,11 @@ describe('Build Command', () => {
 
   beforeEach(() => {
     HookTask = td.replace('../../../lib/tasks/run-hook');
-    LintTask = td.replace('../../../lib/tasks/lint-index');
 
-    addCordovaJS = td.replace('../../../lib/tasks/add-cordova-js');
-    requireTarget = td.replace('../../../lib/utils/require-target');
     requireFramework = td.replace('../../../lib/utils/require-framework');
+    requireTarget    = td.replace('../../../lib/utils/require-target');
+    addCordovaJS     = td.replace('../../../lib/tasks/add-cordova-js');
+    lintIndex        = td.replace('../../../lib/tasks/lint-index');
 
     td.replace('../../../lib/utils/logger');
 
@@ -194,9 +194,8 @@ describe('Build Command', () => {
     setupCommand();
 
     return build.run(opts).then(() => {
-      td.verify(new LintTask({
-        source: path.join('corber', 'cordova', 'www', 'index.html')
-      }));
+      let source = path.join('corber', 'cordova', 'www', 'index.html');
+      td.verify(lintIndex(source));
     });
   });
 
@@ -208,9 +207,7 @@ describe('Build Command', () => {
     return build.run(opts).then(() => {
       let source = path.join('foo', 'index.html');
       td.verify(addCordovaJS(source));
-      td.verify(new LintTask({
-        source: path.join('foo', 'index.html')
-      }));
+      td.verify(lintIndex(path.join('foo', 'index.html')));
     });
   });
 
