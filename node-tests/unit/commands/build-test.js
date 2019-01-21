@@ -7,53 +7,73 @@ const path           = require('path');
 const lodash         = require('lodash');
 
 describe('Build Command', () => {
-  let AddCordovaJS;
+  let HookTask;
   let LintTask;
 
-  let build;
-  let opts
+  let addCordovaJS;
+  let requireTarget;
+  let requireFramework;
 
-  let tasks;
-  let stubTask = (id, returnValue) => {
-    return (...args) => {
-      let label = typeof (id) === 'function' ? id(...args) : id;
-      tasks.push(label);
-      return Promise.resolve(returnValue);
-    }
+  let project;
+  let build;
+  let opts;
+
+  let setupCommand = () => {
+    let BuildCmd = require('../../../lib/commands/build');
+    build = new BuildCmd({
+      project
+    });
+
+    build.analytics = mockAnalytics;
+  };
+
+  let setupTaskTracking = (tasks) => {
+    let stubTask = (id, returnValue) => {
+      return (...args) => {
+        let label = typeof (id) === 'function' ? id(...args) : id;
+        tasks.push(label);
+        return Promise.resolve(returnValue);
+      }
+    };
+
+    HookTask.prototype.run = stubTask((name) => `hook ${name}`);
+    LintTask.prototype.run = stubTask('lint-index');
+
+    td.replace('../../../lib/tasks/add-cordova-js', stubTask('add-cordova-js'));
+
+    td.when(requireTarget(project), { ignoreExtraArgs: true }).thenReturn({
+      validateBuild: stubTask('cordova-target-validate-build'),
+      build: stubTask('cordova-target-build')
+    });
+
+    td.when(requireFramework(project)).thenReturn({
+      validateBuild: stubTask('framework-validate-build'),
+      build: stubTask('framework-build')
+    });
   };
 
   beforeEach(() => {
-    tasks = [];
+    HookTask = td.replace('../../../lib/tasks/run-hook');
+    LintTask = td.replace('../../../lib/tasks/lint-index');
 
-    let project = lodash.cloneDeep(mockProject.project);
+    addCordovaJS = td.replace('../../../lib/tasks/add-cordova-js');
+    requireTarget = td.replace('../../../lib/utils/require-target');
+    requireFramework = td.replace('../../../lib/utils/require-framework');
+
+    td.replace('../../../lib/utils/logger');
+
+    project = lodash.cloneDeep(mockProject.project);
     project.config = () => {
       return {
         locationType: 'hash'
       };
     };
 
-    let HookTask = td.replace('../../../lib/tasks/run-hook');
-    HookTask.prototype.run = stubTask((name) => `hook ${name}`);
+    td.when(requireTarget(project), { ignoreExtraArgs: true })
+      .thenReturn(td.object(['validateBuild', 'build']));
 
-    LintTask = td.replace('../../../lib/tasks/lint-index');
-    LintTask.prototype.run = stubTask('lint-index');
-
-    AddCordovaJS = td.replace('../../../lib/tasks/add-cordova-js');
-    AddCordovaJS.prototype.run = stubTask('add-cordova-js');
-
-    td.replace('../../../lib/utils/logger');
-
-    let requireTarget = td.replace('../../../lib/utils/require-target');
-    td.when(requireTarget(project), { ignoreExtraArgs: true }).thenReturn({
-      validateBuild: stubTask('cordova-target-validate-build'),
-      build: stubTask('cordova-target-build')
-    });
-
-    let requireFramework = td.replace('../../../lib/utils/require-framework');
-    td.when(requireFramework(project)).thenReturn({
-      validateBuild: stubTask('framework-validate-build'),
-      build: stubTask('framework-build')
-    });
+    td.when(requireFramework(project))
+      .thenReturn(td.object(['validateBuild', 'build']));
 
     let BuildCmd = require('../../../lib/commands/build');
     build = new BuildCmd({
@@ -77,6 +97,10 @@ describe('Build Command', () => {
   });
 
   it('runs tasks in the correct order', () => {
+    let tasks = [];
+    setupTaskTracking(tasks);
+    setupCommand();
+
     return build.run(opts).then(() => {
       //h-t ember-electron for the pattern
       expect(tasks).to.deep.equal([
@@ -93,6 +117,10 @@ describe('Build Command', () => {
   });
 
   it('skips ember-build with the --skip-ember-build flag', () => {
+    let tasks = [];
+    setupTaskTracking(tasks);
+    setupCommand();
+
     opts.skipFrameworkBuild = true;
 
     return build.run(opts)
@@ -110,6 +138,10 @@ describe('Build Command', () => {
   });
 
   it('adds cordova-js with --add-cordova-js --skip-framework-build flags', () => {
+    let tasks = [];
+    setupTaskTracking(tasks);
+    setupCommand();
+
     opts.skipFrameworkBuild = true;
     opts.addCordovaJs = true;
 
@@ -128,6 +160,10 @@ describe('Build Command', () => {
   });
 
   it('skips cordova-build with the --skip-cordova-build flag', () => {
+    let tasks = [];
+    setupTaskTracking(tasks);
+    setupCommand();
+
     opts.skipCordovaBuild = true;
 
     return build.run(opts)
@@ -145,15 +181,18 @@ describe('Build Command', () => {
     });
   });
 
-  it('constructs AddCordovaJS as expected', () => {
+  it('calls addCordovaJS as expected', () => {
+    setupCommand();
+
     return build.run(opts).then(() => {
-      td.verify(new AddCordovaJS({
-        source: path.join('corber', 'cordova', 'www', 'index.html')
-      }));
+      let source = path.join('corber', 'cordova', 'www', 'index.html');
+      td.verify(addCordovaJS(source));
     });
   });
 
   it('constructs lint index as expected', () => {
+    setupCommand();
+
     return build.run(opts).then(() => {
       td.verify(new LintTask({
         source: path.join('corber', 'cordova', 'www', 'index.html')
@@ -162,12 +201,13 @@ describe('Build Command', () => {
   });
 
   it('supports custom output path with --cordova-output-path option', () => {
+    setupCommand();
+
     opts.cordovaOutputPath = 'foo';
 
     return build.run(opts).then(() => {
-      td.verify(new AddCordovaJS({
-        source: path.join('foo', 'index.html')
-      }));
+      let source = path.join('foo', 'index.html');
+      td.verify(addCordovaJS(source));
       td.verify(new LintTask({
         source: path.join('foo', 'index.html')
       }));
@@ -175,6 +215,8 @@ describe('Build Command', () => {
   });
 
   it('sets process.env.CORBER_PLATFORM', () => {
+    setupCommand();
+
     return build.run(opts).then(() => {
       expect(process.env.CORBER_PLATFORM).to.equal('ios');
     });
