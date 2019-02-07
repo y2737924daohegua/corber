@@ -8,7 +8,6 @@ const mockAnalytics   = require('../../fixtures/corber-mock/analytics');
 
 describe('Serve Command', () => {
   let editXML;
-  let HookTask;
   let CreateLRShellTask;
   let requireFramework;
   let requireTarget;
@@ -17,7 +16,6 @@ describe('Serve Command', () => {
   let mockFramework;
   let mockTarget;
 
-  let serve;
   let project;
   let opts;
 
@@ -30,9 +28,10 @@ describe('Serve Command', () => {
       }
     };
 
+    td.replace('../../../lib/tasks/run-hook', stubTask((name) => `hook ${name}`));
+
     td.replace(editXML, 'addNavigation', stubTask('add-navigation'));
     td.replace(editXML, 'removeNavigation', stubTask('remove-navigation'));
-    td.replace(HookTask.prototype, 'run', stubTask((name) => `hook ${name}`));
     td.replace(CreateLRShellTask.prototype, 'run', stubTask('create-livereload-shell'));
     td.replace(mockFramework, 'validateServe', stubTask('framework-validate-serve'));
     td.replace(mockFramework, 'serve', stubTask('framework-serve'));
@@ -40,11 +39,24 @@ describe('Serve Command', () => {
     td.replace(mockTarget, 'build', stubTask('cordova-build'));
   };
 
+  let setupCommand = () => {
+    let ServeCommand = require('../../../lib/commands/serve');
+
+    let serve = new ServeCommand({
+      project
+    });
+
+    serve.analytics = mockAnalytics;
+
+    return serve;
+  };
+
   beforeEach(() => {
     let getNetworkIp;
 
+    td.replace('../../../lib/tasks/run-hook');
+
     editXML           = td.replace('../../../lib/targets/cordova/utils/edit-xml');
-    HookTask          = td.replace('../../../lib/tasks/run-hook');
     CreateLRShellTask = td.replace('../../../lib/tasks/create-livereload-shell');
     requireFramework  = td.replace('../../../lib/utils/require-framework');
     requireTarget     = td.replace('../../../lib/utils/require-target');
@@ -67,14 +79,6 @@ describe('Serve Command', () => {
 
     td.when(getNetworkIp()).thenReturn('192.168.0.1');
 
-    let ServeCommand = require('../../../lib/commands/serve');
-
-    serve = new ServeCommand({
-      project
-    });
-
-    serve.analytics = mockAnalytics;
-
     opts = { platform: 'ios' };
   });
 
@@ -83,22 +87,30 @@ describe('Serve Command', () => {
   });
 
   it('to resolve on completion', () => {
+    let serve = setupCommand();
+
     return expect(serve.run(opts)).to.eventually.be.fulfilled;
   });
 
   it('advertises the start command', () => {
+    let serve = setupCommand();
+
     return serve.run(opts).then(() => {
       td.verify(logger.info(td.matchers.contains('corber start')));
     });
   });
 
   it('sets vars for webpack livereload', () => {
+    let serve = setupCommand();
+
     return serve.run(opts).then(() => {
       expect(project.CORBER_PLATFORM).to.equal('ios');
     });
   });
 
   it('sets process.env.CORBER_PLATFORM & CORBER_LIVERELOAD', () => {
+    let serve = setupCommand();
+
     return serve.run(opts).then(() => {
       expect(process.env.CORBER_PLATFORM).to.equal('ios');
       expect(process.env.CORBER_LIVERELOAD).to.equal('true');
@@ -108,6 +120,8 @@ describe('Serve Command', () => {
   it('runs tasks in the correct order', () => {
     let tasks = [];
     setupTaskTracking(tasks);
+
+    let serve = setupCommand();
 
     return serve.run(opts).then(() => {
       expect(tasks).to.deep.equal([
@@ -127,6 +141,8 @@ describe('Serve Command', () => {
   it('skips cordova builds with --skip-cordova-build flag', () => {
     let tasks = [];
     setupTaskTracking(tasks);
+
+    let serve = setupCommand();
 
     opts.skipCordovaBuild = true;
 
@@ -148,6 +164,8 @@ describe('Serve Command', () => {
     let tasks = [];
     setupTaskTracking(tasks);
 
+    let serve = setupCommand();
+
     opts.skipFrameworkServe = true;
 
     return serve.run(opts).then(() => {
@@ -165,6 +183,8 @@ describe('Serve Command', () => {
   });
 
   it('logs to info on serve', () => {
+    let serve = setupCommand();
+
     let getReloadUrl = td.replace(serve, 'getReloadUrl', td.function());
     td.when(getReloadUrl(), { ignoreExtraArgs: true }).thenReturn('url');
 

@@ -8,7 +8,6 @@ const RSVP            = require('rsvp');
 
 describe('Start Command', () => {
   // run()
-  let Hook;
   let CreateLRShell;
   let CordovaTarget;
   let CordovaRawTask;
@@ -30,9 +29,21 @@ describe('Start Command', () => {
   let project;
   let start;
 
+  let setupCommand = () => {
+    let StartCmd = require('../../../lib/commands/start');
+    start = new StartCmd({
+      project
+    });
+
+    start.analytics = mockAnalytics;
+
+    return start;
+  };
+
   beforeEach(() => {
     // run()
-    Hook                 = td.replace('../../../lib/tasks/run-hook');
+    td.replace('../../../lib/tasks/run-hook');
+
     CreateLRShell        = td.replace('../../../lib/tasks/create-livereload-shell');
     CordovaTarget        = td.replace('../../../lib/targets/cordova/target');
     CordovaRawTask       = td.replace('../../../lib/targets/cordova/tasks/raw');
@@ -58,12 +69,8 @@ describe('Start Command', () => {
       };
     };
 
-    let StartCmd = require('../../../lib/commands/start');
-    start = new StartCmd({
-      project
-    });
+    start = setupCommand();
 
-    start.analytics = mockAnalytics;
   });
 
   afterEach(() => {
@@ -71,6 +78,7 @@ describe('Start Command', () => {
   });
 
   context('run', () => {
+    let start;
     let tasks;
     let iosDevice, androidDevice;
 
@@ -97,6 +105,19 @@ describe('Start Command', () => {
         platform: 'android'
       };
 
+      td.replace('../../../lib/tasks/run-hook', stubTask((hookName) => `hook-${hookName}`));
+      CreateLRShell.prototype.run = stubTask('create-livereload-shell');
+      CordovaTarget.prototype.validateServe = stubTask('cordova-validate-serve');
+      CordovaRawTask.prototype.run = stubTask('cordova-prepare');
+      editXml.addNavigation = stubTask('add-navigation');
+      editXml.removeNavigation = stubTask('remove-navigation');
+      IOSTarget.prototype.build = stubTask('ios-platform-build');
+      IOSTarget.prototype.run = stubTask('ios-platform-run');
+      AndroidTarget.prototype.build = stubTask('android-platform-build');
+      AndroidTarget.prototype.run = stubTask('android-platform-run');
+
+      start = setupCommand();
+
       td.replace(start, 'buildReloadUrl');
       td.when(start.buildReloadUrl(), { ignoreExtraArgs: true })
         .thenReturn('http://192.168.0.1');
@@ -108,17 +129,6 @@ describe('Start Command', () => {
         validateServe: stubTask('framework-validate-serve'),
         serve: stubTask('framework-serve')
       });
-
-      Hook.prototype.run = stubTask((hookName) => `hook-${hookName}`);
-      CreateLRShell.prototype.run = stubTask('create-livereload-shell');
-      CordovaTarget.prototype.validateServe = stubTask('cordova-validate-serve');
-      CordovaRawTask.prototype.run = stubTask('cordova-prepare');
-      editXml.addNavigation = stubTask('add-navigation');
-      editXml.removeNavigation = stubTask('remove-navigation');
-      IOSTarget.prototype.build = stubTask('ios-platform-build');
-      IOSTarget.prototype.run = stubTask('ios-platform-run');
-      AndroidTarget.prototype.build = stubTask('android-platform-build');
-      AndroidTarget.prototype.run = stubTask('android-platform-run');
     });
 
     it('logs starting message to info', () => {
@@ -187,8 +197,11 @@ describe('Start Command', () => {
   });
 
   describe('buildReloadUrl', () => {
+    let start;
+
     beforeEach(() => {
       td.when(getNetworkIp()).thenReturn('192.168.0.1');
+      start = setupCommand();
     });
 
     it('generates url with port argument', () => {
@@ -208,6 +221,7 @@ describe('Start Command', () => {
   });
 
   describe('selectPlatforms', () => {
+    let start;
     let target;
 
     beforeEach(() => {
@@ -215,6 +229,8 @@ describe('Start Command', () => {
 
       td.when(target.getInstalledPlatforms())
         .thenReturn(Promise.resolve(['ios', 'android']));
+
+      start = setupCommand();
     });
 
     it('returns all installed platforms by default', () => {
@@ -255,6 +271,7 @@ describe('Start Command', () => {
   });
 
   describe('selectDevice', () => {
+    let start;
     let device;
 
     beforeEach(() => {
@@ -264,6 +281,8 @@ describe('Start Command', () => {
         platform: 'ios',
         label() { return 'Apple iPhone X'; }
       };
+
+      start = setupCommand();
 
       td.replace(start, 'promptForDevice');
       td.when(start.promptForDevice(), { ignoreExtraArgs: true })
@@ -333,6 +352,7 @@ describe('Start Command', () => {
   });
 
   describe('getInstalledDevices', () => {
+    let start;
     let iosEmulator;
     let iosDevice;
     let androidDevice;
@@ -355,6 +375,8 @@ describe('Start Command', () => {
 
       td.when(androidListDevices())
         .thenReturn(Promise.resolve([androidDevice]));
+
+      start = setupCommand();
     });
 
     it('gets everything when `ios`, `android` are both platforms', () => {
@@ -386,6 +408,7 @@ describe('Start Command', () => {
   });
 
   describe('promptForDevice', () => {
+    let start;
     let devices;
 
     beforeEach(() => {
@@ -396,6 +419,8 @@ describe('Start Command', () => {
         id: '2',
         label() { return 'Galaxy Note' }
       }];
+
+      start = setupCommand();
 
       start.ui = td.object(['prompt']);
       td.when(start.ui.prompt(), { ignoreExtraArgs: true })

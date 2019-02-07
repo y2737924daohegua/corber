@@ -6,10 +6,7 @@ const mockProject     = require('../../fixtures/corber-mock/project');
 const mockAnalytics   = require('../../fixtures/corber-mock/analytics');
 
 describe('Prepare Command', () => {
-  let HookTask;
   let PrepareTask;
-
-  let prepare;
   let opts;
 
   let setupTaskTracking = (tasks) => {
@@ -21,24 +18,26 @@ describe('Prepare Command', () => {
       }
     };
 
-    td.replace(HookTask.prototype, 'run', stubTask((name) => `hook ${name}`));
+    td.replace('../../../lib/tasks/run-hook', stubTask((name) => `hook ${name}`));
     td.replace(PrepareTask.prototype, 'run', stubTask('prepare'));
   };
 
-  beforeEach(() => {
-    HookTask    = td.replace('../../../lib/tasks/run-hook');
-    PrepareTask = td.replace('../../../lib/targets/cordova/tasks/prepare');
-
-    td.when(HookTask.prototype.run(), { ignoreExtraArgs: true })
-      .thenReturn(Promise.resolve());
-
+  let setupCommand = () => {
     let PrepareCommand = require('../../../lib/commands/prepare');
 
-    prepare = new PrepareCommand({
+    let prepare = new PrepareCommand({
       project: mockProject.project
     });
 
     prepare.analytics = mockAnalytics;
+
+    return prepare;
+  };
+
+  beforeEach(() => {
+    td.replace('../../../lib/tasks/run-hook');
+
+    PrepareTask = td.replace('../../../lib/targets/cordova/tasks/prepare');
 
     opts = {};
   });
@@ -51,6 +50,8 @@ describe('Prepare Command', () => {
     let tasks = [];
 
     setupTaskTracking(tasks);
+
+    let prepare = setupCommand();
 
     return prepare.run(opts).then(() => {
       ////h-t ember-electron for the pattern

@@ -7,8 +7,6 @@ const path           = require('path');
 const lodash         = require('lodash');
 
 describe('Build Command', () => {
-  let HookTask;
-
   let requireFramework;
   let requireTarget;
   let addCordovaJS;
@@ -36,8 +34,7 @@ describe('Build Command', () => {
       }
     };
 
-    HookTask.prototype.run = stubTask((name) => `hook ${name}`);
-
+    td.replace('../../../lib/tasks/run-hook', stubTask((name) => `hook ${name}`));
     td.replace('../../../lib/tasks/add-cordova-js', stubTask('add-cordova-js'));
     td.replace('../../../lib/tasks/lint-index', stubTask('lint-index'));
 
@@ -53,13 +50,12 @@ describe('Build Command', () => {
   };
 
   beforeEach(() => {
-    HookTask = td.replace('../../../lib/tasks/run-hook');
-
     requireFramework = td.replace('../../../lib/utils/require-framework');
     requireTarget    = td.replace('../../../lib/utils/require-target');
     addCordovaJS     = td.replace('../../../lib/tasks/add-cordova-js');
     lintIndex        = td.replace('../../../lib/tasks/lint-index');
 
+    td.replace('../../../lib/tasks/run-hook');
     td.replace('../../../lib/utils/logger');
 
     project = lodash.cloneDeep(mockProject.project);

@@ -1,41 +1,151 @@
+const td              = require('testdouble');
 const expect          = require('../../helpers/expect');
-const HookTask        = require('../../../lib/tasks/run-hook');
 const mockProject     = require('../../fixtures/corber-mock/project');
-const Promise         = require('rsvp').Promise;
+
+const root            = mockProject.project.root;
+const corberPath      = `${root}/corber`;
+const hookPath        = `${corberPath}/hooks/hook`;
 
 describe('Run Hook Task', () => {
-  it('runs a hook at the provided path', () => {
-    let hookTask = new HookTask(mockProject);
-    return expect(hookTask.run('hook')).to.be.fulfilled;
+  let fsUtils;
+  let logger;
+  let getCordovaPath;
+
+  let hook;
+  let opts;
+  let hookOpts;
+
+  let requireTask = () => require('../../../lib/tasks/run-hook');
+
+  beforeEach(() => {
+    fsUtils        = td.replace('../../../lib/utils/fs-utils');
+    logger         = td.replace('../../../lib/utils/logger');
+    getCordovaPath = td.replace('../../../lib/targets/cordova/utils/get-path');
+    hook           = td.replace(hookPath);
+
+    td.when(getCordovaPath({ root }, true)).thenReturn(corberPath);
+    td.when(fsUtils.existsSync(`${hookPath}.js`)).thenReturn(true);
+
+    opts = {
+      root
+    };
+
+    hookOpts = {};
   });
 
-  it('passes options to the hook', () => {
-    let options = {foo: true};
-    let hookTask = new HookTask(mockProject);
-    let taskRun = hookTask.run('hook-with-options', options);
-    return expect(taskRun).to.become(options);
+  afterEach(() => {
+    td.reset();
   });
 
-  it('runs a hook at the provided path that has an error', () => {
-    let hookTask = new HookTask(mockProject);
-    return expect(hookTask.run('hook-with-error')).to.eventually.be.rejected;
+  it('resolves on completion', () => {
+    let runHook = requireTask();
+    return expect(runHook('hook', hookOpts, opts)).to.eventually.be.fulfilled;
   });
 
-  it('is resolved if the hook is resolved', () => {
-    let hookTask = new HookTask(mockProject);
-    let expectation = expect(hookTask.run('hook-promise-resolved'));
-    return Promise.all([
-      expectation.to.eventually.equal('resolved promise from hook'),
-      expectation.to.eventually.be.fulfilled,
-    ]);
+  it('calls hook with passed options', () => {
+    let runHook = requireTask();
+    let hookOpts = { foo: true };
+
+    return runHook('hook', hookOpts, opts).then(() => {
+      td.verify(hook(hookOpts));
+    });
   });
 
-  it('is rejected if the hook is rejected', () => {
-    let hookTask = new HookTask(mockProject);
-    let expectation = expect(hookTask.run('hook-promise-rejected'));
-    return Promise.all([
-      expectation.to.eventually.equal('hook rejected'),
-      expectation.to.eventually.be.rejected,
-    ]);
+  it('logs a hook-loading message to info', () => {
+    let runHook = requireTask();
+    return runHook('hook', hookOpts, opts).then(() => {
+      td.verify(logger.info('Located hook \'hook\''));
+    });
+  });
+
+  it('logs to success on completion', () => {
+    let runHook = requireTask();
+    return runHook('hook', hookOpts, opts).then(() => {
+      td.verify(logger.success('Executed hook \'hook\''));
+    });
+  });
+
+  context('when hook does not exist', () => {
+    let runHook;
+
+    beforeEach(() => {
+      td.when(fsUtils.existsSync(`${hookPath}.js`)).thenReturn(false);
+      runHook = requireTask();
+    });
+
+    it('still resolves', () => {
+      return expect(runHook('hook', hookOpts, opts))
+        .to.eventually.be.fulfilled;
+    });
+
+    it('logs an error', () => {
+      return runHook('hook', hookOpts, opts).then(() => {
+        td.verify(logger.error('Could not locate hook \'hook\''));
+      });
+    });
+
+    it('does not log a success message', () => {
+      return runHook('hook', hookOpts, opts).then(() => {
+        td.verify(logger.success(), { ignoreExtraArgs: true, times: 0 });
+      });
+    });
+  });
+
+  context('when hook returns a resolved promise', () => {
+    let runHook;
+
+    beforeEach(() => {
+      td.replace(hookPath, () => Promise.resolve('resolved'));
+      runHook = requireTask();
+    });
+
+    it('resolves to same value', () => {
+      return expect(runHook('hook', hookOpts, opts))
+        .to.eventually.equal('resolved');
+    });
+  });
+
+  context('when hook throws an exception', () => {
+    let runHook;
+
+    beforeEach(() => {
+      td.replace(hookPath, () => {
+        throw 'error';
+      });
+
+      runHook = requireTask();
+    });
+
+    it('rejects with same error', () => {
+      return expect(runHook('hook', hookOpts, opts))
+        .to.eventually.be.rejectedWith('error');
+    });
+
+    it('logs an error', () => {
+      return runHook('hook', hookOpts, opts).catch((e) => {
+        td.verify(logger.error('Hook \'hook\' exited with exception: error'));
+      });
+    });
+  });
+
+  context('when hook returns a rejected promise', () => {
+    let runHook;
+
+    beforeEach(() => {
+      td.replace(hookPath, () => Promise.reject('hook rejected'));
+      runHook = requireTask();
+    });
+
+    it('logs an error', () => {
+      return runHook('hook', hookOpts, opts).catch((e) => {
+        td.verify(logger.error('Hook \'hook\' exited with rejection: hook rejected'));
+      });
+    });
+
+    it('rejects with rejected value', () => {
+      td.replace(hookPath, () => Promise.reject('hook rejected'));
+      return expect(runHook('hook', hookOpts, opts))
+        .to.eventually.be.rejectedWith('hook rejected');
+    });
   });
 });
