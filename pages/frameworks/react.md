@@ -1,6 +1,6 @@
 ---
 layout: page
-title:  "React Mobile Projects"
+title:  "React Mobile Apps"
 ---
 
 [React](https://reactjs.org/) support has been tested with apps from [Create React App](https://github.com/facebookincubator/create-react-app), but these steps should apply to any [webpack](https://webpack.js.org/) application.
@@ -21,3 +21,6 @@ Add the following to the `config/webpack.config.dev.js` plugins array:
     new CorberWebpackPlugin()
   ]
 ```
+
+**Next**:
+- [Development Workflow](/pages/workflow/development-workflow)

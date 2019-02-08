@@ -1,9 +1,9 @@
 ---
 layout: page
-title:  "Vue Mobile Projects"
+title:  "Vue.js Mobile Apps"
 ---
 
-There is no custom behaviour required for building Vue projects.
+There is no custom configuration required for static builds with Vue.js projects. 
 
 If you wish to use livereload - the `serve` and `start` commands - your vue config must be updated to include the `corber-webpack-plugin`. This plugin was installed for you when running `corber init`.
 
@@ -38,3 +38,7 @@ module.exports = {
 ###### Non-Vue CLI Projects
 
 Non-Vue CLI project should refer to the docs on extending frameworks.
+
+
+**Next**:
+- [Development Workflow](/pages/workflow/development-workflow)

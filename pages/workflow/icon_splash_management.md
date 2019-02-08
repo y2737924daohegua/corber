@@ -1,6 +1,6 @@
 ---
 layout: page
-title:  "Generate Icons & Splashscreens"
+title:  "Icons & Splashscreens"
 ---
 
 The `corber make-icons` and `corber make-splashes` commands generate all required icons and splashes for your added platforms from a single SVG. This is powered by a separate library called [splicon](https://github.com/isleofcode/splicon).

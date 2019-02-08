@@ -1,6 +1,6 @@
 ---
 layout: page
-title:  "Extending Framework Support"
+title:  "Extending Frameworks"
 ---
 
 #### Framework.js

@@ -1,6 +1,6 @@
 ---
 layout: page
-title:  "Hooks"
+title:  "Build Hooks"
 ---
 
 Use hooks for build-time customization, cleanup or warnings.

@@ -3,11 +3,11 @@ layout: page
 title:  "Committing & Cloning"
 ---
 
-#### Comitting & .gitignore
+#### Committing & .gitignore
 
 On install, Corber will update your gitignore to ignore non-essential files.
 
-The happy path involves checking in:
+When comitting your project, the happy path involves checking in:
 
 - `corber/config/framework.js`
 - The _empty_ `corber/www`, `plugin`, and `platform` directories. Corber maintains these as empty folders with a `.gitkeep` to avoid problems with Cordova APIs.

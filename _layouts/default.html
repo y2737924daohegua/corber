@@ -46,30 +46,40 @@
       <div class="row">
         <aside class="col-md-3 col-sm-3 sidebar">
           <ul class="sidenav sticky open">
-            <li><a href="{{ site.baseurl }}/">Getting Started</a></li>
+            <li><a href="{{ site.baseurl }}/">Home</a></li>
 
             <li>
               <a href="{{ site.baseurl }}/pages/cli">CLI Reference</a>
             </li>
 
             <li>
-              <a href="#">Installation / Quickstart</a>
+              <a href="#">Introduction</a>
+              <ul>
+                <li><a href="{{ site.baseurl}}/pages/about-corber">About Corber & Hybrid</a></li>
+                <li><a href="{{ site.baseurl}}/pages/core-concepts">Core Concepts</a></li>
+              </ul>
+
+            </li>
+            <li>
+              <a href="#">Setup Guide</a>
               <ul>
                 <li><a href="{{ site.baseurl}}/pages/installation">Installation</a></li>
-                <li><a href="{{ site.baseurl }}/pages/compatibility">Compatibility</a></li>
-		            <li> <a href="{{site.baseurl}}/pages/ios-setup">iOS Builds</a> </li>
-                <li><a href="{{ site.baseurl }}/pages/android-setup">Android Build</a></li>
+                <li> <b><u>Platform Setup</u></b> </li>
+                <li> <a href="{{site.baseurl}}/pages/ios-setup">iOS</a> </li>
+                <li><a href="{{ site.baseurl }}/pages/android-setup">Android</a></li>
+                <li> <b><u>Framework Setup</u></b> </li>
+                <li> <a href="{{ site.baseurl }}/pages/frameworks/ember">Ember & Glimmer</a> </li>
+                <li> <a href="{{ site.baseurl }}/pages/frameworks/vue">Vue.js</a> </li>
+                <li> <a href="{{ site.baseurl }}/pages/frameworks/react">React & Webpack</a> </li>
               </ul>
             </li>
 
             <li>
-              <a href="#">Frameworks</a>
+              <a href="#">Usage Guide</a>
               <ul>
-                <li> <a href="{{ site.baseurl }}/pages/frameworks/ember">Ember</a> </li>
-                <li> <a href="{{ site.baseurl }}/pages/frameworks/vue">Vue</a> </li>
-                <li> <a href="{{ site.baseurl }}/pages/frameworks/react">React/Webpack</a> </li>
-                <li> <a href="{{ site.baseurl }}/pages/frameworks/glimmer">Glimmer</a> </li>
-                <li> <a href="{{ site.baseurl }}/pages/frameworks/extending">Extending</a> </li>
+                <li> <a href="{{ site.baseurl }}/pages/workflow/development-workflow">Development Workflow</a> </li>
+                <li> <a href="{{ site.baseurl }}/pages/workflow/building">Static & Production Builds</a> </li>
+                <li> <a href="{{ site.baseurl }}/pages/workflow/plugins">Native Plugins</a> </li>
               </ul>
             </li>
 
@@ -77,14 +87,13 @@
               <a href="#">In-Depth</a>
               <ul>
                 <li><a href="{{ site.baseurl }}/pages/workflow/committing">Committing &amp; Cloning</a></li>
-                <li><a href="{{ site.baseurl }}/pages/workflow/livereload">Live Reload</a></li>
-                <li><a href="{{ site.baseurl }}/pages/workflow/building">Building</a></li>
+                <li> <a href="{{ site.baseurl }}/pages/frameworks/extending">Extending Frameworks</a> </li>
                 <li><a href="{{ site.baseurl }}/pages/workflow/hooks">Build Hooks</a></li>
                 <li><a href="{{ site.baseurl }}/pages/workflow/platforms">Platforms</a></li>
                 <li><a href="{{ site.baseurl }}/pages/workflow/default_webviews">Default WebViews</a></li>
                 <li><a href="{{ site.baseurl }}/pages/workflow/icon_splash_management">Icons &amp; Splashscreens</a></li>
-                <li><a href="{{ site.baseurl }}/pages/addons/ember">Ember Plugins</a></li>
-                <li><a href="{{ site.baseurl }}/pages/optimizing-ember-builds">Optimizing Ember Builds</a></li>
+
+
                 <li><a href="{{ site.baseurl }}/pages/ember-cordova-migration">Migrating from Ember Cordova</a></li>
               </ul>
             </li>
@@ -105,7 +114,7 @@
 
         <div class="row">
           <div class="col-md-6 col-sm-6">
-            <p>Copyright &copy; {{ 'now' | date: "%Y" }} <a href="https://isleofcode.com">Isle of Code Inc.</a> All right reserved</p>
+            <p>Copyright &copy; {{ 'now' | date: "%Y" }} and built by <a href="https://isleofcode.com">Isle of Code Inc.</a> in Toronto, Canada. </p>
           </div>
           <div class="col-md-6 col-sm-6"></div>
         </div>

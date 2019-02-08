@@ -1,34 +1,25 @@
 ---
 layout: page
-title:  "Building"
+title:  "Static & Production Builds"
 ---
 
-`corber build` builds your JavaScript Framework app with Cordova assets injected, and then executes a Cordova build. Validators are run to ensure there are no known errors.
+`corber build` builds  a static version of your app, which can then be used for testing or distribution to other users, e.g. via iTunes connect or emailing an Android APK.
+
+When writing code, we recommend using the `corber start` flow described in [Development Workflow](/pages/development-workflow).
 
 ```
     corber build --platform=ios --environment=production
 ```
 
-ios is the default platform.
+#### Deploying to a Device or Emulator
 
-#### Deploying to a device or emulator
+After building, you will may want to deploy to a device or emulator for a final test. It is typically easiest to deploy using your platform's native IDE - Xcode for iOS and Android Studio for Android.
 
-After building, you will need to deploy to a device or emulator for testing. A build includes creating the iOS/Android application, but not bundle the run command.
-
-`corber open` will open your project in Xcode or Android Studio. The IDE can then be used for starting emulators, code signing & app store uploads.
-
-Alternatively, you can deploy to a device or emulator using `corber proxy run`, like so:
-
-```bash
-  corber proxy run ios --emulator --nobuild   # Deploy to iOS simulator
-  corber proxy run android --device --nobuild  # Deploy to Android device
-```
-
-To deploy to an iOS device, you must have Provisioning Profiles set up. Usually, Xcode can set up development profiles for you automatically.
+For your day to day development we recommend using the `start` command.
 
 #### Release Builds
 
-By default, Corber produces debug builds. You need to add a `--release` flag for Cordova release builds, see the [cli reference](/pages/cli).
+By default, Corber produces debug builds. You need to add a `--release` flag for Cordova release builds, see the [CLI Reference](/pages/cli).
 
 
 ```bash
@@ -36,17 +27,8 @@ By default, Corber produces debug builds. You need to add a `--release` flag for
   corber build --platform=android --environment=production --release   # Release build for Android
 ```
 
-#### Obtaining provisioning profile UUID for signing iOS
+Typically for production builds you will use the flags described in the [CLI Reference](/pages/cli) to sign the build with your certificates. For a simpler experience, we suggest opening Xcode or Android Studio and signing builds through the IDE.
 
-When signing while building as described [here](https://cordova.apache.org/docs/en/latest/guide/platforms/ios/index.html#signing-an-app), you can obtain your iOS provisioning profile UUID by downloading it from iTunesConnect and run the following command:
-```bash
-  grep -a -A 1 'UUID' /Users/me/Downloads/myapp_dev.mobileprovision
-```
 
-#### Debugging
-
-Android Builds can be remotely inspected in Chrome ([details](http://geeklearning.io/apache-cordova-and-remote-debugging-on-android/)), and iOS builds in Safari ([details](http://geeklearning.io/apache-cordova-and-remote-debugging-on-ios/)).
-
-#### Non-Cordova Builds
-
-Cordova Assets & plugins will only be injected to `corber build/serve` tasks. Your standard builds will remain unaffected, and will have no additional assets injected.
+**Next**:
+- [Native Plugins](/pages/workflow/plugins)

@@ -1,9 +1,8 @@
 ---
 layout: page
-title:  "Android Studio Setup"
+title:  "Android Setup"
 ---
-
-The most beginner friendly way to achieve Android builds is via Android Studio. For more advanced users sdks can also be installed with homebrew or manually from the Android Studio Website.
+The most beginner friendly way to achieve Android builds is via Android Studio. For more advanced users SDKs can also be installed with homebrew or manually from the Android Studio Website.
 
 In order for Android builds to work, your system must have the following packages configured:
 - JDK 8
@@ -11,8 +10,6 @@ In order for Android builds to work, your system must have the following package
 - Gradle
 
 ## Beginner Setup Guide
-
-The following guide will work for Mac, Windows and Ubuntu machines.
 
 Following these instructions will make Mac + Windows machines capable of creating Android builds, and emulators available to the `corber start` command.
 
@@ -70,4 +67,10 @@ sdkmanager —licenses
 - Open a windows terminal to your SDK path, likely C:\\Users\\username\\AppData\\Local\\Android\\Sdk
 - Run `sdkmanager.bat --licenses`
 - Accept the licenses
+
+
+**Next**:
+- [Vue Setup](/pages/frameworks/vue)
+- [Ember Setup](/pages/frameworks/ember)
+- [React Setup](/pages/frameworks/react)
 

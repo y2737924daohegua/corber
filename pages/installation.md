@@ -1,14 +1,13 @@
 ---
 layout: page
-title:  "Installation / Quickstart"
+title:  "Installation"
 ---
 
-See [compatability](/pages/compatibility) to understand corber support on your machine.
-
 #### Requirements
-- Node 6/7/8 per [Ember Node LTS Support](http://emberjs.com/blog/2016/09/07/ember-node-lts-support.html).
+- Node 6+ per [Ember Node LTS Support](http://emberjs.com/blog/2016/09/07/ember-node-lts-support.html).
 - An existing JavaScript application with one of the supported frameworks.
-- MacOS and Xcode are required for iOS builds.
+
+corber supports Mac, Windows (Powershell + Bash/WSL) and Linux machines - however only Mac machines can produce iOS builds. 
 
 #### Installation
 
@@ -21,15 +20,17 @@ npm install -g corber
 ```
 
 #### Initialize Corber
+After installation, the next step is to add corber to your existing JS project. You'll need to do this once per project you want to run corber in.
+
 1. Change to your project directory.
 2. Run `corber init`.
 3. Select iOS or Android as your target platform. You can add or remove platforms later with the `platform` command. 
 
 This process will:
 
-- Identify your project type.
-- Create a new folder at `corber`, including Corber configuration.
-- Initialize a Cordova project at `corber/cordova`.
+- Identify your framework type.
+- Create a new folder at `./corber`, which includes Corber configuration.
+- Initialize a Cordova project at `corber/cordova`, which is where your platform builds will go.
 - Install your targeted platform (iOS or Android).
 
 ###### corber init flags
@@ -62,8 +63,5 @@ By release, you should update id to com.yourdomain.foo. This is achieved by sett
 
 **Next**:
 
-- [Vue Setup](/pages/frameworks/vue)
-- [Ember Setup](/pages/frameworks/ember)
-- [React Setup](/pages/frameworks/react)
-- [Glimmer Setup](/pages/frameworks/glimmer)
-
+- [iOS Setup](/pages/ios-setup)
+- [Android Setup](/pages/android-setup)

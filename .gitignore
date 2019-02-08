@@ -1,6 +1,7 @@
 _site
 .sass-cache
 .jekyll-metadata
+.DS_Store
 
 yarn.lock
 .idea
@@ -8,3 +9,5 @@ yarn.lock
 
 /vendor
 /.bundle
+
+*.swp
