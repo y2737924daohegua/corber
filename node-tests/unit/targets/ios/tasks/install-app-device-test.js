@@ -1,13 +1,16 @@
 const td         = require('testdouble');
 const expect     = require('../../../../helpers/expect');
 const Promise    = require('rsvp').Promise;
+const path       = require('path');
 
 const deviceId   = 'deviceId';
 const bundlePath = 'bundlePath';
 const rootPath   = 'rootPath';
 
+const iosDeployPath = path.join(rootPath, 'node_modules', 'corber', 'vendor', 'ios-deploy', 'build', 'Release', 'ios-deploy');
+
 const spawnArgs = [
-  'rootPath/node_modules/corber/vendor/ios-deploy/build/Release/ios-deploy',
+  iosDeployPath,
   [
     '--id',
     deviceId,

@@ -1,10 +1,11 @@
 const td              = require('testdouble');
 const expect          = require('../../../../helpers/expect');
 const Promise         = require('rsvp').Promise;
+const path            = require('path');
 
 const scheme          = 'corberApp';
-const iosPath         = 'corber/cordova/platforms/ios';
-const workspacePath   = 'corber/cordova/platforms/ios/corberApp.xcworkspace';
+const iosPath         = path.join('corber', 'cordova', 'platforms', 'ios');
+const workspacePath   = path.join('corber', 'cordova', 'platforms', 'ios', 'corberApp.xcworkspace');
 
 const spawnArgs       = ['/usr/bin/xcodebuild', ['-workspace', workspacePath, '-scheme', scheme, '-showBuildSettings']];
 
@@ -16,7 +17,7 @@ const buildInfo = `
     BUILD_COMPONENTS = headers build
     BUILD_DIR = /Users/alexblom/Library/Developer/Xcode/DerivedData/corberApp-uuid/Build/Products
     BUILD_ROOT = /Users/alexblom/Library/Developer/Xcode/DerivedData/corberApp-uuid/Build/Products
-    BUILD_STYLE = 
+    BUILD_STYLE =
     BUILD_VARIANTS = normal
     BUILT_PRODUCTS_DIR = /Users/alexblom/Library/Developer/Xcode/DerivedData/corberApp-uuid/Build/Products/Release-iphoneos`;
 
@@ -47,7 +48,7 @@ describe('iOS Get IPA Path Task', () => {
   });
 
   it('lints out ios device, ignoring emulators & non ios devices', () => {
-    let expectedPath = '/Users/alexblom/Library/Developer/Xcode/DerivedData/corberApp-uuid/Build/Products/Debug-iphoneos/corberApp.app';
+    let expectedPath = path.join('/', 'Users', 'alexblom', 'Library', 'Developer', 'Xcode', 'DerivedData', 'corberApp-uuid', 'Build', 'Products', 'Debug-iphoneos', 'corberApp.app');
     return expect(getIpaPath(scheme, iosPath)).to.eventually.equal(expectedPath);
   });
 
