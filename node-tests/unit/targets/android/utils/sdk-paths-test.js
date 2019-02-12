@@ -1,41 +1,103 @@
 const expect          = require('../../../../helpers/expect');
 const path            = require('path');
 const td              = require('testdouble');
-const anything        = td.matchers.anything;
+const contains        = td.matchers.contains;
 
-describe('Android sdk paths util', function() {
-  afterEach(function() {
+const sdkRoot         = 'sdk-root';
+const unixADBPath     = path.join(sdkRoot, 'platform-tools', 'adb');
+const windowsADBPath  = path.join(sdkRoot, 'platform-tools', 'adb.exe');
+
+const unixEmulatorPaths = [
+  path.join(sdkRoot, 'emulator', 'emulator'),
+  path.join(sdkRoot, 'tools', 'emulator')
+];
+
+const windowsEmulatorPaths = [
+  path.join(sdkRoot, 'emulator', 'emulator.exe'),
+  path.join(sdkRoot, 'tools', 'emulator.exe')
+];
+
+describe('Android sdk paths util', () => {
+  let logger;
+  let sdkRoot;
+  let sdkPaths;
+  let originalPlatform;
+
+  beforeEach(() => {
+    sdkRoot         = td.replace('../../../../../lib/targets/android/utils/sdk-root');
+    logger          = td.replace('../../../../../lib/utils/logger');
+    let resolvePath = td.replace('../../../../../lib/targets/android/utils/resolve-path');
+
+    td.when(sdkRoot()).thenReturn('sdk-root');
+
+    td.when(resolvePath([unixADBPath])).thenReturn('resolved-unix-adb-path');
+    td.when(resolvePath(unixEmulatorPaths)).thenReturn('resolved-unix-emulator-path');
+
+    td.when(resolvePath([windowsADBPath])).thenReturn('resolved-windows-adb-path');
+    td.when(resolvePath(windowsEmulatorPaths)).thenReturn('resolved-windows-emulator-path');
+
+    originalPlatform = Object.getOwnPropertyDescriptor(process, 'platform');
+
+    sdkPaths = require('../../../../../lib/targets/android/utils/sdk-paths');
+  });
+
+  afterEach(() => {
+    Object.defineProperty(process, 'platform', originalPlatform);
+
     td.reset();
   });
 
-  it('returns resolved adb & emulator paths', function() {
-    td.replace('../../../../../lib/targets/android/utils/resolve-path', function() {
-      return 'resolved-path';
+  it('logs an ANDROID_HOME error if sdkRoot is undefined', () => {
+    td.when(sdkRoot()).thenReturn(undefined);
+    sdkPaths();
+    td.verify(logger.error(contains('ANDROID_HOME ENV variable not found')));
+  });
+
+  context('when platform is darwin', () => {
+    beforeEach(() => {
+      Object.defineProperty(process, 'platform', { value: 'darwin' });
     });
 
-    td.replace('../../../../../lib/targets/android/utils/sdk-root', function() {
-      return 'sdk-root'
+    it('returns resolved adb path', () => {
+      let paths = sdkPaths();
+      expect(paths.adb).to.equal('resolved-unix-adb-path');
     });
 
-    let sdkPaths = require('../../../../../lib/targets/android/utils/sdk-paths');
-    let paths = sdkPaths();
-
-    expect(paths).to.deep.equal({
-      adb: path.join('sdk-root', 'platform-tools', 'adb'),
-      emulator: path.join('resolved-path')
+    it('returns resolved emulator path', () => {
+      let paths = sdkPaths();
+      expect(paths.emulator).to.equal('resolved-unix-emulator-path');
     });
   });
 
-  it('errors in ANDROID_HOME is not set', function() {
-    td.replace('../../../../../lib/targets/android/utils/sdk-root', function() {
-      return undefined;
+  context('when platform is linux', () => {
+    beforeEach(() => {
+      Object.defineProperty(process, 'platform', { value: 'linux' });
     });
 
-    let logger = td.replace('../../../../../lib/utils/logger');
+    it('returns resolved adb path', () => {
+      let paths = sdkPaths();
+      expect(paths.adb).to.equal('resolved-unix-adb-path');
+    });
 
-    let sdkPaths = require('../../../../../lib/targets/android/utils/sdk-paths');
-    sdkPaths();
+    it('returns resolved emulator path', () => {
+      let paths = sdkPaths();
+      expect(paths.emulator).to.equal('resolved-unix-emulator-path');
+    });
+  });
 
-    td.verify(logger.error(anything()));
+  context('when platform is win32', () => {
+    beforeEach(() => {
+      Object.defineProperty(process, 'platform', { value: 'win32' });
+    });
+
+    it('returns resolved adb path', () => {
+      let paths = sdkPaths();
+      expect(paths.adb).to.equal('resolved-windows-adb-path');
+    });
+
+    it('returns resolved emulator path', () => {
+      let paths = sdkPaths();
+      expect(paths.emulator).to.equal('resolved-windows-emulator-path');
+    });
   });
 });
