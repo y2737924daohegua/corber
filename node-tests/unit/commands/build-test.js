@@ -13,16 +13,17 @@ describe('Build Command', () => {
   let lintIndex;
 
   let project;
-  let build;
   let opts;
 
   let setupCommand = () => {
     let BuildCmd = require('../../../lib/commands/build');
-    build = new BuildCmd({
+    let build = new BuildCmd({
       project
     });
 
     build.analytics = mockAnalytics;
+
+    return build;
   };
 
   let setupTaskTracking = (tasks) => {
@@ -49,7 +50,7 @@ describe('Build Command', () => {
     });
   };
 
-  beforeEach(() => {
+  beforeEach((done) => {
     requireFramework = td.replace('../../../lib/utils/require-framework');
     requireTarget    = td.replace('../../../lib/utils/require-target');
     addCordovaJS     = td.replace('../../../lib/tasks/add-cordova-js');
@@ -71,17 +72,12 @@ describe('Build Command', () => {
     td.when(requireFramework(project))
       .thenReturn(td.object(['validateBuild', 'build']));
 
-    let BuildCmd = require('../../../lib/commands/build');
-    build = new BuildCmd({
-      project
-    });
-
-    build.analytics = mockAnalytics;
-
     opts = {
       cordovaOutputPath: 'corber/cordova/www',
       platform: 'ios'
     };
+
+    done();
   });
 
   afterEach(() => {
@@ -89,13 +85,15 @@ describe('Build Command', () => {
   });
 
   it('exits cleanly', () => {
+    let build = setupCommand();
     return expect(build.run(opts)).to.eventually.be.fulfilled;
   });
 
   it('runs tasks in the correct order', () => {
     let tasks = [];
     setupTaskTracking(tasks);
-    setupCommand();
+
+    let build = setupCommand();
 
     return build.run(opts).then(() => {
       //h-t ember-electron for the pattern
@@ -115,7 +113,8 @@ describe('Build Command', () => {
   it('skips ember-build with the --skip-ember-build flag', () => {
     let tasks = [];
     setupTaskTracking(tasks);
-    setupCommand();
+
+    let build = setupCommand();
 
     opts.skipFrameworkBuild = true;
 
@@ -136,7 +135,8 @@ describe('Build Command', () => {
   it('adds cordova-js with --add-cordova-js --skip-framework-build flags', () => {
     let tasks = [];
     setupTaskTracking(tasks);
-    setupCommand();
+
+    let build = setupCommand();
 
     opts.skipFrameworkBuild = true;
     opts.addCordovaJs = true;
@@ -158,7 +158,8 @@ describe('Build Command', () => {
   it('skips cordova-build with the --skip-cordova-build flag', () => {
     let tasks = [];
     setupTaskTracking(tasks);
-    setupCommand();
+
+    let build = setupCommand();
 
     opts.skipCordovaBuild = true;
 
@@ -178,7 +179,7 @@ describe('Build Command', () => {
   });
 
   it('calls addCordovaJS as expected', () => {
-    setupCommand();
+    let build = setupCommand();
 
     return build.run(opts).then(() => {
       let source = path.join('corber', 'cordova', 'www', 'index.html');
@@ -187,7 +188,7 @@ describe('Build Command', () => {
   });
 
   it('constructs lint index as expected', () => {
-    setupCommand();
+    let build = setupCommand();
 
     return build.run(opts).then(() => {
       let source = path.join('corber', 'cordova', 'www', 'index.html');
@@ -196,7 +197,7 @@ describe('Build Command', () => {
   });
 
   it('supports custom output path with --cordova-output-path option', () => {
-    setupCommand();
+    let build = setupCommand();
 
     opts.cordovaOutputPath = 'foo';
 
@@ -208,7 +209,7 @@ describe('Build Command', () => {
   });
 
   it('sets process.env.CORBER_PLATFORM', () => {
-    setupCommand();
+    let build = setupCommand();
 
     return build.run(opts).then(() => {
       expect(process.env.CORBER_PLATFORM).to.equal('ios');
