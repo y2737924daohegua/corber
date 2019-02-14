@@ -12,6 +12,7 @@ describe('Serve Command', () => {
   let requireFramework;
   let requireTarget;
   let logger;
+  let selectPlatform;
 
   let mockFramework;
   let mockTarget;
@@ -62,6 +63,7 @@ describe('Serve Command', () => {
     requireTarget     = td.replace('../../../lib/utils/require-target');
     getNetworkIp      = td.replace('../../../lib/utils/get-network-ip');
     logger            = td.replace('../../../lib/utils/logger');
+    selectPlatform    = td.replace('../../../lib/commands/utils/select-platform');
 
     mockFramework     = td.object(['validateServe', 'serve']);
     mockTarget        = td.object(['validateServe', 'build']);
@@ -79,7 +81,7 @@ describe('Serve Command', () => {
 
     td.when(getNetworkIp()).thenReturn('192.168.0.1');
 
-    opts = { platform: 'ios' };
+    opts = {};
   });
 
   afterEach(() => {
@@ -101,6 +103,9 @@ describe('Serve Command', () => {
   });
 
   it('sets vars for webpack livereload', () => {
+    td.when(selectPlatform(project.root), { ignoreExtraArgs: true })
+      .thenReturn(Promise.resolve('ios'));
+
     let serve = setupCommand();
 
     return serve.run(opts).then(() => {
@@ -109,6 +114,9 @@ describe('Serve Command', () => {
   });
 
   it('sets process.env.CORBER_PLATFORM & CORBER_LIVERELOAD', () => {
+    td.when(selectPlatform(project.root), { ignoreExtraArgs: true })
+      .thenReturn(Promise.resolve('ios'));
+
     let serve = setupCommand();
 
     return serve.run(opts).then(() => {
