@@ -32,7 +32,7 @@ describe('Make Splashes Command', function() {
     var logger;
 
     beforeEach(function() {
-      let getPlatforms = '../../../lib/targets/cordova/utils/get-platforms';
+      let getPlatforms = '../../../lib/targets/cordova/utils/get-platforms-sync';
       td.replace(getPlatforms, function() {
         return addedPlatforms;
       });

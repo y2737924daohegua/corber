@@ -18,7 +18,7 @@ describe('Get Added Platforms Util', function() {
       td.replace(platformsPath, { 'ios': '4.3.1' });
       td.replace(packagePath, { 'cordova': { 'platforms': ['android'] } });
 
-      var getAddedPlatforms = require('../../../../../lib/targets/cordova/utils/get-platforms');
+      var getAddedPlatforms = require('../../../../../lib/targets/cordova/utils/get-platforms-sync');
 
       subject = getAddedPlatforms(mockProject.project);
     });
@@ -43,7 +43,7 @@ describe('Get Added Platforms Util', function() {
       td.replace(packagePath, { 'cordova': { 'platforms': ['android'] } });
 
       // Context relies on mockProject not including a platform.json.
-      var getAddedPlatforms = require('../../../../../lib/targets/cordova/utils/get-platforms');
+      var getAddedPlatforms = require('../../../../../lib/targets/cordova/utils/get-platforms-sync');
 
       subject = getAddedPlatforms(mockProject.project);
     });
@@ -63,7 +63,7 @@ describe('Get Added Platforms Util', function() {
 
     beforeEach(function() {
       // Context relies on mockProject not including a platform.json.
-      var getAddedPlatforms = require('../../../../../lib/targets/cordova/utils/get-platforms');
+      var getAddedPlatforms = require('../../../../../lib/targets/cordova/utils/get-platforms-sync');
 
       subject = getAddedPlatforms(mockProject.project);
     });
