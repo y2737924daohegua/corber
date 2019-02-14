@@ -32,9 +32,9 @@ describe('Make Icons Command', function() {
     var logger;
 
     beforeEach(function() {
-      let getPlatforms = '../../../lib/targets/cordova/utils/get-platforms-sync';
+      let getPlatforms = '../../../lib/targets/cordova/utils/get-platforms';
       td.replace(getPlatforms, function() {
-        return addedPlatforms;
+        return Promise.resolve(addedPlatforms);
       });
 
       logger = td.replace('../../../lib/utils/logger');
@@ -91,10 +91,14 @@ describe('Make Icons Command', function() {
   });
 
   context('when no added platforms', function() {
+    var logger;
+
     beforeEach(function() {
-      td.replace('../../../lib/utils/get-added-platforms', function() {
-        return [];
+      td.replace('../../../lib/utils/get-platforms', function() {
+        return Promise.resolve([]);
       });
+
+      logger = td.replace('../../../lib/utils/logger');
 
       MakeIconsCmd = require('../../../lib/commands/make-icons');
 
@@ -110,8 +114,10 @@ describe('Make Icons Command', function() {
         platform: ['added']
       };
 
-      it('throws an error', function() {
-        expect(function() { makeIcons.run(options) }).to.throw(Error);
+      it('logs an error', function() {
+        return makeIcons.run(options).then(() => {
+          td.verify(logger.error('no added platforms to generate icons for'));
+        })
       });
     });
   });
