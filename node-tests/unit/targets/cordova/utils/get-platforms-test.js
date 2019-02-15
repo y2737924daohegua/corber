@@ -3,8 +3,6 @@ const expect          = require('../../../../helpers/expect');
 const Promise         = require('rsvp').Promise;
 const path            = require('path');
 
-const root            = 'root';
-const project         = { root };
 const cordovaPath     = 'cordova-path';
 const packageJSONPath = path.join(cordovaPath, 'package.json');
 const configXMLPath   = path.join(cordovaPath, 'config.xml');
@@ -16,7 +14,7 @@ describe('Get Platforms', () => {
   let parseXml;
 
   let getPlatforms;
-  let options;
+  let project;
 
   beforeEach(() => {
     getCordovaPath = td.replace('../../../../../lib/targets/cordova/utils/get-path');
@@ -24,6 +22,7 @@ describe('Get Platforms', () => {
     getPackage     = td.replace('../../../../../lib/utils/get-package');
     parseXml       = td.replace('../../../../../lib/utils/parse-xml');
 
+    project = { root: 'root' };
     td.when(getCordovaPath(project)).thenReturn(cordovaPath);
 
     td.when(fsUtils.existsSync(packageJSONPath)).thenReturn(true);
@@ -44,8 +43,6 @@ describe('Get Platforms', () => {
     }));
 
     getPlatforms = require('../../../../../lib/targets/cordova/utils/get-platforms');
-
-    options = { root };
   });
 
   afterEach(() => {
@@ -56,12 +53,13 @@ describe('Get Platforms', () => {
     return expect(() => getPlatforms()).to.throw;
   });
 
-  it('throws if \'root\' key is missing from options hash', () => {
-    return expect(() => getPlatforms({})).to.throw;
+  it('throws if \'root\' property is missing from project hash', () => {
+    delete project.root;
+    return expect(() => getPlatforms(project)).to.throw;
   });
 
   it('returns platforms in cordova package.json', () => {
-    return expect(getPlatforms(options))
+    return expect(getPlatforms(project))
       .to.eventually.deep.equal(['package-json-platform']);
   });
 
@@ -70,7 +68,7 @@ describe('Get Platforms', () => {
       cordova: {}
     });
 
-    return expect(getPlatforms(options))
+    return expect(getPlatforms(project))
       .to.eventually.deep.equal(['config-xml-platform']);
   });
 
@@ -80,19 +78,19 @@ describe('Get Platforms', () => {
     });
 
     it('returns platforms in config.xml', () => {
-      return expect(getPlatforms(options))
+      return expect(getPlatforms(project))
         .to.eventually.deep.equal(['config-xml-platform']);
     });
 
     it('returns empty if config.xml is missing engine key', () => {
       td.when(parseXml(configXMLPath))
         .thenReturn(Promise.resolve({ widget: {} }));
-      return expect(getPlatforms(options)).to.eventually.deep.equal([]);
+      return expect(getPlatforms(project)).to.eventually.deep.equal([]);
     });
 
     it('returns empty if config.xml also missing', () => {
       td.when(fsUtils.existsSync(configXMLPath)).thenReturn(false);
-      return expect(getPlatforms(options)).to.eventually.deep.equal([]);
+      return expect(getPlatforms(project)).to.eventually.deep.equal([]);
     });
   });
 });
