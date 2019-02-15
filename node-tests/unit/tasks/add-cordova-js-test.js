@@ -1,36 +1,29 @@
-var td              = require('testdouble');
-var expect          = require('../../helpers/expect');
-var Promise         = require('rsvp').Promise;
-var fsUtils         = require('../../../lib/utils/fs-utils');
-var logger          = require('../../../lib/utils/logger');
-var mockProject     = require('../../fixtures/corber-mock/project');
+const td              = require('testdouble');
+const expect          = require('../../helpers/expect');
+const Promise         = require('rsvp').Promise;
+const fsUtils         = require('../../../lib/utils/fs-utils');
+const logger          = require('../../../lib/utils/logger');
+const addCordovaJS    = require('../../../lib/tasks/add-cordova-js');
 
-var AddCordovaJS    = require('../../../lib/tasks/add-cordova-js');
-
-describe('Add Cordova JS Task', function() {
-  var source = 'www/index.html';
-  var task, subject, infoArg, readFileArgs, writeFileArgs;
+describe('Add Cordova JS Task', () => {
+  let source = 'www/index.html';
+  let subject, infoArg, readFileArgs, writeFileArgs;
 
   afterEach(td.reset);
 
-  beforeEach(function() {
+  beforeEach(() => {
     infoArg = null;
     readFileArgs = null;
     writeFileArgs = null;
 
-    task = new AddCordovaJS({
-      source: source,
-      project: mockProject.project
-    });
-
-    td.replace(logger, 'info', function(message) {
+    td.replace(logger, 'info', (message) => {
       infoArg = message;
     });
   });
 
-  context('when source contains Cordova script reference', function() {
-    beforeEach(function() {
-      td.replace(fsUtils, 'read', function(path) {
+  context('when source contains Cordova script reference', () => {
+    beforeEach(() => {
+      td.replace(fsUtils, 'read', (path) => {
         readFileArgs = { path };
 
         return Promise.resolve(
@@ -47,29 +40,29 @@ describe('Add Cordova JS Task', function() {
         );
       });
 
-      subject = task.run();
+      subject = addCordovaJS(source);
     });
 
-    it('calls fsUtils.read', function() {
-      return subject.then(function() {
+    it('calls fsUtils.read', () => {
+      return subject.then(() => {
         expect(readFileArgs.path).to.eql(source);
       });
     });
 
-    it('prints path to index.html', function() {
-      return subject.then(function() {
+    it('prints path to index.html', () => {
+      return subject.then(() => {
         expect(infoArg).to.contain(source);
       });
     });
 
-    it('returns promise that resolves', function() {
+    it('returns promise that resolves', () => {
       return expect(subject).to.be.fulfilled;
     });
   });
 
-  context('when source does not contain Cordova script reference', function() {
-    beforeEach(function() {
-      td.replace(fsUtils, 'read', function(path) {
+  context('when source does not contain Cordova script reference', () => {
+    beforeEach(() => {
+      td.replace(fsUtils, 'read', (path) => {
         readFileArgs = { path };
 
         return Promise.resolve(
@@ -84,23 +77,23 @@ describe('Add Cordova JS Task', function() {
         );
       });
 
-      td.replace(fsUtils, 'write', function(path, contents) {
+      td.replace(fsUtils, 'write', (path, contents) => {
         writeFileArgs = { path, contents };
 
         return Promise.resolve();
       });
 
-      subject = task.run();
+      subject = addCordovaJS(source);
     });
 
-    it('calls fsUtils.read', function() {
-      return subject.then(function() {
+    it('calls fsUtils.read', () => {
+      return subject.then(() => {
         expect(readFileArgs.path).to.eql(source);
       });
     });
 
-    it('calls fsUtils.write with added script reference', function() {
-      return subject.then(function() {
+    it('calls fsUtils.write with added script reference', () => {
+      return subject.then(() => {
         expect(writeFileArgs.path).to.eql(source);
         expect(writeFileArgs.contents).to.contain(
           '<script src="cordova.js"></script>'
@@ -108,13 +101,13 @@ describe('Add Cordova JS Task', function() {
       });
     });
 
-    it('prints path to index.html', function() {
-      return subject.then(function() {
+    it('prints path to index.html', () => {
+      return subject.then(() => {
         expect(infoArg).to.contain(source);
       });
     });
 
-    it('returns promise that resolves', function() {
+    it('returns promise that resolves', () => {
       return expect(subject).to.be.fulfilled;
     });
   });

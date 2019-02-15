@@ -2,22 +2,29 @@ const td            = require('testdouble');
 const Promise       = require('rsvp').Promise;
 const mockProject   = require('../../fixtures/corber-mock/project');
 const mockAnalytics = require('../../fixtures/corber-mock/analytics');
+const cloneDeep     = require('lodash').cloneDeep;
+const path          = require('path');
 
 describe('Lint Index Command', () => {
-  let LintTask;
+  let lintTask;
 
+  let project;
   let lint;
   let opts;
 
   beforeEach(() => {
-    LintTask = td.replace('../../../lib/tasks/lint-index');
+    let getCordovaPath = td.replace('../../../lib/targets/cordova/utils/get-path');
+    lintTask = td.replace('../../../lib/tasks/lint-index');
 
-    td.when(LintTask.prototype.run()).thenReturn(Promise.resolve());
+    project = cloneDeep(mockProject.project);
+
+    td.when(getCordovaPath(project)).thenReturn('cordova');
+    td.when(lintTask(), { ignoreExtraArgs: true }).thenReturn(Promise.resolve());
 
     let LintCommand = require('../../../lib/commands/lint-index');
 
     lint = new LintCommand({
-      project: mockProject.project
+      project
     });
 
     lint.analytics = mockAnalytics;
@@ -35,7 +42,7 @@ describe('Lint Index Command', () => {
 
       return lint.run(opts).then(() => {
         td.config({ ignoreWarnings: true });
-        td.verify(LintTask.prototype.run());
+        td.verify(lintTask(path.join('cordova', opts.source)));
         td.config({ ignoreWarnings: false });
       });
     });
