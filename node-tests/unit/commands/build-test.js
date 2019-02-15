@@ -11,7 +11,7 @@ describe('Build Command', () => {
   let requireTarget;
   let addCordovaJS;
   let lintIndex;
-  let selectPlatform;
+  let resolvePlatform;
 
   let project;
   let opts;
@@ -56,7 +56,7 @@ describe('Build Command', () => {
     requireTarget    = td.replace('../../../lib/utils/require-target');
     addCordovaJS     = td.replace('../../../lib/tasks/add-cordova-js');
     lintIndex        = td.replace('../../../lib/tasks/lint-index');
-    selectPlatform   = td.replace('../../../lib/commands/utils/select-platform');
+    resolvePlatform  = td.replace('../../../lib/commands/utils/resolve-platform');
 
     td.replace('../../../lib/tasks/run-hook');
     td.replace('../../../lib/utils/logger');
@@ -215,7 +215,7 @@ describe('Build Command', () => {
     it('sets process.env.CORBER_PLATFORM', () => {
       let build = setupCommand();
 
-      td.when(selectPlatform(project.root), { ignoreExtraArgs: true })
+      td.when(resolvePlatform(project), { ignoreExtraArgs: true })
         .thenReturn(Promise.resolve('platform'));
 
       return build.run(opts).then(() => {
@@ -226,7 +226,7 @@ describe('Build Command', () => {
     it('sets project.CORBER_PLATFORM', () => {
       let build = setupCommand();
 
-      td.when(selectPlatform(project.root), { ignoreExtraArgs: true })
+      td.when(resolvePlatform(project), { ignoreExtraArgs: true })
         .thenReturn(Promise.resolve('platform'));
 
       return build.run(opts).then(() => {

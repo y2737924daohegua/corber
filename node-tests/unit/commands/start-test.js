@@ -229,7 +229,7 @@ describe('Start Command', () => {
     beforeEach(() => {
       target = new CordovaTarget();
 
-      td.when(getPlatforms({ root: project.root }))
+      td.when(getPlatforms(project))
         .thenReturn(Promise.resolve(['ios', 'android']));
 
       start = setupCommand();
@@ -241,7 +241,7 @@ describe('Start Command', () => {
     });
 
     it('rejects with instructions if no platforms are installed', () => {
-      td.when(getPlatforms({ root: project.root }))
+      td.when(getPlatforms(project))
         .thenReturn(Promise.resolve([]));
 
       let promise = start.selectPlatforms(target);
@@ -264,7 +264,7 @@ describe('Start Command', () => {
       });
 
       it('rejects if platform is not installed', () => {
-        td.when(getPlatforms({ root: project.root }))
+        td.when(getPlatforms(project))
           .thenReturn(Promise.resolve(['android']));
 
         return expect(start.selectPlatforms({ platform: 'ios' }))

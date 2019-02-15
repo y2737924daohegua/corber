@@ -1,117 +1,127 @@
-'use strict';
+const td                 = require('testdouble');
+const CorberError        = require('../../../lib/utils/corber-error');
+const path               = require('path');
+const Promise            = require('rsvp').Promise;
+const contains           = td.matchers.contains;
 
-var td              = require('testdouble');
-var expect          = require('../../helpers/expect');
-var Promise         = require('rsvp').Promise;
+const mockProject        = require('../../fixtures/corber-mock/project');
+const mockAnalytics      = require('../../fixtures/corber-mock/analytics');
 
-var mockProject     = require('../../fixtures/corber-mock/project');
-var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
+const specifiedPlatforms = ['specified-platform', 'added'];
+const expandedPlatforms  = ['specified-platform', 'added-platform'];
 
-describe('Make Icons Command', function() {
-  var iconTaskOptions, MakeIconsCmd, makeIcons;
-  var addedPlatforms = ['ios', 'android'];
+describe('Make Icons Command', () => {
+  let expandPlatforms;
+  let iconTask;
+  let logger;
 
-  beforeEach(function() {
-    // Manually replace function because icon task returns a promise.
-    td.replace('splicon/src/icon-task', function(options) {
-      // Assign options for verification because td.verify doesn't work with
-      // manually replaced functions.
-      iconTaskOptions = options;
+  let makeIcons;
+  let options;
 
-      return Promise.resolve();
+  beforeEach(() => {
+    iconTask        = td.replace('splicon/src/icon-task');
+    expandPlatforms = td.replace('../../../lib/commands/utils/expand-platforms');
+    logger          = td.replace('../../../lib/utils/logger');
+
+    td.when(expandPlatforms(mockProject.project, specifiedPlatforms))
+      .thenReturn(Promise.resolve(expandedPlatforms))
+
+    td.when(iconTask(), { ignoreExtraArgs: true })
+      .thenReturn(Promise.resolve());
+
+    let MakeIconsCommand = require('../../../lib/commands/make-icons');
+    makeIcons = new MakeIconsCommand({
+      project: mockProject.project
     });
+
+    makeIcons.analytics = mockAnalytics;
+
+    options = {
+      source: 'source',
+      platform: specifiedPlatforms
+    };
   });
 
-  afterEach(function() {
-    iconTaskOptions = undefined;
-
+  afterEach(() => {
     td.reset();
   });
 
-  context('when added platforms', function() {
-    var logger;
+  it('logs a starting message to info', () => {
+    return makeIcons.run(options).then(() => {
+      td.verify(logger.info(contains('Generating icons for specified-platform, added-platform')));
+    })
+  });
 
-    beforeEach(function() {
-      let getPlatforms = '../../../lib/targets/cordova/utils/get-platforms-sync';
-      td.replace(getPlatforms, function() {
-        return addedPlatforms;
-      });
+  it('passes expanded platforms to iconTask', () => {
+    return makeIcons.run(options).then(() => {
+      let property = { platforms: ['specified-platform', 'added-platform'] };
 
-      logger = td.replace('../../../lib/utils/logger');
+      td.config({ ignoreWarnings: true });
+      td.verify(iconTask(contains(property)));
+      td.config({ ignoreWarnings: false });
+    });
+  });
 
-      MakeIconsCmd = require('../../../lib/commands/make-icons');
+  it('passes source to iconTask', () => {
+    return makeIcons.run(options).then(() => {
+      let property = { source: 'source' };
 
-      makeIcons = new MakeIconsCmd({
-        project: mockProject.project,
-        analytics: mockAnalytics
+      td.config({ ignoreWarnings: true });
+      td.verify(iconTask(contains(property)));
+      td.config({ ignoreWarnings: false });
+    });
+  });
+
+  it('passes projectPath to iconTask', () => {
+    return makeIcons.run(options).then(() => {
+      let property = { projectPath: path.join('corber', 'cordova') };
+
+      td.config({ ignoreWarnings: true });
+      td.verify(iconTask(contains(property)));
+      td.config({ ignoreWarnings: false });
+    });
+  });
+
+  it('logs a completion message to success', () => {
+    return makeIcons.run(options).then(() => {
+      td.verify(logger.success(contains('icons generated')))
+    });
+  });
+
+  context('when expandPlatforms rejects', () => {
+    beforeEach(() => {
+      td.when(expandPlatforms(), { ignoreExtraArgs: true })
+        .thenReturn(Promise.reject(new CorberError('expand-platforms-error')));
+    });
+
+    it('logs a message to error', () => {
+      return makeIcons.run(options).then(() => {
+        td.verify(logger.error(contains('expand-platforms-error')))
       });
     });
 
-    context('when options and platform is `added`', function() {
-      var options = {
-        source: 'corber/icon.svg',
-        platform: ['added']
-      };
-
-      beforeEach(function() {
-        return makeIcons.run(options);
-      });
-
-      it('calls icon task with passed source, added platforms, and projectPath', function() {
-        expect(iconTaskOptions.source).to.equal(options.source);
-        expect(iconTaskOptions.platforms).to.deep.equal(addedPlatforms);
-        expect(iconTaskOptions.projectPath).to.equal('corber/cordova');
-      });
-
-      it('logs the command starting with added platforms', function() {
-        td.verify(logger.info(`corber: Generating icons for ${addedPlatforms.join(', ')}`));
-      });
-    });
-
-    context('when options and platform is not `added`', function() {
-      var options = {
-        source: 'corber/icon.svg',
-        platform: ['ios']
-      };
-
-      beforeEach(function() {
-        return makeIcons.run(options);
-      });
-
-      it('calls icon task with passed source, passed platform, and projectPath', function() {
-        expect(iconTaskOptions.source).to.equal(options.source);
-        expect(iconTaskOptions.platforms).to.equal(options.platform);
-        expect(iconTaskOptions.projectPath).to.equal('corber/cordova');
-      });
-
-      it('logs the command starting with passed platform', function() {
-        td.verify(logger.info(`corber: Generating icons for ${options.platform.join(', ')}`));
+    it('does not log a completion message to success', () => {
+      return makeIcons.run(options).then(() => {
+        td.verify(logger.success(contains('icons generated')), { times: 0 });
       });
     });
   });
 
-  context('when no added platforms', function() {
-    beforeEach(function() {
-      td.replace('../../../lib/utils/get-added-platforms', function() {
-        return [];
-      });
+  context('when iconTask rejects', () => {
+    beforeEach(() => {
+      td.when(iconTask(), { ignoreExtraArgs: true })
+        .thenReturn(Promise.reject('icon-task-error'));
+    });
 
-      MakeIconsCmd = require('../../../lib/commands/make-icons');
-
-      makeIcons = new MakeIconsCmd({
-        project: mockProject.project,
-        analytics: mockAnalytics
+    it('logs a message to error', () => {
+      return makeIcons.run(options).then(() => {
+        td.verify(logger.error(contains('icon-task-error')))
       });
     });
 
-    context('when options and platform is `added`', function() {
-      var options = {
-        source: 'corber/icon.svg',
-        platform: ['added']
-      };
-
-      it('throws an error', function() {
-        expect(function() { makeIcons.run(options) }).to.throw(Error);
+    it('does not log a message to success', () => {
+      return makeIcons.run(options).then(() => {
+        td.verify(logger.success(contains('icons generated')), { times: 0 });
       });
     });
   });
