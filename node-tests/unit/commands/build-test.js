@@ -234,4 +234,4 @@ describe('Build Command', () => {
       });
     });
   });
-}).timeout(10000);
+});
