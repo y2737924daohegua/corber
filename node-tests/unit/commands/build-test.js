@@ -213,4 +213,4 @@ describe('Build Command', () => {
       expect(process.env.CORBER_PLATFORM).to.equal('ios');
     });
   });
-}).timeout(10000);
+});
