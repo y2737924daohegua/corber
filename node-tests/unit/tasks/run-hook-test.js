@@ -78,9 +78,9 @@ describe('Run Hook Task', () => {
         .to.eventually.be.fulfilled;
     });
 
-    it('logs an error', () => {
+    it('does not log an error', () => {
       return runHook('hook', hookOpts, opts).then(() => {
-        td.verify(logger.error('Could not locate hook \'hook\''));
+        td.verify(logger.error(td.matchers.anything), { times: 0 });
       });
     });
 
