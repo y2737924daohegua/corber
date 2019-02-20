@@ -5,6 +5,8 @@ const mockProject    = require('../../fixtures/corber-mock/project');
 const mockAnalytics  = require('../../fixtures/corber-mock/analytics');
 const path           = require('path');
 const lodash         = require('lodash');
+const contains       = td.matchers.contains;
+const anything       = td.matchers.anything;
 
 describe('Build Command', () => {
   let requireFramework;
@@ -232,6 +234,26 @@ describe('Build Command', () => {
       return build.run(opts).then(() => {
         expect(project.CORBER_PLATFORM).to.equal('platform');
       });
+    });
+  });
+
+  it('passes Xcode legacy build flag to requireTarget for ios', () => {
+    td.when(resolvePlatform(project, anything())).thenReturn('ios');
+    let build = setupCommand();
+
+    return build.run(opts).then(() => {
+      let options = contains({ buildFlag: ['-UseModernBuildSystem=NO'] });
+      td.verify(requireTarget(anything(), options));
+    });
+  });
+
+  it('does not pass Xcode legacy build flag to requireTarget for android', () => {
+    td.when(resolvePlatform(project, anything())).thenReturn('android');
+    let build = setupCommand();
+
+    return build.run(opts).then(() => {
+      let options = contains({ buildFlag: ['-UseModernBuildSystem=NO'] });
+      td.verify(requireTarget(anything(), options), { times: 0 });
     });
   });
 });
