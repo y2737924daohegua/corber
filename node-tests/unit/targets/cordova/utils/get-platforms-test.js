@@ -1,75 +1,96 @@
-var td              = require('testdouble');
-var expect          = require('../../../../helpers/expect');
-var getCordovaPath  = require('../../../../../lib/targets/cordova/utils/get-path');
+const td              = require('testdouble');
+const expect          = require('../../../../helpers/expect');
+const Promise         = require('rsvp').Promise;
+const path            = require('path');
 
-var path            = require('path');
+const cordovaPath     = 'cordova-path';
+const packageJSONPath = path.join(cordovaPath, 'package.json');
+const configXMLPath   = path.join(cordovaPath, 'config.xml');
 
-var mockProject     = require('../../../../fixtures/corber-mock/project');
+describe('Get Platforms', () => {
+  let getCordovaPath;
+  let fsUtils;
+  let getPackage;
+  let parseXml;
 
-describe('Get Added Platforms Util', function() {
-  context('when project has platforms.json, use it over package.json', function() {
-    let subject;
+  let getPlatforms;
+  let project;
 
-    beforeEach(function() {
-      var cordovaPath = getCordovaPath(mockProject.project);
-      var platformsPath = path.join(cordovaPath, 'platforms/platforms.json');
-      var packagePath = path.join(cordovaPath, 'package.json');
+  beforeEach(() => {
+    getCordovaPath = td.replace('../../../../../lib/targets/cordova/utils/get-path');
+    fsUtils        = td.replace('../../../../../lib/utils/fs-utils');
+    getPackage     = td.replace('../../../../../lib/utils/get-package');
+    parseXml       = td.replace('../../../../../lib/utils/parse-xml');
 
-      td.replace(platformsPath, { 'ios': '4.3.1' });
-      td.replace(packagePath, { 'cordova': { 'platforms': ['android'] } });
+    project = { root: 'root' };
+    td.when(getCordovaPath(project)).thenReturn(cordovaPath);
 
-      var getAddedPlatforms = require('../../../../../lib/targets/cordova/utils/get-platforms');
+    td.when(fsUtils.existsSync(packageJSONPath)).thenReturn(true);
+    td.when(fsUtils.existsSync(configXMLPath)).thenReturn(true);
 
-      subject = getAddedPlatforms(mockProject.project);
+    td.when(getPackage(packageJSONPath)).thenReturn({
+      cordova: {
+        platforms: ['package-json-platform']
+      }
     });
 
-    afterEach(function() {
-      td.reset();
-    });
+    td.when(parseXml(configXMLPath)).thenReturn(Promise.resolve({
+      widget: {
+        engine: [
+          { $: { name: 'config-xml-platform' } }
+        ]
+      }
+    }));
 
-    it('returns its keys', function() {
-      expect(subject).to.deep.equal(['ios']);
-    });
+    getPlatforms = require('../../../../../lib/targets/cordova/utils/get-platforms');
   });
 
-  context('fallback to package.json when project has no platforms.json', function() {
-
-    let subject;
-
-    beforeEach(function() {
-      var cordovaPath = getCordovaPath(mockProject.project);
-      var packagePath = path.join(cordovaPath, 'package.json');
-
-      td.replace(packagePath, { 'cordova': { 'platforms': ['android'] } });
-
-      // Context relies on mockProject not including a platform.json.
-      var getAddedPlatforms = require('../../../../../lib/targets/cordova/utils/get-platforms');
-
-      subject = getAddedPlatforms(mockProject.project);
-    });
-
-    afterEach(function() {
-      td.reset();
-    });
-
-    it('returns an empty array', function() {
-      expect(subject).to.deep.equal(['android']);
-    });
+  afterEach(() => {
+    td.reset();
   });
 
-  context('when project has no platforms.json or package.json', function() {
+  it('throws if no argument passed', () => {
+    return expect(() => getPlatforms()).to.throw;
+  });
 
-    let subject;
+  it('throws if \'root\' property is missing from project hash', () => {
+    delete project.root;
+    return expect(() => getPlatforms(project)).to.throw;
+  });
 
-    beforeEach(function() {
-      // Context relies on mockProject not including a platform.json.
-      var getAddedPlatforms = require('../../../../../lib/targets/cordova/utils/get-platforms');
+  it('returns platforms in cordova package.json', () => {
+    return expect(getPlatforms(project))
+      .to.eventually.deep.equal(['package-json-platform']);
+  });
 
-      subject = getAddedPlatforms(mockProject.project);
+  it('returns platforms in config.xml if package.json is missing platforms key', () => {
+    td.when(getPackage(packageJSONPath)).thenReturn({
+      cordova: {}
     });
 
-    it('returns an empty array', function() {
-      expect(subject).to.be.empty;
+    return expect(getPlatforms(project))
+      .to.eventually.deep.equal(['config-xml-platform']);
+  });
+
+  context('when package.json is missing', () => {
+    beforeEach(() => {
+      td.when(fsUtils.existsSync(packageJSONPath)).thenReturn(false);
+    });
+
+    it('returns platforms in config.xml', () => {
+      return expect(getPlatforms(project))
+        .to.eventually.deep.equal(['config-xml-platform']);
+    });
+
+    it('returns empty if config.xml is missing engine key', () => {
+      td.when(parseXml(configXMLPath))
+        .thenReturn(Promise.resolve({ widget: {} }));
+      return expect(getPlatforms(project)).to.eventually.deep.equal([]);
+    });
+
+    it('returns empty if config.xml also missing', () => {
+      td.when(fsUtils.existsSync(configXMLPath)).thenReturn(false);
+      return expect(getPlatforms(project)).to.eventually.deep.equal([]);
     });
   });
 });

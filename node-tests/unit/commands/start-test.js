@@ -12,6 +12,7 @@ describe('Start Command', () => {
   let CordovaTarget;
   let CordovaRawTask;
   let editXml;
+  let getPlatforms;
   let IOSTarget;
   let AndroidTarget;
   let logger;
@@ -48,6 +49,7 @@ describe('Start Command', () => {
     CordovaTarget        = td.replace('../../../lib/targets/cordova/target');
     CordovaRawTask       = td.replace('../../../lib/targets/cordova/tasks/raw');
     editXml              = td.replace('../../../lib/targets/cordova/utils/edit-xml');
+    getPlatforms         = td.replace('../../../lib/targets/cordova/utils/get-platforms');
     IOSTarget            = td.replace('../../../lib/targets/ios/target');
     AndroidTarget        = td.replace('../../../lib/targets/android/target');
     logger               = td.replace('../../../lib/utils/logger');
@@ -227,7 +229,7 @@ describe('Start Command', () => {
     beforeEach(() => {
       target = new CordovaTarget();
 
-      td.when(target.getInstalledPlatforms())
+      td.when(getPlatforms(project))
         .thenReturn(Promise.resolve(['ios', 'android']));
 
       start = setupCommand();
@@ -239,7 +241,8 @@ describe('Start Command', () => {
     });
 
     it('rejects with instructions if no platforms are installed', () => {
-      td.when(target.getInstalledPlatforms()).thenReturn(Promise.resolve([]));
+      td.when(getPlatforms(project))
+        .thenReturn(Promise.resolve([]));
 
       let promise = start.selectPlatforms(target);
 
@@ -251,20 +254,20 @@ describe('Start Command', () => {
 
     context('when a platform is specified', () => {
       it('returns only that platform', () => {
-        return expect(start.selectPlatforms(target, { platform: 'ios' }))
+        return expect(start.selectPlatforms({ platform: 'ios' }))
           .to.eventually.deep.equal(['ios']);
       });
 
       it('rejects if platform is unsupported', () => {
-        return expect(start.selectPlatforms(target, { platform: 'foo' }))
+        return expect(start.selectPlatforms({ platform: 'foo' }))
           .to.eventually.be.rejectedWith(/not a supported platform/);
       });
 
       it('rejects if platform is not installed', () => {
-        td.when(target.getInstalledPlatforms())
+        td.when(getPlatforms(project))
           .thenReturn(Promise.resolve(['android']));
 
-        return expect(start.selectPlatforms(target, { platform: 'ios' }))
+        return expect(start.selectPlatforms({ platform: 'ios' }))
           .to.eventually.be.rejectedWith(/not installed/);
       });
     });

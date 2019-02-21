@@ -1,117 +1,127 @@
-'use strict';
+const td                 = require('testdouble');
+const CorberError        = require('../../../lib/utils/corber-error');
+const path               = require('path');
+const Promise            = require('rsvp').Promise;
+const contains           = td.matchers.contains;
 
-var td              = require('testdouble');
-var expect          = require('../../helpers/expect');
-var Promise         = require('rsvp').Promise;
+const mockProject        = require('../../fixtures/corber-mock/project');
+const mockAnalytics      = require('../../fixtures/corber-mock/analytics');
 
-var mockProject     = require('../../fixtures/corber-mock/project');
-var mockAnalytics   = require('../../fixtures/corber-mock/analytics');
+const specifiedPlatforms = ['specified-platform', 'added'];
+const expandedPlatforms  = ['specified-platform', 'added-platform'];
 
-describe('Make Splashes Command', function() {
-  var splashTaskOptions, MakeSplashesCmd, makeSplashes;
-  var addedPlatforms = ['ios', 'android'];
+describe('Make Splashes Command', () => {
+  let expandPlatforms;
+  let splashTask;
+  let logger;
 
-  beforeEach(function() {
-    // Manually replace function because splash task returns a promise.
-    td.replace('splicon/src/splash-task', function(options) {
-      // Assign options for verification because td.verify doesn't work with
-      // manually replaced functions.
-      splashTaskOptions = options;
+  let makeSplashes;
+  let options;
 
-      return Promise.resolve();
+  beforeEach(() => {
+    splashTask      = td.replace('splicon/src/splash-task');
+    expandPlatforms = td.replace('../../../lib/commands/utils/expand-platforms');
+    logger          = td.replace('../../../lib/utils/logger');
+
+    td.when(expandPlatforms(mockProject.project, specifiedPlatforms))
+      .thenReturn(Promise.resolve(expandedPlatforms))
+
+    td.when(splashTask(), { ignoreExtraArgs: true })
+      .thenReturn(Promise.resolve());
+
+    let MakeSplashesCommand = require('../../../lib/commands/make-splashes');
+    makeSplashes = new MakeSplashesCommand({
+      project: mockProject.project
     });
+
+    makeSplashes.analytics = mockAnalytics;
+
+    options = {
+      source: 'source',
+      platform: specifiedPlatforms
+    };
   });
 
-  afterEach(function() {
-    splashTaskOptions = undefined;
-
+  afterEach(() => {
     td.reset();
   });
 
-  context('when added platforms', function() {
-    var logger;
+  it('logs a starting message to info', () => {
+    return makeSplashes.run(options).then(() => {
+      td.verify(logger.info(contains('Generating splashes for specified-platform, added-platform')));
+    })
+  });
 
-    beforeEach(function() {
-      let getPlatforms = '../../../lib/targets/cordova/utils/get-platforms';
-      td.replace(getPlatforms, function() {
-        return addedPlatforms;
-      });
+  it('passes expanded platforms to splashTask', () => {
+    return makeSplashes.run(options).then(() => {
+      let property = { platforms: ['specified-platform', 'added-platform'] };
 
-      logger = td.replace('../../../lib/utils/logger');
+      td.config({ ignoreWarnings: true });
+      td.verify(splashTask(contains(property)));
+      td.config({ ignoreWarnings: false });
+    });
+  });
 
-      MakeSplashesCmd = require('../../../lib/commands/make-splashes');
+  it('passes source to splashTask', () => {
+    return makeSplashes.run(options).then(() => {
+      let property = { source: 'source' };
 
-      makeSplashes = new MakeSplashesCmd({
-        project: mockProject.project,
-        analytics: mockAnalytics
+      td.config({ ignoreWarnings: true });
+      td.verify(splashTask(contains(property)));
+      td.config({ ignoreWarnings: false });
+    });
+  });
+
+  it('passes projectPath to splashTask', () => {
+    return makeSplashes.run(options).then(() => {
+      let property = { projectPath: path.join('corber', 'cordova') };
+
+      td.config({ ignoreWarnings: true });
+      td.verify(splashTask(td.matchers.contains(property)));
+      td.config({ ignoreWarnings: false });
+    });
+  });
+
+  it('logs a completion message to success', () => {
+    return makeSplashes.run(options).then(() => {
+      td.verify(logger.success(contains('splashes generated')))
+    });
+  });
+
+  context('when expandPlatforms rejects', () => {
+    beforeEach(() => {
+      td.when(expandPlatforms(), { ignoreExtraArgs: true })
+        .thenReturn(Promise.reject(new CorberError('expand-platforms-error')));
+    });
+
+    it('logs a message to error', () => {
+      return makeSplashes.run(options).then(() => {
+        td.verify(logger.error(contains('expand-platforms-error')))
       });
     });
 
-    context('when options and platform is `added`', function() {
-      var options = {
-        source: 'corber/splash.svg',
-        platform: ['added']
-      };
-
-      beforeEach(function() {
-        return makeSplashes.run(options);
-      });
-
-      it('calls splash task with passed source, added platforms, and projectPath', function() {
-        expect(splashTaskOptions.source).to.equal(options.source);
-        expect(splashTaskOptions.platforms).to.deep.equal(addedPlatforms);
-        expect(splashTaskOptions.projectPath).to.equal('corber/cordova');
-      });
-
-      it('logs the command starting with added platforms', function() {
-        td.verify(logger.info(`corber: Generating splashes for ${addedPlatforms.join(', ')}`));
-      });
-    });
-
-    context('when options and platform is not `added`', function() {
-      var options = {
-        source: 'corber/splash.svg',
-        platform: ['ios']
-      };
-
-      beforeEach(function() {
-        return makeSplashes.run(options);
-      });
-
-      it('calls splash task with passed source, passed platform, and projectPath', function() {
-        expect(splashTaskOptions.source).to.equal(options.source);
-        expect(splashTaskOptions.platforms).to.equal(options.platform);
-        expect(splashTaskOptions.projectPath).to.equal('corber/cordova');
-      });
-
-      it('logs the command starting with passed platform', function() {
-        td.verify(logger.info(`corber: Generating splashes for ${options.platform.join(', ')}`));
+    it('does not log a completion message to success', () => {
+      return makeSplashes.run(options).then(() => {
+        td.verify(logger.success(contains('splashes generated')), { times: 0 });
       });
     });
   });
 
-  context('when no added platforms', function() {
-    beforeEach(function() {
-      td.replace('../../../lib/utils/get-added-platforms', function() {
-        return [];
-      });
+  context('when splashTask rejects', () => {
+    beforeEach(() => {
+      td.when(splashTask(), { ignoreExtraArgs: true })
+        .thenReturn(Promise.reject('splash-task-error'));
+    });
 
-      MakeSplashesCmd = require('../../../lib/commands/make-splashes');
-
-      makeSplashes = new MakeSplashesCmd({
-        project: mockProject.project,
-        analytics: mockAnalytics
+    it('logs a message to error', () => {
+      return makeSplashes.run(options).then(() => {
+        td.verify(logger.error(contains('splash-task-error')))
       });
     });
 
-    context('when options and platform is `added`', function() {
-      var options = {
-        source: 'corber/splash.svg',
-        platform: ['added']
-      };
-
-      it('throws an error', function() {
-        expect(function() { makeSplashes.run(options) }).to.throw(Error);
+    it('does not log a message to success', () => {
+      return makeSplashes.run(options).then(() => {
+        td.verify(logger.success(contains('splashes generated')), { times: 0 });
       });
     });
   });

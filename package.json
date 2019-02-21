@@ -13,7 +13,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha --harmony --require babel-core/register \"node-tests/**/*-test.js\""
+    "test": "./node_modules/.bin/mocha --harmony --require babel-core/register --timeout 10000 \"node-tests/**/*-test.js\""
   },
   "engines": {
     "node": ">=4.5"
