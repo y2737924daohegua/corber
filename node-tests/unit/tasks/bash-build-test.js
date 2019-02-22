@@ -22,6 +22,11 @@ const setupBuild = function(stubFs) {
     }
   });
 
+  td.replace('../../../lib/utils/create-gitkeep', function() {
+    tasks.push('create-gitkeep');
+    return Promise.resolve();
+  });
+
   Bash = td.replace('../../../lib/tasks/bash');
   let Build = require('../../../lib/tasks/bash-build');
 
@@ -38,7 +43,7 @@ const setupBuild = function(stubFs) {
 }
 
 
-describe('Vue Build Task', function() {
+describe('Bash Build Task', function() {
   afterEach(function() {
     td.reset();
   });
@@ -49,6 +54,7 @@ describe('Vue Build Task', function() {
     return buildTask.run({cordovaOutputPath: 'fakePath'}).then(function() {
       expect(tasks).to.deep.equal([
         'empty-dir',
+        'create-gitkeep',
         'bash-task',
         'copy-dir'
       ]);
