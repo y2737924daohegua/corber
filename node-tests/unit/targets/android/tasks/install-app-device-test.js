@@ -6,7 +6,7 @@ const Promise         = RSVP.Promise;
 const adbPath         = 'adbPath';
 const deviceUUID      = 'uuid';
 const apkPath         = 'apk-path';
-const spawnArgs       = [adbPath, ['-s', deviceUUID, 'install', apkPath]];
+const spawnArgs       = [adbPath, ['-s', deviceUUID, 'install', '-r', apkPath]];
 
 describe('Android Install App - Device', () => {
   let installAppDevice;
