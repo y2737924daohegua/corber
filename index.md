@@ -13,6 +13,8 @@ corber init
 corber start
 ```
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/CRipRMvHZ2M" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 **Next**
 
 - [Installation](pages/installation) 
