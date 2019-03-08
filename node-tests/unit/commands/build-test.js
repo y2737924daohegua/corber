@@ -225,14 +225,14 @@ describe('Build Command', () => {
       });
     });
 
-    it('sets project.CORBER_PLATFORM', () => {
+    it('sets opts.platform', () => {
       let build = setupCommand();
 
       td.when(resolvePlatform(project), { ignoreExtraArgs: true })
         .thenReturn(Promise.resolve('platform'));
 
       return build.run(opts).then(() => {
-        expect(project.CORBER_PLATFORM).to.equal('platform');
+        expect(opts.platform).to.equal('platform');
       });
     });
   });

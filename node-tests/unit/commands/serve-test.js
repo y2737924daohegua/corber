@@ -109,7 +109,7 @@ describe('Serve Command', () => {
     let serve = setupCommand();
 
     return serve.run(opts).then(() => {
-      expect(project.CORBER_PLATFORM).to.equal('ios');
+      expect(opts.platform).to.equal('ios');
     });
   });
 
