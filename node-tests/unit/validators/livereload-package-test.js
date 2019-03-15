@@ -1,6 +1,6 @@
 const td          = require('testdouble');
-const expect      = require('../../../../helpers/expect');
-const mockProject = require('../../../../fixtures/corber-mock/project');
+const expect      = require('../../helpers/expect');
+const mockProject = require('../../fixtures/corber-mock/project');
 const path        = require('path');
 
 const anything    = td.matchers.anything;
@@ -13,10 +13,10 @@ describe('Validate corber-ember-livereload', function() {
   let getPackage, logger;
 
   beforeEach(() => {
-    getPackage = td.replace('../../../../../lib/utils/get-package');
-    logger = td.replace('../../../../../lib/utils/logger');
+    getPackage = td.replace('../../../lib/utils/get-package');
+    logger = td.replace('../../../lib/utils/logger');
 
-    const ValidateCorberEmber = require('../../../../../lib/frameworks/ember/validators/corber-ember');
+    const ValidateCorberEmber = require('../../../lib/validators/livereload-package');
     validateCorberEmber = new ValidateCorberEmber({ root });
   });
 
@@ -24,8 +24,11 @@ describe('Validate corber-ember-livereload', function() {
     td.reset();
   });
 
-  context('when corber-ember-livereload is listed in package.json devDependencies', () => {
+
+  context('when packageName is listed in package.json devDependencies', () => {
     beforeEach(() => {
+      validateCorberEmber.packageName = 'corber-ember-livereload';
+
       td.when(getPackage(packagePath)).thenReturn({
         devDependencies: {
           'corber-ember-livereload': 1.0
@@ -45,8 +48,10 @@ describe('Validate corber-ember-livereload', function() {
     });
   });
 
-  context('when corber-ember-livereload is listed in package.json dependencies', () => {
+  context('when packageName is listed in package.json dependencies', () => {
     beforeEach(() => {
+      validateCorberEmber.packageName = 'corber-ember-livereload';
+
       td.when(getPackage(packagePath)).thenReturn({
         dependencies: {
           'corber-ember-livereload': 1.0
@@ -66,8 +71,10 @@ describe('Validate corber-ember-livereload', function() {
     });
   });
 
-  context('when corber-ember-livereload is missing from package.json', () => {
+  context('when packageName is missing from package.json', () => {
     beforeEach(() => {
+      validateCorberEmber.packageName = 'corber-ember-livereload';
+
       td.when(getPackage(packagePath)).thenReturn({
         dependencies: {},
         devDependencies: {}
@@ -87,6 +94,8 @@ describe('Validate corber-ember-livereload', function() {
 
   context('when package.json cannot be read', () => {
     beforeEach(() => {
+      validateCorberEmber.packageName = 'corber-ember-livereload';
+
       td.when(getPackage(packagePath)).thenReturn(null);
     });
 
@@ -97,6 +106,18 @@ describe('Validate corber-ember-livereload', function() {
     it('passes an error', () => {
       return validateCorberEmber.run().catch((err) => {
         expect(err).to.contain('could not read package.json');
+      });
+    });
+  });
+
+  context('when packageName is not set', () => {
+    it('rejects', () => {
+      return expect(validateCorberEmber.run()).to.be.rejected;
+    });
+
+    it('passes an error', () => {
+      return validateCorberEmber.run().catch((err) => {
+        expect(err).to.contain('no package name provided');
       });
     });
   });
