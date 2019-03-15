@@ -64,6 +64,7 @@ describe('Start Command', () => {
     androidListEmulators = td.replace('../../../lib/targets/android/tasks/list-emulators');
     androidListDevices   = td.replace('../../../lib/targets/android/tasks/list-devices');
 
+
     project = lodash.cloneDeep(mockProject.project);
     project.config = () => {
       return {
@@ -181,18 +182,16 @@ describe('Start Command', () => {
       });
     });
 
-    it('sets vars for webpack livereload', () => {
-      return start.run({ build: false, platform: 'ios' }).then(() => {
-        expect(project.CORBER_PLATFORM).to.equal('ios')
-      });
-    });
 
-    it('sets process.env.CORBER_PLATFORM & CORBER_LIVERELOAD', () => {
+    it('sets process.env.CORBER_PLATFORM/CORBER_LIVERELOAD & opts.platform', () => {
       process.env.CORBER_PLATFORM = undefined;
       process.env.CORBER_LIVERELOAD = undefined;
 
-      return start.run({ build: false, platform: 'ios' }).then(() => {
+      let opts = { build: false };
+
+      return start.run(opts).then(() => {
         expect(process.env.CORBER_PLATFORM).to.equal('ios');
+        expect(opts.platform).to.equal('ios');
         expect(process.env.CORBER_LIVERELOAD).to.equal('true');
       });
     });

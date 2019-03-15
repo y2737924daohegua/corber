@@ -181,9 +181,9 @@ describe('Vue Framework', function() {
   it('validateServe calls _buildValidators then runs validators', function() {
     let runValidatorDouble = td.replace('../../../../lib/utils/run-validators');
 
-    let ValidateWebpack = td.replace('../../../../lib/validators/webpack-plugin');
-    td.replace(ValidateWebpack.prototype, 'run', function() {
-      return 'validate-webpack';
+    let ValidatePackage = td.replace('../../../../lib/validators/livereload-package');
+    td.replace(ValidatePackage.prototype, 'run', function() {
+      return 'validate-package';
     });
 
     let framework = initFramework();
@@ -197,7 +197,7 @@ describe('Vue Framework', function() {
     framework.validateServe({});
 
     expect(passedEnv).to.equal('dev');
-    td.verify(runValidatorDouble(['validations', 'validate-webpack']));
+    td.verify(runValidatorDouble(['validations', 'validate-package']));
   });
 
   describe('validateServe', function() {
@@ -210,7 +210,7 @@ describe('Vue Framework', function() {
 
       it('passes required props to ValidateWebpack', function() {
         td.replace('../../../../lib/utils/run-validators');
-        let ValidateWebpack = td.replace('../../../../lib/validators/webpack-plugin');
+        let ValidatePackage = td.replace('../../../../lib/validators/livereload-package');
         let framework = initFramework();
 
         let config = {configureWebpack: {plugins: []}};
@@ -218,41 +218,9 @@ describe('Vue Framework', function() {
 
         framework.validateServe({});
 
-        td.verify(new ValidateWebpack({
+        td.verify(new ValidatePackage({
           root: mockProject.project.root,
-          framework: 'vue',
-          config: config,
-          configPath: 'vue.config.js'
-        }));
-      });
-    });
-
-    context('when package.json from Vue CLI v2', function() {
-      beforeEach(function() {
-        td.replace('../../../../lib/utils/get-package', () => {
-          return {
-            devDependencies: {
-              'webpack-dev-server': '^2.9.1'
-            }
-          };
-        });
-      });
-
-      it('passes required props to ValidateWebpack', function() {
-        td.replace('../../../../lib/utils/run-validators');
-        let ValidateWebpack = td.replace('../../../../lib/validators/webpack-plugin');
-        let framework = initFramework();
-
-        let config = {plugins: []};
-        td.replace(framework, '_getConfig', function () { return config; });
-
-        framework.validateServe({});
-
-        td.verify(new ValidateWebpack({
-          root: mockProject.project.root,
-          framework: 'vue',
-          config: config,
-          configPath: 'build/webpack.dev.conf'
+          packageName: 'vue-cli-plugin-corber'
         }));
       });
     });
@@ -268,7 +236,7 @@ describe('Vue Framework', function() {
     let framework = initFramework();
 
     return framework.afterInstall().then(function() {
-      expect(installedPackage).to.equal('corber-webpack-plugin');
+      expect(installedPackage).to.equal('vue-cli-plugin-corber');
     });
   });
 });

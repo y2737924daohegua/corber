@@ -91,8 +91,8 @@ describe('Ember Framework', function() {
   it('validateServe calls _buildValidators then runs validators', function() {
     let runValidatorDouble = td.replace('../../../../lib/utils/run-validators');
 
-    let ValidateCorberEmber = td.replace('../../../../lib/frameworks/ember/validators/corber-ember');
-    td.replace(ValidateCorberEmber.prototype, 'run', function() {
+    let ValidatePackage = td.replace('../../../../lib/validators/livereload-package');
+    td.replace(ValidatePackage.prototype, 'run', function() {
       return 'validate-corber-ember';
     });
 
@@ -108,13 +108,14 @@ describe('Ember Framework', function() {
 
   it('validateServe adds a validator for corber-ember', function() {
     td.replace('../../../../lib/utils/run-validators');
-    let ValidateCorberEmber = td.replace('../../../../lib/frameworks/ember/validators/corber-ember');
+    let ValidatePackage = td.replace('../../../../lib/validators/livereload-package');
     let framework = initFramework();
 
     framework.validateServe({});
 
-    td.verify(new ValidateCorberEmber({
-      root: mockProject.project.root
+    td.verify(new ValidatePackage({
+      root: mockProject.project.root,
+      packageName: 'corber-ember-livereload'
     }));
   });
 

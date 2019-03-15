@@ -18,6 +18,8 @@ npm-debug.log
 testem.log
 .idea
 yarn-error.log
+.DS_Store
+*.swp
 
 ember-cordova/tmp-livereload
 ember-cordova/cordova/www/*
