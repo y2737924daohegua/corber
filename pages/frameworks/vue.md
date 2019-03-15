@@ -3,25 +3,24 @@ layout: page
 title:  "Vue.js Mobile Apps"
 ---
 
-There is no custom configuration required for static builds with Vue.js projects. 
+Vue CLI projects should ensure their *baseUrl* properly in vue.config.js does not have a leading slash. This will be validate for your on every build, start and serve.
 
-If you wish to use livereload - the `serve` and `start` commands - your vue config must be updated to include the `corber-webpack-plugin`. This plugin was installed for you when running `corber init`.
 
 ##### Vue CLI 3 Projects
+
+In order for the *start* and *serve* commands to maintain access to the mobile shell, `vue-cli-plugin-corber` must be installed to your project. This will happen automatically for you on corber init. 
+
 
 ```javascript
 #vue.config.js
 
-const CorberWebpackPlugin = require('corber-webpack-plugin');
-
 module.exports = {
-  baseUrl: './',
-  configureWebpack: {
-    plugins: [new CorberWebpackPlugin()]
-  }
+  baseUrl: './'
 }
 ```
 ###### Vue CLI 2 Projects
+
+In order for the *start* and *serve* to work, `corber-webpack-plugin` must be installed and manually configured into your project. 
 
 ```javascript
 #webpack.dev.conf
