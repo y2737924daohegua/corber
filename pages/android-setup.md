@@ -29,11 +29,11 @@ Following these instructions will make Mac + Windows machines capable of creatin
 -- Mac users can run `brew install gradle`
 -- Linux users can manually download and unpack from the [gradle website](https://gradle.org/)
 
-4. Ensure your ANDROID_HOME env variable is configured ->
+4. Ensure your ANDROID_SDK_ROOT env variable is configured ->
 Mac/Linux
 ```
 #~/.bash_profile
-export ANDROID_HOME=/Users/foo/Library/Android/sdk
+export ANDROID_SDK_ROOT=/Users/foo/Library/Android/sdk
 ```
 
 Windows
