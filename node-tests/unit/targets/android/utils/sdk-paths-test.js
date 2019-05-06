@@ -47,10 +47,10 @@ describe('Android sdk paths util', () => {
     td.reset();
   });
 
-  it('logs an ANDROID_HOME error if sdkRoot is undefined', () => {
+  it('logs an ANDROID_SDK_ROOT error if sdkRoot is undefined', () => {
     td.when(sdkRoot()).thenReturn(undefined);
     sdkPaths();
-    td.verify(logger.error(contains('ANDROID_HOME ENV variable not found')));
+    td.verify(logger.error(contains('ANDROID_SDK_ROOT ENV variable not found')));
   });
 
   context('when platform is darwin', () => {
