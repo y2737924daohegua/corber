@@ -46,7 +46,6 @@ sdk.dir=C:\\Users\\username\\AppData\\Local\\Android\\Sdk
 
 OPTIONAL For `corber start` to function you must have already configured AVDs (Android Virtual Devices).
 By default Android Studio does not come with any pre-installed emulators.
-For a list of `start` compatibility, see [compatibility](/compatibility).
 
 - Use the global search charm (cmd + shift + a) to open the 'AVD Manager' section
 - Select ‘Create Virtual Device’ and configure create a device with your desired properties (version, device type, etc)
