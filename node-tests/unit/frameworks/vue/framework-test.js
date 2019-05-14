@@ -74,7 +74,7 @@ describe('Vue Framework', function() {
           td.verify(new ValidateRoot({
             framework: 'vue',
             config: config,
-            rootProps: ['baseUrl'],
+            rootProps: ['publicPath'],
             path: 'vue.config.js',
             force: undefined,
             env: 'build'
@@ -96,7 +96,7 @@ describe('Vue Framework', function() {
           td.verify(new ValidateRoot({
             framework: 'vue',
             config: config,
-            rootProps: ['baseUrl'],
+            rootProps: ['publicPath'],
             path: 'vue.config.js',
             force: undefined,
             env: 'build'
@@ -130,7 +130,7 @@ describe('Vue Framework', function() {
           td.verify(new ValidateRoot({
             framework: 'vue',
             config: config,
-            rootProps: ['baseUrl'],
+            rootProps: ['publicPath'],
             path: 'build/webpack.dev.conf',
             force: undefined,
             env: 'build'
@@ -152,7 +152,7 @@ describe('Vue Framework', function() {
           td.verify(new ValidateRoot({
             framework: 'vue',
             config: config,
-            rootProps: ['baseUrl'],
+            rootProps: ['publicPath'],
             path: 'build/webpack.dev.conf',
             force: undefined,
             env: 'build'
