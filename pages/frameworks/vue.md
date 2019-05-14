@@ -3,7 +3,7 @@ layout: page
 title:  "Vue.js Mobile Apps"
 ---
 
-Vue CLI projects should ensure their *baseUrl* properly in vue.config.js does not have a leading slash. This will be validate for your on every build, start and serve.
+Vue CLI projects should ensure their *publicPath* or *baseUrl* properly in vue.config.js does not have a leading slash. This will be validate for your on every build, start and serve.
 
 
 ##### Vue CLI 3 Projects
@@ -15,7 +15,7 @@ In order for the *start* and *serve* commands to maintain access to the mobile s
 #vue.config.js
 
 module.exports = {
-  baseUrl: './'
+  publicPath: './'
 }
 ```
 ###### Vue CLI 2 Projects
@@ -28,7 +28,7 @@ In order for the *start* and *serve* to work, `corber-webpack-plugin` must be in
 const CorberWebpackPlugin = require('corber-webpack-plugin');
 
 module.exports = {
-    baseUrl: './',
+    publicPath: './',
     plugins: [new CorberWebpackPlugin()]
   }));
 }
