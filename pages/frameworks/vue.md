@@ -18,6 +18,15 @@ module.exports = {
   publicPath: './'
 }
 ```
+
+You may want to only conditionally change the publicPath on corber builds:
+
+```javascript
+  module.exports = {
+   publicPath: process.env.CORBER? './' : '/'
+  }
+```
+
 ###### Vue CLI 2 Projects
 
 In order for the *start* and *serve* to work, `corber-webpack-plugin` must be installed and manually configured into your project. 
