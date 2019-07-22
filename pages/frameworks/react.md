@@ -8,7 +8,7 @@ title:  "React Mobile Apps"
 **Note**: In order for Cordova and Cordova plugins to be accessible during `corber start` and `corber serve`, corber-webpack-plugin must be added to the Webpack development config which requires the Create React App to be ejected.
 
 1. Open `package.json`.
-2. Update `homepage` to remove its leading slash, if it has one. (Set it to an empty string if has not yet set.)
+2. Update `homepage` to remove its leading slash, if it has one. (set it to a period "." if has not been set.)
 3. Run `npm run eject`. (See note above.)
 4. Open `config/webpack.config.dev.js`.
 5. Require `corber-webpack-plugin` and assign it as `CorberWebpackPlugin`.
