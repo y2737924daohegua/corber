@@ -63,15 +63,13 @@ describe('Cordova Create Project Task', function() {
     });
   });
 
-  it('defaults to the ember-cordova-template template', function() {
+  it('stubs an empty config', function() {
     setupCreateTask();
     create.run();
 
     var matcher = td.matchers.contains({
       lib: {
-        www: {
-          url: 'ember-cordova-template'
-        }
+        www: {}
       }
     });
 
