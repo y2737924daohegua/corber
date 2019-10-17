@@ -25,8 +25,6 @@ describe('Update gitignore Task', function() {
     expectedGitkeep = '\n' +
       'corber/tmp-livereload\n' +
       'corber/cordova/node_modules\n' +
-      'corber/cordova/package.json\n' +
-      'corber/cordova/package-lock.json\n' +
       'corber/cordova/platforms/*\n' +
       '!corber/cordova/platforms/.gitkeep\n' +
       'corber/cordova/plugins/*\n' +
