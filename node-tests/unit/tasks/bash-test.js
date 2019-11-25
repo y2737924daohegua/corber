@@ -72,10 +72,13 @@ describe('Bash Task', () => {
     onStdout('foo');
 
     td.verify(logger.verbose('foo'), { times: 0 });
-    td.verify(logger.info('foo'), { times: 1 });
+    td.verify(logger.info('foo'), { times: 0 });
     td.verify(logger.success('foo'), { times: 0 });
     td.verify(logger.warn('foo'), { times: 0 });
     td.verify(logger.error('foo'), { times: 0 });
+    td.verify(logger.stdoutVerbose('foo'), { times: 0 });
+    td.verify(logger.stdout('foo'), { times: 1 });
+    td.verify(logger.stderr('foo'), { times: 0 });
 
     deferred.resolve();
 
@@ -101,7 +104,10 @@ describe('Bash Task', () => {
     td.verify(logger.info('foo'), { times: 0 });
     td.verify(logger.success('foo'), { times: 0 });
     td.verify(logger.warn('foo'), { times: 0 });
-    td.verify(logger.error('foo'), { times: 1 });
+    td.verify(logger.error('foo'), { times: 0 });
+    td.verify(logger.stdoutVerbose('foo'), { times: 0 });
+    td.verify(logger.stdout('foo'), { times: 0 });
+    td.verify(logger.stderr('foo'), { times: 1 });
 
     deferred.resolve();
 
