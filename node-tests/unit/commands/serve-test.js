@@ -33,6 +33,8 @@ describe('Serve Command', () => {
 
     td.replace(editXML, 'addNavigation', stubTask('add-navigation'));
     td.replace(editXML, 'removeNavigation', stubTask('remove-navigation'));
+    td.replace(editXML, 'addAndroidCleartext', stubTask('add-android-cleartext'));
+    td.replace(editXML, 'removeAndroidCleartext', stubTask('remove-android-cleartext'));
     td.replace(CreateLRShellTask.prototype, 'run', stubTask('create-livereload-shell'));
     td.replace(mockFramework, 'validateServe', stubTask('framework-validate-serve'));
     td.replace(mockFramework, 'serve', stubTask('framework-serve'));
@@ -142,6 +144,32 @@ describe('Serve Command', () => {
         'hook afterBuild',
         'framework-serve',
         'remove-navigation'
+      ]);
+    });
+  });
+
+  it('runs android cleartext setup/removal', () => {
+    let tasks = [];
+    setupTaskTracking(tasks);
+
+    td.when(resolvePlatform(project), { ignoreExtraArgs: true })
+      .thenReturn(Promise.resolve('android'));
+
+    let serve = setupCommand();
+
+    return serve.run(opts).then(() => {
+      expect(tasks).to.deep.equal([
+        'add-navigation',
+        'add-android-cleartext',
+        'hook beforeBuild',
+        'cordova-validate-serve',
+        'framework-validate-serve',
+        'create-livereload-shell',
+        'cordova-build',
+        'hook afterBuild',
+        'framework-serve',
+        'remove-navigation',
+        'remove-android-cleartext'
       ]);
     });
   });

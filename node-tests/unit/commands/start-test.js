@@ -114,6 +114,8 @@ describe('Start Command', () => {
       CordovaRawTask.prototype.run = stubTask('cordova-prepare');
       editXml.addNavigation = stubTask('add-navigation');
       editXml.removeNavigation = stubTask('remove-navigation');
+      editXml.addAndroidCleartext = stubTask('add-android-cleartext');
+      editXml.removeAndroidCleartext = stubTask('remove-android-cleartext');
       IOSTarget.prototype.build = stubTask('ios-platform-build');
       IOSTarget.prototype.run = stubTask('ios-platform-run');
       AndroidTarget.prototype.build = stubTask('android-platform-build');
@@ -169,6 +171,7 @@ describe('Start Command', () => {
           'select-device',
           'hook-beforeBuild',
           'add-navigation',
+          'add-android-cleartext',
           'cordova-validate-serve',
           'framework-validate-serve',
           'create-livereload-shell',
@@ -177,7 +180,8 @@ describe('Start Command', () => {
           'hook-afterBuild',
           'android-platform-run',
           'framework-serve',
-          'remove-navigation'
+          'remove-navigation',
+          'remove-android-cleartext'
         ]);
       });
     });
