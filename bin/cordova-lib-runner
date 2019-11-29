@@ -2,6 +2,10 @@
 
 const cordovaLib = require('cordova-lib');
 
+// hook cordova-cli style logging up, corber will drop stdout without --verbose
+cordovaLib.cordova.on('log', console.log);
+cordovaLib.cordova.on('warn', console.error);
+
 // `lib/targets/cordova/tasks/raw.js` serializes all arguments into a single
 // string argument; this allow objects to be passed (e.g. options)
 let args = JSON.parse(process.argv[2]);
