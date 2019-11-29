@@ -81,11 +81,14 @@ describe('Cordova Raw Task', () => {
     // simulate standard output from wrapping cordova process
     captor.value.onStdout('foo');
 
-    td.verify(logger.verbose('foo'), { times: 1 });
+    td.verify(logger.verbose('foo'), { times: 0 });
     td.verify(logger.info('foo'), { times: 0 });
     td.verify(logger.success('foo'), { times: 0 });
     td.verify(logger.warn('foo'), { times: 0 });
     td.verify(logger.error('foo'), { times: 0 });
+    td.verify(logger.stdoutVerbose('foo'), { times: 1 });
+    td.verify(logger.stdout('foo'), { times: 0 });
+    td.verify(logger.stderr('foo'), { times: 0 });
 
     deferred.resolve();
 
@@ -108,7 +111,10 @@ describe('Cordova Raw Task', () => {
     td.verify(logger.info('foo'), { times: 0 });
     td.verify(logger.success('foo'), { times: 0 });
     td.verify(logger.warn('foo'), { times: 0 });
-    td.verify(logger.error('foo'), { times: 1 });
+    td.verify(logger.error('foo'), { times: 0 });
+    td.verify(logger.stdoutVerbose('foo'), { times: 0 });
+    td.verify(logger.stdout('foo'), { times: 0 });
+    td.verify(logger.stderr('foo'), { times: 1 });
 
     deferred.resolve();
 
