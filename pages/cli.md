@@ -78,6 +78,7 @@ To learn more, [read here](/pages/development-workflow)
 |---------  |---------| ---- |
 | platform  | ios | platform |
 | skip-cordova-build (alias: scb) | false | only performs framework build |
+| reload-url | auto detected ip | network ip of your machine |
 
 ### Examples
 + `corber start`
