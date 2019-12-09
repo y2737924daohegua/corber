@@ -129,14 +129,14 @@ more integrated experience for emulator usage.
 | Options    | default | desc |
 |---------  |---------| ---- |
 | platform  | ios | cordova platform |
-| reloadUrl | auto detected ip | network ip of your machine |
+| reload-url | auto detected ip | network ip of your machine |
 | cordova-output-path| corber/cordova/www | |
 | skip-framework-build (alias: sfb) | false | only performs cordova build |
 | skip-cordova-build (alias: scb) | false | only performs framework build |
 
 ### Examples
 + `corber serve`
-+ `corber serve --platform=android --reloadUrl=192.168.1.1`
++ `corber serve --platform=android --reload-url=192.168.1.1`
 + `corber serve --platform=browser --env "development"`
 
 ***
