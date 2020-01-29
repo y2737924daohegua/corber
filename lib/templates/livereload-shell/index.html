@@ -11,24 +11,32 @@
     <h3>Starting Live Reload</h3>
 
     <p>
-      Redirecting to your app now; if you still see this
-      page after a few seconds, make sure this device
-      is connected to the same network that your
-      corber build server is running on, and that
-      your build server's address ({{liveReloadUrl}})
-      can be accessed by other devices on the network.
+      Redirecting to your app now; if you still see this page after a few
+      seconds, try clicking the 'Redirect' button.
+    </p>
+
+    <button id="button-redirect">
+      Redirect
+    </button>
+
+    <p>
+      If that doesn't work, make sure this device is connected to the same
+      network that your corber build server is running on, and that your build
+      server's address ({{liveReloadUrl}}) can be accessed by other devices on
+      the network.
     </p>
 
     <script type="text/javascript">
-      var url = '{{liveReloadUrl}}';
+      function redirect() {
+        window.location.replace('{{liveReloadUrl}}');
+      }
 
-      var redirect = setInterval(function() {
-        window.location.replace(url);
-      }, 250);
+      document.querySelector('#button-redirect').addEventListener('click', redirect);
 
+      var delayedRedirect = setInterval(redirect, 250);
 
      setTimeout(function() {
-       clearInterval(redirect);
+       clearInterval(delayedRedirect);
 
        var content = document.getElementsByTagName('p')[0].innerText;
        alert(content);
