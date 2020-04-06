@@ -1,10 +1,10 @@
 const td              = require('testdouble');
 const expect          = require('../../helpers/expect');
-const Promise         = require('rsvp');
 const mockProject     = require('../../fixtures/corber-mock/project');
 const mockAnalytics   = require('../../fixtures/corber-mock/analytics');
 const lodash          = require('lodash');
 const RSVP            = require('rsvp');
+const Promise         = RSVP.Promise;
 
 describe('Start Command', () => {
   // run()
@@ -410,6 +410,27 @@ describe('Start Command', () => {
         expect(devices).to.contain(androidEmulator);
         expect(devices).to.contain(androidDevice);
       });
+    });
+
+    it('waits for listAndroidDevices to finish before running listAndroidEmulators', () => {
+      let deferred = RSVP.defer();
+
+      // ensure listDevices function won't resolve until we say so
+      td.when(androidListDevices()).thenReturn(deferred.promise.then(() => {
+        return [androidDevice];
+      }));
+
+      // register a `then` handler on the promise _before_ start does
+      let promise = deferred.promise.then(() => {
+        td.config({ ignoreWarnings: true });
+        td.verify(androidListEmulators(), { times: 0 });
+        td.config({ ignoreWarnings: false });
+      });
+
+      start.getInstalledDevices(['android']);
+      deferred.resolve();
+
+      return promise;
     });
   });
 
