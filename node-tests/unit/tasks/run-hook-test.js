@@ -1,10 +1,11 @@
 const td              = require('testdouble');
 const expect          = require('../../helpers/expect');
 const mockProject     = require('../../fixtures/corber-mock/project');
+const path            = require('path');
 
 const root            = mockProject.project.root;
-const corberPath      = `${root}/corber`;
-const hookPath        = `${corberPath}/hooks/hook`;
+const corberPath      = path.join(root, 'corber');
+const hookPath        = path.join(corberPath, 'hooks', 'hook');
 
 describe('Run Hook Task', () => {
   let fsUtils;
